@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import Header from '../../components/Header/Header'
 import './Contacto.css'
 
 const Contacto = () => {
@@ -66,107 +67,112 @@ const Contacto = () => {
   ]
 
   return (
-    <div className='contacto-container'>
-      <h1 className='contacto-titulo'>📞 ¡Contáctanos Hoy!</h1>
+    <>
+      <div className='contacto-container'>
+        <Header />
+        <h1 className='contacto-titulo'>📞 ¡Contáctanos Hoy!</h1>
 
-      <div className='contacto-secciones'>
-        <div className='contacto-info'>
-          <h2>📍 Nuestra Ubicación</h2>
-          <p>🏠 Calle Narciso Monturiol 11, San jose de la Rinconada, España</p>
-          <p>📞 Teléfono: +34 647 40 69 38</p>
-          <p>📧 Email: contacto@crosfitgym.com</p>
+        <div className='contacto-secciones'>
+          <div className='contacto-info'>
+            <h2>📍 Nuestra Ubicación</h2>
+            <p>
+              🏠 Calle Narciso Monturiol 11, San jose de la Rinconada, España
+            </p>
+            <p>📞 Teléfono: +34 647 40 69 38</p>
+            <p>📧 Email: contacto@crosfitgym.com</p>
 
-          <div className='contacto-mapa'>
-            <iframe
-              title='Ubicación Gimnasio'
-              src='https://www.google.com/maps/embed?...'
-              allowFullScreen
-              loading='lazy'
-            ></iframe>
-          </div>
-        </div>
-
-        <div className='contacto-formulario'>
-          {!mensajeEnviado ? (
-            <>
-              <h2>📩 Envíanos un Mensaje</h2>
-              <form onSubmit={handleSubmit}>
-                <div className='form-group'>
-                  <label htmlFor='nombre'>Nombre</label>
-                  <input
-                    type='text'
-                    id='nombre'
-                    placeholder='Tu nombre'
-                    required
-                  />
-                </div>
-
-                <div className='form-group'>
-                  <label htmlFor='email'>Email</label>
-                  <input
-                    type='email'
-                    id='email'
-                    placeholder='Tu correo electrónico'
-                    required
-                  />
-                </div>
-
-                <div className='form-group'>
-                  <label htmlFor='mensaje'>Mensaje</label>
-                  <textarea
-                    id='mensaje'
-                    rows='4'
-                    placeholder='Escribe tu mensaje'
-                    required
-                  ></textarea>
-                </div>
-
-                <button type='submit' className='boton-enviar'>
-                  Enviar mensaje
-                </button>
-              </form>
-            </>
-          ) : (
-            <div className='mensaje-exito'>
-              🎉 ¡Gracias por tu mensaje! Te contactaremos pronto. 😊
-              <button
-                onClick={handleNuevoMensaje}
-                className='boton-nuevo-mensaje'
-              >
-                Mandar otro mensaje
-              </button>
+            <div className='contacto-mapa'>
+              <iframe
+                title='Ubicación Gimnasio'
+                src='https://www.google.com/maps/embed?...'
+                allowFullScreen
+                loading='lazy'
+              ></iframe>
             </div>
-          )}
-        </div>
-      </div>
+          </div>
 
-      <div className='faq-container'>
-        <h2>❓ Preguntas Frecuentes</h2>
-        {preguntasFrecuentes.map((faq, index) => (
-          <div key={index} className='faq-item'>
-            <button className='faq-pregunta' onClick={() => toggleFAQ(index)}>
-              {faq.pregunta} {faqActivo === index ? '🔼' : '🔽'}
-            </button>
-            {faqActivo === index && (
-              <p className='faq-respuesta'>{faq.respuesta}</p>
+          <div className='contacto-formulario'>
+            {!mensajeEnviado ? (
+              <>
+                <h2>📩 Envíanos un Mensaje</h2>
+                <form onSubmit={handleSubmit}>
+                  <div className='form-group'>
+                    <label htmlFor='nombre'>Nombre</label>
+                    <input
+                      type='text'
+                      id='nombre'
+                      placeholder='Tu nombre'
+                      required
+                    />
+                  </div>
+
+                  <div className='form-group'>
+                    <label htmlFor='email'>Email</label>
+                    <input
+                      type='email'
+                      id='email'
+                      placeholder='Tu correo electrónico'
+                      required
+                    />
+                  </div>
+
+                  <div className='form-group'>
+                    <label htmlFor='mensaje'>Mensaje</label>
+                    <textarea
+                      id='mensaje'
+                      rows='4'
+                      placeholder='Escribe tu mensaje'
+                      required
+                    ></textarea>
+                  </div>
+
+                  <button type='submit' className='boton-enviar'>
+                    Enviar mensaje
+                  </button>
+                </form>
+              </>
+            ) : (
+              <div className='mensaje-exito'>
+                🎉 ¡Gracias por tu mensaje! Te contactaremos pronto. 😊
+                <button
+                  onClick={handleNuevoMensaje}
+                  className='boton-nuevo-mensaje'
+                >
+                  Mandar otro mensaje
+                </button>
+              </div>
             )}
           </div>
-        ))}
-      </div>
+        </div>
 
-      <div className='testimonios-container'>
-        <h2>💪 Testimonios de Nuestros Clientes</h2>
-        <div className='testimonios-grid'>
-          {testimonios.map((testimonio, index) => (
-            <div key={index} className='testimonio-card'>
-              <img src={testimonio.imagen} alt={testimonio.nombre} />
-              <p className='testimonio-texto'>"{testimonio.comentario}"</p>
-              <h4 className='testimonio-nombre'>- {testimonio.nombre}</h4>
+        <div className='faq-container'>
+          <h2>❓ Preguntas Frecuentes</h2>
+          {preguntasFrecuentes.map((faq, index) => (
+            <div key={index} className='faq-item'>
+              <button className='faq-pregunta' onClick={() => toggleFAQ(index)}>
+                {faq.pregunta} {faqActivo === index ? '🔼' : '🔽'}
+              </button>
+              {faqActivo === index && (
+                <p className='faq-respuesta'>{faq.respuesta}</p>
+              )}
             </div>
           ))}
         </div>
+
+        <div className='testimonios-container'>
+          <h2>💪 Testimonios de Nuestros Clientes</h2>
+          <div className='testimonios-grid'>
+            {testimonios.map((testimonio, index) => (
+              <div key={index} className='testimonio-card'>
+                <img src={testimonio.imagen} alt={testimonio.nombre} />
+                <p className='testimonio-texto'>"{testimonio.comentario}"</p>
+                <h4 className='testimonio-nombre'>- {testimonio.nombre}</h4>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 

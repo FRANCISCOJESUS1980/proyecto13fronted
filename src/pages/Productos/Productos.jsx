@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import Header from '../../components/Header/Header'
-import './Clases.css'
+import './Productos.css'
 
-const Clases = () => {
+const Productos = () => {
   /* const [clases, setClases] = useState([])
 
   useEffect(() => {
@@ -28,10 +28,10 @@ const Clases = () => {
     </div>
   )*/
   return (
-    <div className='clases-container'>
+    <div className='productos-container'>
       <Header />
     </div>
   )
 }
 
-export default Clases
+export default Productos

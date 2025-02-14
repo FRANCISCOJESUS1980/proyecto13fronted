@@ -1,4 +1,5 @@
 import React from 'react'
+import Header from '../../components/Header/Header'
 import './Entrenamientos.css'
 
 import entrenamiento1 from '../../assets/imagenes/entrenamiento1.jpg'
@@ -96,6 +97,7 @@ const entrenamientos = [
 const Entrenamientos = () => {
   return (
     <div className='entrenamientos-container'>
+      <Header />
       <h1 className='titulo'>Entrenamientos de CrossFit</h1>
       <div className='entrenamientos-grid'>
         {entrenamientos.map((entrenamiento) => (

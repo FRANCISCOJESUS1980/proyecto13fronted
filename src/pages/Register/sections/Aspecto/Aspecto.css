@@ -1,5 +1,11 @@
 .stats-container {
   padding: 1.5rem;
+  min-width: 100svh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .stats-header {
@@ -9,8 +15,10 @@
 .stats-header h2 {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #1a1a1a;
+  color: black;
   margin: 0;
+  background-color: whitesmoke;
+  border-radius: 5px;
 }
 
 .stats-tabs {
@@ -19,6 +27,8 @@
   margin-bottom: 1.5rem;
   border-bottom: 2px solid #e9ecef;
   padding-bottom: 0.5rem;
+  background-color: whitesmoke;
+  border-radius: 5px;
 }
 
 .tab-btn {
@@ -46,6 +56,7 @@
   padding: 1.5rem;
   border-radius: 0.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 450px;
 }
 
 .stats-grid {

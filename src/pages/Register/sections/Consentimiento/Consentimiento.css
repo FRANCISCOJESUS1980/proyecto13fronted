@@ -1,0 +1,19 @@
+.consentimiento-container {
+  margin-left: 40px;
+  width: 900px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.botonconsentimiento {
+  color: black;
+  align-items: center;
+  background-color: yellow;
+  margin: 10px;
+}
+.botonconsentimiento:hover {
+  background-color: black;
+  color: red;
+}

@@ -1,14 +1,15 @@
 .contacto-container {
   max-width: 1200px;
-  margin: auto;
+  margin-top: auto;
   padding: 40px;
   text-align: center;
+  background-color: #606364;
 }
 
 .contacto-titulo {
   font-size: 2.5rem;
   color: #333;
-  margin-bottom: 20px;
+  margin-top: 450px;
 }
 
 .contacto-secciones {

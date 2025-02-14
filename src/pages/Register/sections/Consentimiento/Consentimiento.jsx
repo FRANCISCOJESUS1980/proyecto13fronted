@@ -20,7 +20,9 @@ const Consentimiento = ({ onConsentAccepted }) => {
             width='100%'
             height='500px'
           />
-          <button onClick={handleAccept}>Aceptar</button>
+          <button className='botonconsentimiento' onClick={handleAccept}>
+            Aceptar
+          </button>
         </>
       ) : null}
     </div>

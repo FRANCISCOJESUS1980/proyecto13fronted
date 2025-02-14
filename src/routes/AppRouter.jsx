@@ -8,6 +8,9 @@ import UserDashboard from '../pages/Register/sections/Dashboard/UserDashboard'
 import Medico from '../pages/Register/sections/Medico/Medico'
 import Aspecto from '../pages/Register/sections/Aspecto/Aspecto'
 import Marcas from '../pages/Register/sections/Marcas/Marcas'
+import Iniciarsesion from '../pages/Iniciar Sesion/iniciarsesion'
+import Productos from '../pages/Productos/Productos'
+import Precios from '../pages/Precios/Precios'
 
 const AppRouter = () => {
   return (
@@ -15,11 +18,11 @@ const AppRouter = () => {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/registro' element={<Register />} />
-        <Route path='/iniciar-sesion' element={<h1>Iniciar Sesión</h1>} />
+        <Route path='/iniciar-sesion' element={<Iniciarsesion />} />
         <Route path='/clases' element={<Clases />} />
-        <Route path='/productos' element={<h1>Productos</h1>} />
+        <Route path='/productos' element={<Productos />} />
         <Route path='/contacto' element={<Contacto />} />
-        <Route path='/precios' element={<h1>Precios</h1>} />
+        <Route path='/precios' element={<Precios />} />
         <Route path='/entrenamientos' element={<Entrenamientos />} />
 
         <Route path='/dashboard' element={<UserDashboard />} />
