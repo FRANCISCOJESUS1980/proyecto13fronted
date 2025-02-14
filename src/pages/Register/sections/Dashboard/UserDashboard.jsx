@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './Dashboard.css'
+import Header from '../../../../components/Header/Header'
 
 const UserDashboard = () => {
   const navigate = useNavigate()
@@ -15,6 +16,7 @@ const UserDashboard = () => {
 
   return (
     <div className='dashboard-container'>
+      <Header />
       <header className='dashboard-header'>
         <h1>Bienvenido a AderCrossFit, {userName}</h1>
       </header>
