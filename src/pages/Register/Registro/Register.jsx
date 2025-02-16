@@ -12,12 +12,25 @@ const Register = () => {
     rol: 'usuario',
     codigoAutorizacion: ''
   })
-
+  const [selectedImage, setSelectedImage] = useState(null)
+  const [previewUrl, setPreviewUrl] = useState(null)
   const [registroExitoso, setRegistroExitoso] = useState(false)
   const [mostrarOpcionCreador, setMostrarOpcionCreador] = useState(false)
   const [mostrarOpcionAdmin, setMostrarOpcionAdmin] = useState(false)
   const [mostrarOpcionMonitor, setMostrarOpcionMonitor] = useState(false)
   const navigate = useNavigate()
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      setSelectedImage(file)
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
 
   useEffect(() => {
     const verificarCodigo = async () => {
@@ -61,6 +74,8 @@ const Register = () => {
                 setFormData((prev) => ({ ...prev, rol: 'monitor' }))
                 setMostrarOpcionMonitor(true)
                 break
+              default:
+                break
             }
           } else {
             console.log('Código inválido o error:', data.message)
@@ -79,12 +94,6 @@ const Register = () => {
           setMostrarOpcionAdmin(false)
           setMostrarOpcionMonitor(false)
         }
-      } else {
-        console.log('No hay código para verificar')
-        setFormData((prev) => ({ ...prev, rol: 'usuario' }))
-        setMostrarOpcionCreador(false)
-        setMostrarOpcionAdmin(false)
-        setMostrarOpcionMonitor(false)
       }
     }
 
@@ -103,17 +112,22 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      console.log('Datos a enviar:', formData)
+      const formDataToSend = new FormData()
+
+      formDataToSend.append('nombre', formData.nombre)
+      formDataToSend.append('email', formData.email)
+      formDataToSend.append('password', formData.password)
+      formDataToSend.append('rol', formData.rol)
+      formDataToSend.append('codigoAutorizacion', formData.codigoAutorizacion)
+
+      if (selectedImage) {
+        formDataToSend.append('avatar', selectedImage)
+        console.log('Imagen seleccionada:', selectedImage.name)
+      }
+
       const response = await fetch('http://localhost:5000/api/users/register', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json'
-        },
-        body: JSON.stringify({
-          ...formData,
-          codigoAutorizacion: formData.codigoAutorizacion.trim()
-        })
+        body: formDataToSend
       })
 
       const data = await response.json()
@@ -124,6 +138,7 @@ const Register = () => {
         localStorage.setItem('token', data.data.token)
         localStorage.setItem('nombre', formData.nombre)
         localStorage.setItem('rol', data.data.rol)
+        localStorage.setItem('avatar', data.data.avatar)
         setRegistroExitoso(true)
       } else {
         alert(data.message || 'Error en el registro')
@@ -147,6 +162,22 @@ const Register = () => {
           <Header />
           <h2>Registro</h2>
           <form onSubmit={handleSubmit}>
+            <div className='image-upload-container'>
+              {previewUrl && (
+                <img
+                  src={previewUrl || '/placeholder.svg'}
+                  alt='Vista previa'
+                  className='image-preview'
+                />
+              )}
+              <input
+                type='file'
+                accept='image/*'
+                onChange={handleImageChange}
+                className='image-input'
+              />
+            </div>
+
             <input
               type='text'
               name='nombre'
