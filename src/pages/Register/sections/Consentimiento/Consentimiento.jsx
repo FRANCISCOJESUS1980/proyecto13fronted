@@ -13,7 +13,7 @@ const Consentimiento = ({ onConsentAccepted }) => {
     <div className='consentimiento-container'>
       {!aceptado ? (
         <>
-          <h2>Consentimiento</h2>
+          <h2 className='tituloconsentimiento'>Consentimiento</h2>
           <embed
             src='/public/consentimiento/Consentimiento adercrosfit.pdf'
             type='application/pdf'

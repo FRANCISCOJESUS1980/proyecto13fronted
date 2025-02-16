@@ -23,7 +23,7 @@
   width: 100%;
   height: 100%;
   overflow: hidden;
-  z-index: -1;
+  z-index: 1;
 }
 
 .background-video {
@@ -35,9 +35,10 @@
 .overlay {
   text-align: center;
   color: white;
-  position: relative;
+  position: absolute;
   z-index: 2;
   padding: 0 20px;
+  top: 440px;
 }
 
 .overlay h1 {
@@ -54,10 +55,14 @@
 
 .crossfit-animations {
   padding: 4rem 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  display: flex;
+  justify-content: space-around;
   gap: 2rem;
-  background: linear-gradient(to bottom, #000000, #1a1a1a);
+  background: none;
+  z-index: 2;
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
 }
 
 .animation-container {
@@ -156,7 +161,10 @@
 .motivation-text {
   text-align: center;
   color: #fff;
-  padding: 2rem;
+  padding: 4rem;
+  z-index: 2;
+  position: absolute;
+  top: 0;
 }
 
 .motivation-text h2 {
