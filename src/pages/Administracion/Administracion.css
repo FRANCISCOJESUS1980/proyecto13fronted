@@ -9,67 +9,22 @@
 
 h1 {
   text-align: center;
-  color: #333;
+  color: red;
   margin-bottom: 20px;
-}
-
-.admin-section {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 h2 {
-  color: #444;
-  border-bottom: 2px solid #ff6b00;
+  color: black;
+
   padding-bottom: 5px;
   margin-bottom: 15px;
 }
-
-form {
-  display: flex;
-  flex-direction: column;
+.section-card {
+  margin: 20px;
 }
-
-input,
-textarea {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+.section-card:hover {
+  background-color: #8a8a8a;
 }
-
-button {
-  padding: 10px;
-  background: #ff6b00;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-button:hover {
-  background: #e65a00;
-}
-
-ul {
-  list-style: none;
-  padding: 0;
-}
-
-li {
-  background: #fff;
-  margin: 5px 0;
-  padding: 10px;
-  border-radius: 5px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
 p {
-  color: #777;
-  text-align: center;
+  color: red;
 }

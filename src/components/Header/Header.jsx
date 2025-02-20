@@ -10,7 +10,8 @@ const Header = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token')
-    const role = localStorage.getItem('rol')
+    const role = localStorage.getItem('rol')?.toLowerCase().trim()
+
     setIsAuthenticated(!!token)
     setUserRole(role)
   }, [])
@@ -26,7 +27,9 @@ const Header = () => {
           {isAuthenticated ? (
             <>
               <Link to='/dashboard'>Mi Dashboard</Link>
-              {(userRole === 'administrador' || userRole === 'creador') && (
+              {(userRole === 'administrador' ||
+                userRole === 'admin' ||
+                userRole === 'creador') && (
                 <Link to='/administracion'>Administración</Link>
               )}
             </>

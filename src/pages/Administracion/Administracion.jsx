@@ -7,17 +7,25 @@ const Administracion = () => {
   const navigate = useNavigate()
   const [usuarios, setUsuarios] = useState([])
   const [error, setError] = useState(null)
+  const [userRole, setUserRole] = useState('')
 
   useEffect(() => {
+    const token = localStorage.getItem('token')
+    const role = localStorage.getItem('rol')?.toLowerCase().trim()
+
+    if (
+      !token ||
+      !(role === 'administrador' || role === 'admin' || role === 'creador')
+    ) {
+      console.error('Acceso denegado: no tienes permisos.')
+      navigate('/')
+      return
+    }
+
+    setUserRole(role)
+
     const fetchUsuarios = async () => {
       try {
-        const token = localStorage.getItem('token')
-        if (!token) {
-          console.error('No hay token disponible. Inicia sesión nuevamente.')
-          setError('No autorizado. Inicia sesión nuevamente.')
-          return
-        }
-
         const response = await fetch('http://localhost:5000/api/users', {
           method: 'GET',
           headers: {
@@ -43,7 +51,7 @@ const Administracion = () => {
     }
 
     fetchUsuarios()
-  }, [])
+  }, [navigate])
 
   return (
     <div className='admin-container'>
