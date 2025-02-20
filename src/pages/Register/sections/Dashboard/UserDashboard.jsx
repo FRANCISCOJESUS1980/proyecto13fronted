@@ -11,14 +11,26 @@ const UserDashboard = () => {
     const nombre = localStorage.getItem('nombre')
     if (nombre) {
       setUserName(nombre)
+    } else {
+      setUserName('Usuario')
     }
   }, [])
+
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('nombre')
+    localStorage.removeItem('rol')
+    navigate('/')
+  }
 
   return (
     <div className='dashboard-container'>
       <Header />
       <header className='dashboard-header'>
         <h1>Bienvenido a AderCrossFit, {userName}</h1>
+        <button className='logout-btn' onClick={handleLogout}>
+          Cerrar Sesión
+        </button>
       </header>
 
       <div className='dashboard-sections'>

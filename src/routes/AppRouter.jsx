@@ -11,6 +11,10 @@ import Marcas from '../pages/Register/sections/Marcas/Marcas'
 import Iniciarsesion from '../pages/Iniciar Sesion/iniciarsesion'
 import Productos from '../pages/Productos/Productos'
 import Precios from '../pages/Precios/Precios'
+import Administracion from '../pages/Administracion/Administracion'
+import AdminClases from '../pages/Administracion/AdminClases/AdminClases'
+import AdminProductos from '../pages/Administracion/AdminProductos/AdminProductos'
+import AdminUsuarios from '../pages/Administracion/AdminUsuarios/AdminUsuarios'
 
 const AppRouter = () => {
   return (
@@ -24,6 +28,11 @@ const AppRouter = () => {
         <Route path='/contacto' element={<Contacto />} />
         <Route path='/precios' element={<Precios />} />
         <Route path='/entrenamientos' element={<Entrenamientos />} />
+        <Route path='/administracion' element={<Administracion />} />
+
+        <Route path='/administracion/clases' element={<AdminClases />} />
+        <Route path='/administracion/productos' element={<AdminProductos />} />
+        <Route path='/administracion/usuarios' element={<AdminUsuarios />} />
 
         <Route path='/dashboard' element={<UserDashboard />} />
         <Route path='/dashboard/medico' element={<Medico />} />

@@ -31,6 +31,9 @@ const PhysicalStats = () => {
   return (
     <div className='stats-container'>
       <div className='stats-header'>
+        <button className='back-button' onClick={() => navigate('/dashboard')}>
+          ← Volver al Dashboard
+        </button>
         <h2>Estadísticas Físicas</h2>
       </div>
 

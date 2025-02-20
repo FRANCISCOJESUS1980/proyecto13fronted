@@ -1,80 +1,81 @@
-import React, { useState } from 'react'
-import Header from '../../components/Header/Header'
-import './iniciarsesion.css'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import './Iniciarsesion.css'
 
 const Iniciarsesion = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  })
+  const navigate = useNavigate()
 
-  const handleLogin = async (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    setLoading(true)
-    setError('')
-
-    const userCredentials = {
-      email,
-      password
-    }
-
     try {
       const response = await fetch('http://localhost:5000/api/users/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(userCredentials)
+        body: JSON.stringify(formData)
       })
 
       const data = await response.json()
-      if (!response.ok) {
-        setError(data.message)
-        setLoading(false)
-      } else {
-        localStorage.setItem('token', data.data.token)
-        setLoading(false)
+
+      console.log(data)
+
+      if (response.ok) {
         alert('Inicio de sesión exitoso')
-        window.location.href = '/dashboard'
+
+        localStorage.setItem('token', data.data.token)
+        localStorage.setItem('nombre', data.data.nombre)
+        localStorage.setItem('rol', data.data.rol)
+
+        navigate('/dashboard')
+      } else {
+        alert(data.message || 'Error en el inicio de sesión')
       }
     } catch (error) {
-      setError('Error al iniciar sesión, intente de nuevo.')
-      setLoading(false)
+      console.error('Error en el inicio de sesión:', error)
+      alert('Error en la conexión con el servidor')
     }
   }
 
   return (
     <div className='login-container'>
-      <Header />
       <h2>Iniciar Sesión</h2>
-      <form onSubmit={handleLogin}>
-        <div className='input-group'>
-          <label htmlFor='email'>Correo Electrónico</label>
-          <input
-            type='email'
-            id='email'
-            name='email'
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div className='input-group'>
-          <label htmlFor='password'>Contraseña</label>
-          <input
-            type='password'
-            id='password'
-            name='password'
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        {error && <p className='error'>{error}</p>}
-        <button className='botoniniciarsesion' type='submit' disabled={loading}>
-          {loading ? 'Cargando...' : 'Iniciar Sesión'}
+      <form onSubmit={handleSubmit}>
+        <input
+          type='email'
+          name='email'
+          placeholder='Correo electrónico'
+          value={formData.email}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type='password'
+          name='password'
+          placeholder='Contraseña'
+          value={formData.password}
+          onChange={handleChange}
+          required
+        />
+        <button className='botonlogin' type='submit'>
+          Iniciar Sesión
         </button>
       </form>
+      <p>
+        ¿No tienes una cuenta?{' '}
+        <span className='link' onClick={() => navigate('/registro')}>
+          Regístrate aquí
+        </span>
+      </p>
     </div>
   )
 }

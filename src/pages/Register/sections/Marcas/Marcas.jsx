@@ -34,6 +34,9 @@ const PersonalRecords = () => {
   return (
     <div className='records-container'>
       <div className='records-header'>
+        <button className='back-button' onClick={() => navigate('/dashboard')}>
+          ← Volver al Dashboard
+        </button>
         <h2>Marcas Personales</h2>
         <button className='add-record-btn' onClick={() => setShowForm(true)}>
           + Nueva Marca

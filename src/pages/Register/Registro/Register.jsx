@@ -15,9 +15,6 @@ const Register = () => {
   const [selectedImage, setSelectedImage] = useState(null)
   const [previewUrl, setPreviewUrl] = useState(null)
   const [registroExitoso, setRegistroExitoso] = useState(false)
-  const [mostrarOpcionCreador, setMostrarOpcionCreador] = useState(false)
-  const [mostrarOpcionAdmin, setMostrarOpcionAdmin] = useState(false)
-  const [mostrarOpcionMonitor, setMostrarOpcionMonitor] = useState(false)
   const navigate = useNavigate()
 
   const handleImageChange = (e) => {
@@ -36,7 +33,6 @@ const Register = () => {
     const verificarCodigo = async () => {
       if (formData.codigoAutorizacion) {
         try {
-          console.log('Verificando código:', formData.codigoAutorizacion)
           const response = await fetch(
             'http://localhost:5000/api/users/verificar-codigo',
             {
@@ -52,47 +48,14 @@ const Register = () => {
           )
 
           const data = await response.json()
-          console.log('Respuesta del servidor:', data)
-
           if (response.ok && data.success) {
-            console.log('Código válido para:', data.rol)
-
-            setMostrarOpcionCreador(false)
-            setMostrarOpcionAdmin(false)
-            setMostrarOpcionMonitor(false)
-
-            switch (data.rol) {
-              case 'creador':
-                setFormData((prev) => ({ ...prev, rol: 'creador' }))
-                setMostrarOpcionCreador(true)
-                break
-              case 'admin':
-                setFormData((prev) => ({ ...prev, rol: 'admin' }))
-                setMostrarOpcionAdmin(true)
-                break
-              case 'monitor':
-                setFormData((prev) => ({ ...prev, rol: 'monitor' }))
-                setMostrarOpcionMonitor(true)
-                break
-              default:
-                break
-            }
+            setFormData((prev) => ({ ...prev, rol: data.rol }))
           } else {
-            console.log('Código inválido o error:', data.message)
-            if (data.debug) {
-              console.log('Debug info:', data.debug)
-            }
             setFormData((prev) => ({ ...prev, rol: 'usuario' }))
-            setMostrarOpcionCreador(false)
-            setMostrarOpcionAdmin(false)
-            setMostrarOpcionMonitor(false)
           }
         } catch (error) {
           console.error('Error al verificar código:', error)
           setFormData((prev) => ({ ...prev, rol: 'usuario' }))
-          setMostrarOpcionCreador(false)
-          setMostrarOpcionAdmin(false)
-          setMostrarOpcionMonitor(false)
         }
       }
     }
@@ -113,16 +76,13 @@ const Register = () => {
     e.preventDefault()
     try {
       const formDataToSend = new FormData()
-
       formDataToSend.append('nombre', formData.nombre)
       formDataToSend.append('email', formData.email)
       formDataToSend.append('password', formData.password)
       formDataToSend.append('rol', formData.rol)
       formDataToSend.append('codigoAutorizacion', formData.codigoAutorizacion)
-
       if (selectedImage) {
         formDataToSend.append('avatar', selectedImage)
-        console.log('Imagen seleccionada:', selectedImage.name)
       }
 
       const response = await fetch('http://localhost:5000/api/users/register', {
@@ -131,8 +91,6 @@ const Register = () => {
       })
 
       const data = await response.json()
-      console.log('Respuesta del registro:', data)
-
       if (response.ok) {
         alert('Registro exitoso')
         localStorage.setItem('token', data.data.token)
@@ -149,14 +107,10 @@ const Register = () => {
     }
   }
 
-  const handleConsentAccepted = () => {
-    navigate('/dashboard')
-  }
-
   return (
     <div className='register-container'>
       {registroExitoso ? (
-        <Consentimiento onConsentAccepted={handleConsentAccepted} />
+        <Consentimiento onConsentAccepted={() => navigate('/dashboard')} />
       ) : (
         <>
           <Header />
@@ -185,7 +139,6 @@ const Register = () => {
               value={formData.nombre}
               onChange={handleChange}
               required
-              autoComplete='name'
             />
             <input
               type='email'
@@ -194,7 +147,6 @@ const Register = () => {
               value={formData.email}
               onChange={handleChange}
               required
-              autoComplete='email'
             />
             <input
               type='password'
@@ -203,9 +155,7 @@ const Register = () => {
               value={formData.password}
               onChange={handleChange}
               required
-              autoComplete='new-password'
             />
-
             <input
               type='text'
               name='codigoAutorizacion'
@@ -214,25 +164,16 @@ const Register = () => {
               onChange={handleChange}
               autoComplete='off'
             />
-
-            <select
-              name='rol'
-              value={formData.rol}
-              onChange={handleChange}
-              disabled={
-                mostrarOpcionCreador ||
-                mostrarOpcionAdmin ||
-                mostrarOpcionMonitor
-              }
-            >
-              <option value='usuario'>Usuario</option>
-              {mostrarOpcionMonitor && <option value='monitor'>Monitor</option>}
-              {mostrarOpcionAdmin && (
-                <option value='admin'>Administrador</option>
-              )}
-              {mostrarOpcionCreador && <option value='creador'>Creador</option>}
-            </select>
-
+            <input type='text' name='rol' value={formData.rol} readOnly />
+            <p>
+              ¿Ya tienes una cuenta?{' '}
+              <span
+                className='link'
+                onClick={() => navigate('/iniciar-sesion')}
+              >
+                Inicia sesión aquí
+              </span>
+            </p>
             <button className='botonregistro' type='submit'>
               Registrarse
             </button>

@@ -75,3 +75,17 @@
     grid-template-columns: 1fr;
   }
 }
+.logout-btn {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.logout-btn:hover {
+  background-color: #c9302c;
+}
