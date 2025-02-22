@@ -11,7 +11,8 @@ import {
   ToggleLeft,
   ToggleRight,
   Filter,
-  ImageIcon
+  ImageIcon,
+  AlertCircle
 } from 'lucide-react'
 import Header from '../../../components/Header/Header'
 import './AdminProductos.css'
@@ -34,6 +35,8 @@ const AdminProductos = () => {
   const [categoriaFiltro, setCategoriaFiltro] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const [error, setError] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
   const [form, setForm] = useState({
     nombre: '',
     descripcion: '',
@@ -47,6 +50,7 @@ const AdminProductos = () => {
   })
   const [editando, setEditando] = useState(null)
   const [previewImage, setPreviewImage] = useState(null)
+  const [formErrors, setFormErrors] = useState({})
 
   const token = localStorage.getItem('token')
 
@@ -59,6 +63,17 @@ const AdminProductos = () => {
       obtenerProductos()
     }
   }, [token])
+
+  // Limpiar mensajes después de 3 segundos
+  useEffect(() => {
+    if (successMessage || error) {
+      const timer = setTimeout(() => {
+        setSuccessMessage('')
+        setError('')
+      }, 3000)
+      return () => clearTimeout(timer)
+    }
+  }, [successMessage, error])
 
   const obtenerProductos = async () => {
     setLoading(true)
@@ -77,7 +92,10 @@ const AdminProductos = () => {
       setProductos(res.data.data)
       setTotalPages(res.data.pagination.pages)
     } catch (error) {
-      console.error('Error al obtener productos:', error)
+      setError(
+        'Error al obtener productos: ' +
+          (error.response?.data?.message || error.message)
+      )
     } finally {
       setLoading(false)
     }
@@ -97,16 +115,46 @@ const AdminProductos = () => {
         }
       })
       setProductos(res.data.data)
+      setTotalPages(1) // Reset pagination for search results
     } catch (error) {
-      console.error('Error en la búsqueda:', error)
+      setError(
+        'Error en la búsqueda: ' +
+          (error.response?.data?.message || error.message)
+      )
     } finally {
       setLoading(false)
     }
   }
 
+  const validateForm = () => {
+    const errors = {}
+    if (!form.nombre) errors.nombre = 'El nombre es requerido'
+    if (!form.descripcion) errors.descripcion = 'La descripción es requerida'
+    if (!form.precio || form.precio <= 0)
+      errors.precio = 'El precio debe ser mayor a 0'
+    if (!form.categoria) errors.categoria = 'La categoría es requerida'
+    if (!form.stock || form.stock < 0)
+      errors.stock = 'El stock debe ser mayor o igual a 0'
+    if (!form.marca) errors.marca = 'La marca es requerida'
+
+    setFormErrors(errors)
+    return Object.keys(errors).length === 0
+  }
+
   const handleImageChange = (e) => {
     const file = e.target.files[0]
     if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        // 5MB limit
+        setError('La imagen no debe superar los 5MB')
+        return
+      }
+
+      if (!file.type.startsWith('image/')) {
+        setError('El archivo debe ser una imagen')
+        return
+      }
+
       setForm({ ...form, imagen: file })
       const reader = new FileReader()
       reader.onloadend = () => {
@@ -118,12 +166,23 @@ const AdminProductos = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (!validateForm()) return
+
     setLoading(true)
+    setError('')
 
     try {
       const formData = new FormData()
+
+      // Manejar campos numéricos y booleanos correctamente
+      const numericFields = ['precio', 'stock']
       Object.keys(form).forEach((key) => {
-        if (key === 'precio' || key === 'stock') {
+        if (key === 'imagen') {
+          // Solo añadir la imagen si hay una nueva
+          if (form.imagen instanceof File) {
+            formData.append('imagen', form.imagen)
+          }
+        } else if (numericFields.includes(key)) {
           formData.append(key, Number(form[key]))
         } else if (key === 'destacado') {
           formData.append(key, form[key].toString())
@@ -140,17 +199,26 @@ const AdminProductos = () => {
       }
 
       if (editando) {
-        await axios.put(`${API_URL}/${editando}`, formData, config)
+        const response = await axios.put(
+          `${API_URL}/${editando}`,
+          formData,
+          config
+        )
+        if (response.data.success) {
+          setSuccessMessage('Producto actualizado correctamente')
+        }
       } else {
-        await axios.post(API_URL, formData, config)
+        const response = await axios.post(API_URL, formData, config)
+        if (response.data.success) {
+          setSuccessMessage('Producto creado correctamente')
+        }
       }
 
       resetForm()
       obtenerProductos()
       setModalOpen(false)
     } catch (error) {
-      console.error('Error:', error.response?.data || error)
-      alert(error.response?.data?.message || 'Error al guardar el producto')
+      setError(error.response?.data?.message || 'Error al guardar el producto')
     } finally {
       setLoading(false)
     }
@@ -171,28 +239,38 @@ const AdminProductos = () => {
     setPreviewImage(producto.imagen)
     setEditando(producto._id)
     setModalOpen(true)
+    setFormErrors({})
   }
 
   const handleDelete = async (id) => {
     if (!window.confirm('¿Estás seguro de eliminar este producto?')) return
 
+    setLoading(true)
     try {
-      await axios.delete(`${API_URL}/${id}`, {
+      const response = await axios.delete(`${API_URL}/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       })
-      obtenerProductos()
+      if (response.data.success) {
+        setSuccessMessage('Producto eliminado correctamente')
+        obtenerProductos()
+      }
     } catch (error) {
-      console.error('Error al eliminar:', error)
-      alert('Error al eliminar el producto')
+      setError(
+        'Error al eliminar el producto: ' +
+          (error.response?.data?.message || error.message)
+      )
+    } finally {
+      setLoading(false)
     }
   }
 
   const toggleEstado = async (id, estadoActual) => {
+    setLoading(true)
     try {
-      await axios.patch(
-        `${API_URL}/${id}/toggle-status`,
+      const response = await axios.patch(
+        `${API_URL}/${id}/estado`,
         {},
         {
           headers: {
@@ -200,9 +278,21 @@ const AdminProductos = () => {
           }
         }
       )
-      obtenerProductos()
+      if (response.data.success) {
+        setSuccessMessage(
+          `Estado del producto ${
+            response.data.data.estado === 'activo' ? 'activado' : 'desactivado'
+          }`
+        )
+        obtenerProductos()
+      }
     } catch (error) {
-      console.error('Error al cambiar estado:', error)
+      setError(
+        'Error al cambiar estado: ' +
+          (error.response?.data?.message || error.message)
+      )
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -220,11 +310,22 @@ const AdminProductos = () => {
     })
     setPreviewImage(null)
     setEditando(null)
+    setFormErrors({})
   }
 
   return (
     <div className='admin-productos'>
       <Header />
+
+      {/* Mensajes de éxito y error */}
+      {successMessage && <div className='alert success'>{successMessage}</div>}
+      {error && (
+        <div className='alert error'>
+          <AlertCircle size={20} />
+          {error}
+        </div>
+      )}
+
       <div className='header'>
         <h1>Administración de Productos</h1>
         <button
@@ -260,7 +361,7 @@ const AdminProductos = () => {
             <option value=''>Todas las categorías</option>
             {CATEGORIAS.map((cat) => (
               <option key={cat} value={cat}>
-                {cat}
+                {cat.charAt(0).toUpperCase() + cat.slice(1)}
               </option>
             ))}
           </select>
@@ -268,65 +369,89 @@ const AdminProductos = () => {
       </div>
 
       {loading ? (
-        <div className='loading'>Cargando...</div>
+        <div className='loading'>
+          <div className='spinner'></div>
+          <p>Cargando...</p>
+        </div>
       ) : (
         <>
           <div className='productos-grid'>
-            {productos.map((producto) => (
-              <div key={producto._id} className='producto-card'>
-                <div className='producto-imagen'>
-                  {producto.imagen ? (
-                    <img
-                      src={producto.imagen || '/placeholder.svg'}
-                      alt={producto.nombre}
-                    />
-                  ) : (
-                    <div className='no-image'>
-                      <ImageIcon size={40} />
-                    </div>
-                  )}
-                </div>
-                <div className='producto-info'>
-                  <h3>{producto.nombre}</h3>
-                  <p className='marca'>Marca: {producto.marca}</p>
-                  <p className='precio'>${producto.precio}</p>
-                  <p className='stock'>Stock: {producto.stock}</p>
-                  <p className={`estado ${producto.estado}`}>
-                    {producto.estado}
-                  </p>
-                </div>
-                <div className='producto-actions'>
-                  <button
-                    className='btn-icon edit'
-                    onClick={() => handleEdit(producto)}
-                  >
-                    <Edit2 size={16} />
-                  </button>
-                  <button
-                    className='btn-icon delete'
-                    onClick={() => handleDelete(producto._id)}
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                  <button
-                    className='btn-icon toggle'
-                    onClick={() => toggleEstado(producto._id, producto.estado)}
-                  >
-                    {producto.estado === 'activo' ? (
-                      <ToggleRight size={16} />
-                    ) : (
-                      <ToggleLeft size={16} />
-                    )}
-                  </button>
-                </div>
+            {productos.length === 0 ? (
+              <div className='no-products'>
+                <p>No se encontraron productos</p>
               </div>
-            ))}
+            ) : (
+              productos.map((producto) => (
+                <div key={producto._id} className='producto-card'>
+                  <div className='producto-imagen'>
+                    {producto.imagen ? (
+                      <img
+                        src={producto.imagen || '/placeholder.svg'}
+                        alt={producto.nombre}
+                        onError={(e) => {
+                          e.target.onerror = null
+                          e.target.src = '/placeholder.svg'
+                        }}
+                      />
+                    ) : (
+                      <div className='no-image'>
+                        <ImageIcon size={40} />
+                      </div>
+                    )}
+                  </div>
+                  <div className='producto-info'>
+                    <h3>{producto.nombre}</h3>
+                    <p className='marca'>Marca: {producto.marca}</p>
+                    <p className='precio'>${producto.precio.toFixed(2)}</p>
+                    <p className='stock'>Stock: {producto.stock}</p>
+                    <p className={`estado ${producto.estado}`}>
+                      {producto.estado}
+                    </p>
+                    {producto.destacado && (
+                      <span className='destacado-badge'>Destacado</span>
+                    )}
+                  </div>
+                  <div className='producto-actions'>
+                    <button
+                      className='btn-icon edit'
+                      onClick={() => handleEdit(producto)}
+                      title='Editar producto'
+                    >
+                      <Edit2 size={16} />
+                    </button>
+                    <button
+                      className='btn-icon delete'
+                      onClick={() => handleDelete(producto._id)}
+                      title='Eliminar producto'
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                    <button
+                      className='btn-icon toggle'
+                      onClick={() =>
+                        toggleEstado(producto._id, producto.estado)
+                      }
+                      title={
+                        producto.estado === 'activo' ? 'Desactivar' : 'Activar'
+                      }
+                    >
+                      {producto.estado === 'activo' ? (
+                        <ToggleRight size={16} />
+                      ) : (
+                        <ToggleLeft size={16} />
+                      )}
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
 
           <div className='pagination'>
             <button
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
+              className='pagination-button'
             >
               <ChevronLeft size={20} />
             </button>
@@ -336,6 +461,7 @@ const AdminProductos = () => {
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
+              className='pagination-button'
             >
               <ChevronRight size={20} />
             </button>
@@ -371,8 +497,11 @@ const AdminProductos = () => {
                     onChange={(e) =>
                       setForm({ ...form, nombre: e.target.value })
                     }
-                    required
+                    className={formErrors.nombre ? 'error' : ''}
                   />
+                  {formErrors.nombre && (
+                    <span className='error-message'>{formErrors.nombre}</span>
+                  )}
                 </div>
 
                 <div className='form-group'>
@@ -385,8 +514,11 @@ const AdminProductos = () => {
                     onChange={(e) =>
                       setForm({ ...form, marca: e.target.value })
                     }
-                    required
+                    className={formErrors.marca ? 'error' : ''}
                   />
+                  {formErrors.marca && (
+                    <span className='error-message'>{formErrors.marca}</span>
+                  )}
                 </div>
 
                 <div className='form-group'>
@@ -401,8 +533,11 @@ const AdminProductos = () => {
                     }
                     min='0'
                     step='0.01'
-                    required
+                    className={formErrors.precio ? 'error' : ''}
                   />
+                  {formErrors.precio && (
+                    <span className='error-message'>{formErrors.precio}</span>
+                  )}
                 </div>
 
                 <div className='form-group'>
@@ -416,8 +551,11 @@ const AdminProductos = () => {
                       setForm({ ...form, stock: e.target.value })
                     }
                     min='0'
-                    required
+                    className={formErrors.stock ? 'error' : ''}
                   />
+                  {formErrors.stock && (
+                    <span className='error-message'>{formErrors.stock}</span>
+                  )}
                 </div>
 
                 <div className='form-group'>
@@ -429,15 +567,20 @@ const AdminProductos = () => {
                     onChange={(e) =>
                       setForm({ ...form, categoria: e.target.value })
                     }
-                    required
+                    className={formErrors.categoria ? 'error' : ''}
                   >
                     <option value=''>Selecciona una categoría</option>
                     {CATEGORIAS.map((cat) => (
                       <option key={cat} value={cat}>
-                        {cat}
+                        {cat.charAt(0).toUpperCase() + cat.slice(1)}
                       </option>
                     ))}
                   </select>
+                  {formErrors.categoria && (
+                    <span className='error-message'>
+                      {formErrors.categoria}
+                    </span>
+                  )}
                 </div>
 
                 <div className='form-group'>
@@ -465,8 +608,13 @@ const AdminProductos = () => {
                   onChange={(e) =>
                     setForm({ ...form, descripcion: e.target.value })
                   }
-                  required
+                  className={formErrors.descripcion ? 'error' : ''}
                 ></textarea>
+                {formErrors.descripcion && (
+                  <span className='error-message'>
+                    {formErrors.descripcion}
+                  </span>
+                )}
               </div>
 
               <div className='form-group checkbox'>
@@ -484,7 +632,12 @@ const AdminProductos = () => {
               </div>
 
               <div className='form-group'>
-                <label htmlFor='imagen'>Imagen</label>
+                <label htmlFor='imagen'>
+                  Imagen
+                  {editando &&
+                    !form.imagen &&
+                    ' (Dejar vacío para mantener la imagen actual)'}
+                </label>
                 <input
                   type='file'
                   id='imagen'
@@ -498,6 +651,10 @@ const AdminProductos = () => {
                     <img
                       src={previewImage || '/placeholder.svg'}
                       alt='Vista previa'
+                      onError={(e) => {
+                        e.target.onerror = null
+                        e.target.src = '/placeholder.svg'
+                      }}
                     />
                   </div>
                 )}
@@ -511,6 +668,7 @@ const AdminProductos = () => {
                     setModalOpen(false)
                     resetForm()
                   }}
+                  disabled={loading}
                 >
                   Cancelar
                 </button>
@@ -519,7 +677,16 @@ const AdminProductos = () => {
                   className='btn-primary'
                   disabled={loading}
                 >
-                  {loading ? 'Guardando...' : editando ? 'Actualizar' : 'Crear'}
+                  {loading ? (
+                    <>
+                      <div className='spinner-small'></div>
+                      {editando ? 'Actualizando...' : 'Creando...'}
+                    </>
+                  ) : editando ? (
+                    'Actualizar'
+                  ) : (
+                    'Crear'
+                  )}
                 </button>
               </div>
             </form>
