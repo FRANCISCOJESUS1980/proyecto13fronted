@@ -36,8 +36,10 @@ const Administracion = () => {
 
         const data = await response.json()
 
+        console.log(data)
+
         if (response.ok) {
-          setUsuarios(data.usuarios || [])
+          setUsuarios(data.data || [])
         } else {
           console.error('Error al obtener usuarios:', data.message)
           setError(data.message || 'Error al obtener usuarios.')
@@ -87,7 +89,7 @@ const Administracion = () => {
       {error ? (
         <p className='error-message'>{error}</p>
       ) : (
-        <p>Total de usuarios: {usuarios.length}</p>
+        <p className='pAdministracion'>Total de usuarios: {usuarios.length}</p>
       )}
     </div>
   )
