@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import Header from '../../../../components/Header/Header'
 import './Marcas.css'
 
 const PersonalRecords = () => {
@@ -33,6 +34,7 @@ const PersonalRecords = () => {
 
   return (
     <div className='records-container'>
+      <Header />
       <div className='records-header'>
         <button className='back-button' onClick={() => navigate('/dashboard')}>
           ← Volver al Dashboard

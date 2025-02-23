@@ -133,6 +133,7 @@ const Register = () => {
             </div>
 
             <input
+              className='inputregistro'
               type='text'
               name='nombre'
               placeholder='Nombre'
@@ -157,6 +158,7 @@ const Register = () => {
               required
             />
             <input
+              className='inputregistro'
               type='text'
               name='codigoAutorizacion'
               placeholder='Código de acceso (opcional)'
@@ -164,7 +166,13 @@ const Register = () => {
               onChange={handleChange}
               autoComplete='off'
             />
-            <input type='text' name='rol' value={formData.rol} readOnly />
+            <input
+              className='inputregistro'
+              type='text'
+              name='rol'
+              value={formData.rol}
+              readOnly
+            />
             <p>
               ¿Ya tienes una cuenta?{' '}
               <span

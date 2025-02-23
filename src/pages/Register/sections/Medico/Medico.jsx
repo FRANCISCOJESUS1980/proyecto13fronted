@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import Header from '../../../../components/Header/Header'
 import './Medico.css'
 
 const Medico = () => {
@@ -32,6 +33,7 @@ const Medico = () => {
 
   return (
     <div className='medico-container'>
+      <Header />
       <div className='medico-header'>
         <button className='back-button' onClick={() => navigate('/dashboard')}>
           ← Volver al Dashboard

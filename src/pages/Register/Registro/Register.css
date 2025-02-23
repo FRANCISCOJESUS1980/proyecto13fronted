@@ -22,7 +22,6 @@
   flex-wrap: wrap;
   margin-top: -40px;
 }
-
 .register-container h2 {
   text-align: center;
   color: black;
@@ -46,6 +45,9 @@
   margin: 10px 0;
   border: 1px solid #ccc;
   border-radius: 5px;
+}
+.register-container .inputregistro {
+  width: 94%;
 }
 .botonregistro {
   background-color: black;

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import Header from '../../../../components/Header/Header'
 import './Aspecto.css'
 
 const PhysicalStats = () => {
@@ -30,6 +31,7 @@ const PhysicalStats = () => {
 
   return (
     <div className='stats-container'>
+      <Header />
       <div className='stats-header'>
         <button className='back-button' onClick={() => navigate('/dashboard')}>
           ← Volver al Dashboard
