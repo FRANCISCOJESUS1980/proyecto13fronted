@@ -2,7 +2,7 @@
   margin-top: auto;
   padding: 40px;
   text-align: center;
-  background-color: #606364;
+  background-color: #c1c6c8;
   max-width: 100%;
 }
 
@@ -45,6 +45,11 @@
   display: flex;
   flex-direction: column;
   margin-bottom: 15px;
+}
+#nombre,
+#email,
+#mensaje {
+  width: 92%;
 }
 
 .form-group input,

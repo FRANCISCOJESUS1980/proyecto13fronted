@@ -326,7 +326,7 @@ const AdminProductos = () => {
         </div>
       )}
 
-      <div className='header'>
+      <div className='headerproductos'>
         <h1>Administración de Productos</h1>
         <button
           className='btn-primary'
@@ -343,6 +343,7 @@ const AdminProductos = () => {
       <div className='filters'>
         <div className='search-box'>
           <input
+            className='inputproductos'
             type='text'
             placeholder='Buscar productos...'
             value={searchTerm}

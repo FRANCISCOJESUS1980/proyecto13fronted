@@ -193,7 +193,7 @@ const AdminClases = () => {
   return (
     <div className='admin-clases'>
       <Header />
-      <div className='header'>
+      <div className='headerclases'>
         <h1>Administración de Clases</h1>
         <button className='btn-primary' onClick={() => setIsModalOpen(true)}>
           <Plus size={20} />

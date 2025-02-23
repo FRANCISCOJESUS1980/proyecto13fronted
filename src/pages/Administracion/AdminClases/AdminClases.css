@@ -3,7 +3,7 @@
   margin: 0 auto;
 }
 
-.header {
+.headerclases {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -14,14 +14,14 @@
   margin-left: 0;
   position: absolute;
 }
-.header h1 {
+.headerclases h1 {
   font-size: 2rem;
   color: red;
 }
-
 .btn-primary {
   display: flex;
   align-items: center;
+  justify-content: center;
   margin: 10px;
   gap: 0.5rem;
   background-color: #3b82f6;

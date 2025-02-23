@@ -12,20 +12,23 @@
   justify-content: center;
   gap: 1rem;
   margin-bottom: 2rem;
+  margin-top: 30px;
 }
 
 .back-button {
   padding: 0.5rem 1rem;
-  background: white;
+  background: #0056b3;
   border: 1px solid #dee2e6;
   border-radius: 5px;
   cursor: pointer;
   font-size: 0.9rem;
   transition: all 0.2s ease;
+  color: white;
+  margin: 20px;
 }
 
 .back-button:hover {
-  background: #f8f9fa;
+  background: red;
   border-color: #ced4da;
 }
 
@@ -39,11 +42,13 @@
   background: white;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 0px 20px;
 }
 
 .form-section {
   padding: 2rem;
   border-bottom: 1px solid #dee2e6;
+  margin: 0px 20px;
 }
 
 .form-section:last-child {

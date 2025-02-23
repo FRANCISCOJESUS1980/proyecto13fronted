@@ -1,8 +1,11 @@
-.administracion-container {
-  max-width: 900px;
+.admin-container {
+  width: 100%;
   margin: 20px auto;
-  padding: 20px;
-  background: #f4f4f4;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: none;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
