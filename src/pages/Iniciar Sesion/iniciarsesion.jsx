@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import Header from '../../components/Header/Header'
 import './Iniciarsesion.css'
 
 const Iniciarsesion = () => {
@@ -48,6 +49,7 @@ const Iniciarsesion = () => {
 
   return (
     <div className='login-container'>
+      <Header />
       <h2>Iniciar Sesión</h2>
       <form onSubmit={handleSubmit}>
         <input
