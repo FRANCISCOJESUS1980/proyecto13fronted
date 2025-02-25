@@ -51,6 +51,14 @@ const UserDashboard = () => {
           <h2>Aspecto Físico</h2>
           <p>Registra tus medidas y progreso físico</p>
         </div>
+        <div
+          className='section-card'
+          onClick={() => navigate('/dashboard/chat')}
+        >
+          <span className='section-icon'>💬</span>
+          <h2>Chat en Vivo</h2>
+          <p>Conversa con otros miembros del box</p>
+        </div>
 
         <div
           className='section-card'

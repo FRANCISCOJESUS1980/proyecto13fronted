@@ -15,6 +15,7 @@ import Administracion from '../pages/Administracion/Administracion'
 import AdminClases from '../pages/Administracion/AdminClases/AdminClases'
 import AdminProductos from '../pages/Administracion/AdminProductos/AdminProductos'
 import AdminUsuarios from '../pages/Administracion/AdminUsuarios/AdminUsuarios'
+import Chat from '../components/Chat/Chat'
 
 const AppRouter = () => {
   return (
@@ -38,6 +39,7 @@ const AppRouter = () => {
         <Route path='/dashboard/medico' element={<Medico />} />
         <Route path='/dashboard/aspecto' element={<Aspecto />} />
         <Route path='/dashboard/marcas' element={<Marcas />} />
+        <Route path='/dashboard/chat' element={<Chat />} />
       </Routes>
     </Router>
   )

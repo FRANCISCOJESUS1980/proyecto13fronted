@@ -1,6 +1,7 @@
 .productos-page {
   padding: 2rem;
   max-width: 1400px;
+  background-color: #e5e7eb;
   margin: 0 auto;
 }
 
@@ -22,17 +23,18 @@
 
 .productos-filters {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   gap: 2rem;
   margin-bottom: 2rem;
   flex-wrap: wrap;
+  margin: 2rem;
 }
 
 .search-box {
-  position: relative;
+  display: flex;
+
   flex: 1;
-  min-width: 300px;
 }
 
 .search-box input {
@@ -44,12 +46,13 @@
 }
 
 .search-icon {
-  position: absolute;
+  position: relative;
   right: 0.75rem;
-  top: 50%;
+
   transform: translateY(-50%);
   color: #6b7280;
   cursor: pointer;
+  margin-top: 30px;
 }
 
 .filter-group {
