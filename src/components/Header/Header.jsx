@@ -68,7 +68,7 @@ const Header = () => {
   }, [])
 
   return (
-    <header className='header'>
+    <header className='headerheader'>
       <img
         src={background || '/placeholder.svg'}
         alt='Background'

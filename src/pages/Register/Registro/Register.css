@@ -6,11 +6,11 @@
   position: absolute;
   top: 0;
 }
-.logo {
+/*.logo {
   height: 150px;
   width: 100%;
   object-fit: fill;
-}
+}*/
 
 .register-container {
   width: 100%;

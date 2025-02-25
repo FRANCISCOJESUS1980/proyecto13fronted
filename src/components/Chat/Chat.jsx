@@ -1,12 +1,14 @@
 import { useEffect, useState, useRef } from 'react'
 import { io } from 'socket.io-client'
 import Header from '../Header/Header'
+import { useNavigate } from 'react-router-dom'
 import './Chat.css'
 
 const BACKEND_URL = 'http://localhost:5000'
 const socket = io(BACKEND_URL)
 
 const Chat = () => {
+  const navigate = useNavigate()
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState([])
   const [isLoading, setIsLoading] = useState(true)
@@ -81,6 +83,9 @@ const Chat = () => {
   return (
     <div className='chat-container'>
       <Header />
+      <button className='back-button' onClick={() => navigate('/dashboard')}>
+        ← Volver al Dashboard
+      </button>
       <div className='chat-content'>
         <h2 className='chat-title'>Chat en Vivo</h2>
         <div className='chat-box'>
