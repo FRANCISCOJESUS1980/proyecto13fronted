@@ -5,7 +5,11 @@ import { useNavigate } from 'react-router-dom'
 import './Chat.css'
 
 const BACKEND_URL = 'http://localhost:5000'
-const socket = io(BACKEND_URL)
+const socket = io(BACKEND_URL, {
+  reconnectionAttempts: 5,
+  transports: ['websocket'],
+  withCredentials: true
+})
 
 const Chat = () => {
   const navigate = useNavigate()
@@ -15,30 +19,47 @@ const Chat = () => {
   const messagesEndRef = useRef(null)
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }, 100)
   }
 
   const loadInitialMessages = async () => {
     try {
+      const token = localStorage.getItem('token')
+
       const response = await fetch(`${BACKEND_URL}/api/chat/messages`, {
         method: 'GET',
         credentials: 'include',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          Authorization: token ? `Bearer ${token}` : ''
         }
       })
 
-      if (!response.ok) {
-        console.log('Fallback a socket para cargar mensajes')
+      if (response.status === 401) {
+        console.warn('Token inválido. Redirigiendo al login...')
+        localStorage.removeItem('token')
+        window.location.href = '/login'
         return
+      }
+
+      if (response.status === 429) {
+        console.warn('Demasiadas solicitudes. Esperando...')
+        setTimeout(loadInitialMessages, 5000)
+        return
+      }
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: No autorizado`)
       }
 
       const data = await response.json()
       setMessages(data)
       setIsLoading(false)
-      setTimeout(scrollToBottom, 100)
+      scrollToBottom()
     } catch (error) {
-      console.log('Usando socket como fallback para cargar mensajes')
+      console.error('Error al cargar mensajes:', error.message)
       setIsLoading(false)
     }
   }
@@ -46,24 +67,24 @@ const Chat = () => {
   useEffect(() => {
     loadInitialMessages()
 
-    socket.on('chatHistory', (history) => {
+    const handleChatHistory = (history) => {
       setMessages(history)
       setIsLoading(false)
-      setTimeout(scrollToBottom, 100)
-    })
+      scrollToBottom()
+    }
 
-    socket.on('chatMessage', (newMessage) => {
+    const handleNewMessage = (newMessage) => {
       setMessages((prevMessages) => [...prevMessages, newMessage])
-      setTimeout(scrollToBottom, 100)
-    })
+      scrollToBottom()
+    }
 
-    socket.on('error', (error) => {
-      console.error('Error del socket:', error)
-    })
+    socket.on('chatHistory', handleChatHistory)
+    socket.on('chatMessage', handleNewMessage)
+    socket.on('error', (error) => console.error('Error del socket:', error))
 
     return () => {
-      socket.off('chatHistory')
-      socket.off('chatMessage')
+      socket.off('chatHistory', handleChatHistory)
+      socket.off('chatMessage', handleNewMessage)
       socket.off('error')
     }
   }, [])
