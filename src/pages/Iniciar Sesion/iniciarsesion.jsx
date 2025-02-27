@@ -50,8 +50,8 @@ const Iniciarsesion = () => {
   return (
     <div className='login-container'>
       <Header />
-      <h2>Iniciar Sesión</h2>
-      <form onSubmit={handleSubmit}>
+      <h2 className='h2iniciarsesion'>Iniciar Sesión</h2>
+      <form className='forminiciarsesion' onSubmit={handleSubmit}>
         <input
           type='email'
           name='email'
@@ -72,7 +72,7 @@ const Iniciarsesion = () => {
           Iniciar Sesión
         </button>
       </form>
-      <p>
+      <p className='piniciarsesion'>
         ¿No tienes una cuenta?{' '}
         <span className='link' onClick={() => navigate('/registro')}>
           Regístrate aquí

@@ -142,6 +142,7 @@ const Register = () => {
               required
             />
             <input
+              className='inputcorreo'
               type='email'
               name='email'
               placeholder='Correo electrónico'
@@ -150,6 +151,7 @@ const Register = () => {
               required
             />
             <input
+              className='inputcontraseña'
               type='password'
               name='password'
               placeholder='Contraseña'

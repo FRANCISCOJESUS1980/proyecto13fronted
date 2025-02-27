@@ -6,11 +6,6 @@
   position: absolute;
   top: 0;
 }
-/*.logo {
-  height: 150px;
-  width: 100%;
-  object-fit: fill;
-}*/
 
 .register-container {
   width: 100%;
@@ -47,6 +42,10 @@
   border-radius: 5px;
 }
 .register-container .inputregistro {
+  width: 94%;
+}
+.inputcontraseña,
+.inputcorreo {
   width: 94%;
 }
 .botonregistro {
