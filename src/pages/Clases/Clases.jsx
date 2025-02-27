@@ -1,9 +1,59 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import { format, addDays, startOfWeek, isToday } from 'date-fns'
+import { es } from 'date-fns/locale'
+import { Clock, Users } from 'lucide-react'
 import Header from '../../components/Header/Header'
 import './Clases.css'
 
 axios.defaults.withCredentials = true
+
+const getImageUrl = (user) => {
+  if (!user) return '/default-avatar.png'
+
+  if (typeof user === 'string') {
+    return '/default-avatar.png'
+  }
+
+  if (user.avatar && user.avatar !== 'default-avatar.jpg') {
+    if (
+      user.avatar.includes('cloudinary.com') ||
+      user.avatar.startsWith('http')
+    ) {
+      return user.avatar
+    }
+
+    return `http://localhost:5000/uploads/${user.avatar}`
+  }
+
+  return '/default-avatar.png'
+}
+
+const MonitorInfo = ({ monitor }) => {
+  if (!monitor) return null
+
+  const avatarUrl = getImageUrl(monitor)
+
+  return (
+    <div className='monitor-info'>
+      <div className='monitor-avatar'>
+        <img
+          src={avatarUrl || '/placeholder.svg'}
+          alt={monitor.nombre}
+          onError={(e) => {
+            if (e.target.src !== '/default-avatar.png') {
+              e.target.src = '/default-avatar.png'
+            }
+          }}
+        />
+      </div>
+      <div className='monitor-details'>
+        <span className='monitor-label'>Monitor:</span>
+        <span className='monitor-name'>{monitor.nombre}</span>
+      </div>
+    </div>
+  )
+}
 
 const Clases = () => {
   const [clases, setClases] = useState([])
@@ -13,33 +63,20 @@ const Clases = () => {
   const [loading, setLoading] = useState(false)
   const [inscripcionExitosa, setInscripcionExitosa] = useState(null)
   const [claseSeleccionada, setClaseSeleccionada] = useState(null)
-  const [imagenesFallidas, setImagenesFallidas] = useState({})
-  const [diaSeleccionado, setDiaSeleccionado] = useState(obtenerDiaActual())
+  const [selectedDate, setSelectedDate] = useState(new Date())
+  const [weekDates, setWeekDates] = useState([])
   const [cancelacionExitosa, setCancelacionExitosa] = useState(null)
 
-  function obtenerDiaActual() {
-    const dias = [
-      'domingo',
-      'lunes',
-      'martes',
-      'miércoles',
-      'jueves',
-      'viernes',
-      'sábado'
-    ]
-    const hoy = new Date().getDay()
-    return dias[hoy]
-  }
+  useEffect(() => {
+    const img = new Image()
+    img.src = '/default-avatar.png'
+  }, [])
 
-  const diasSemana = [
-    'lunes',
-    'martes',
-    'miércoles',
-    'jueves',
-    'viernes',
-    'sábado',
-    'domingo'
-  ]
+  useEffect(() => {
+    const start = startOfWeek(new Date(), { weekStartsOn: 1 })
+    const dates = Array.from({ length: 7 }, (_, i) => addDays(start, i))
+    setWeekDates(dates)
+  }, [])
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -116,18 +153,7 @@ const Clases = () => {
         setClases((prevClases) =>
           prevClases.map((clase) => {
             if (clase._id === claseId) {
-              const userInfoToAdd = {
-                _id: userId,
-                nombre: userInfo?.nombre || '',
-                email: userInfo?.email || '',
-                imagen: userInfo?.imagen || '/default-avatar.png',
-                rol: userInfo?.rol || 'usuario'
-              }
-
-              return {
-                ...clase,
-                inscritos: [...clase.inscritos, userInfoToAdd]
-              }
+              return response.data.data
             }
             return clase
           })
@@ -135,11 +161,9 @@ const Clases = () => {
 
         setInscripcionExitosa(`¡Te has inscrito correctamente a la clase!`)
         setTimeout(() => setInscripcionExitosa(null), 3000)
-      } else {
-        alert(response.data.message || 'Error al inscribirse')
       }
     } catch (err) {
-      console.error('Error al inscribirse:', err.response?.data || err.message)
+      console.error('Error al inscribirse:', err)
       alert(err.response?.data?.message || 'Error al inscribirse en la clase')
     } finally {
       setLoading(false)
@@ -171,29 +195,16 @@ const Clases = () => {
 
       if (response.data && response.data.success) {
         setClases((prevClases) =>
-          prevClases.map((clase) =>
-            clase._id === claseId
-              ? {
-                  ...clase,
-                  inscritos: clase.inscritos.filter(
-                    (inscrito) =>
-                      inscrito._id &&
-                      inscrito._id.toString() !== userId.toString() &&
-                      (typeof inscrito === 'string'
-                        ? inscrito !== userId
-                        : true)
-                  )
-                }
-              : clase
-          )
+          prevClases.map((clase) => {
+            if (clase._id === claseId) {
+              return response.data.data
+            }
+            return clase
+          })
         )
 
         setCancelacionExitosa(`Has cancelado tu inscripción correctamente`)
         setTimeout(() => setCancelacionExitosa(null), 3000)
-      } else {
-        throw new Error(
-          response.data?.message || 'Error al cancelar la inscripción'
-        )
       }
     } catch (err) {
       console.error(
@@ -218,49 +229,18 @@ const Clases = () => {
       if (typeof inscrito === 'string') {
         return inscrito === userId
       }
-
-      if (inscrito && inscrito._id) {
-        return inscrito._id.toString() === userId.toString()
-      }
-
-      return false
+      return inscrito._id.toString() === userId.toString()
     })
   }
 
-  const getImageUrl = (inscrito) => {
-    if (!inscrito) return '/default-avatar.png'
-
-    if (typeof inscrito === 'string') {
-      return '/default-avatar.png'
-    }
-
-    if (inscrito.avatar) {
-      if (inscrito.avatar.includes('cloudinary.com')) {
-        return inscrito.avatar
-      }
-
-      if (inscrito.avatar.startsWith('http')) {
-        return inscrito.avatar
-      }
-
-      return `http://localhost:5000/uploads/${inscrito.avatar}`
-    }
-
-    return '/default-avatar.png'
+  const getClasesPorDia = () => {
+    const diaSeleccionado = format(selectedDate, 'EEEE', {
+      locale: es
+    }).toLowerCase()
+    return clases.filter((clase) => clase.diaSemana === diaSeleccionado)
   }
 
-  const handleImageError = (inscritoId) => {
-    setImagenesFallidas((prev) => ({
-      ...prev,
-      [inscritoId]: true
-    }))
-  }
-
-  const clasesPorDia = clases.filter(
-    (clase) => clase.diaSemana === diaSeleccionado
-  )
-
-  const clasesOrdenadas = [...clasesPorDia].sort((a, b) => {
+  const clasesOrdenadas = getClasesPorDia().sort((a, b) => {
     const getMinutos = (horario) => {
       const [horas, minutos] = horario.split(':').map(Number)
       return horas * 60 + minutos
@@ -268,6 +248,32 @@ const Clases = () => {
 
     return getMinutos(a.horario) - getMinutos(b.horario)
   })
+
+  const CalendarioDias = () => (
+    <div className='calendario-dias'>
+      {weekDates.map((date) => {
+        const dayName = format(date, 'EEEE', { locale: es })
+        const dayNumber = format(date, 'd')
+        const month = format(date, 'MMM', { locale: es })
+        const isSelected =
+          format(selectedDate, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd')
+
+        return (
+          <button
+            key={date.toString()}
+            className={`dia-btn ${isSelected ? 'activo' : ''} ${
+              isToday(date) ? 'hoy' : ''
+            }`}
+            onClick={() => setSelectedDate(date)}
+          >
+            <span className='dia-nombre'>{dayName.slice(0, 3)}</span>
+            <span className='dia-numero'>{dayNumber}</span>
+            <span className='dia-mes'>{month}</span>
+          </button>
+        )
+      })}
+    </div>
+  )
 
   return (
     <div className='clases-container'>
@@ -292,19 +298,7 @@ const Clases = () => {
         </div>
       )}
 
-      <div className='calendario-dias'>
-        {diasSemana.map((dia) => (
-          <button
-            key={dia}
-            className={`dia-btn ${diaSeleccionado === dia ? 'activo' : ''}`}
-            onClick={() => setDiaSeleccionado(dia)}
-          >
-            <span className='dia-nombre'>
-              {dia.charAt(0).toUpperCase() + dia.slice(1, 3)}
-            </span>
-          </button>
-        ))}
-      </div>
+      <CalendarioDias />
 
       {loading && !claseSeleccionada && (
         <div className='loading-container'>
@@ -320,7 +314,7 @@ const Clases = () => {
       ) : (
         <div className='clases-por-dia'>
           <h2 className='dia-seleccionado'>
-            {diaSeleccionado.charAt(0).toUpperCase() + diaSeleccionado.slice(1)}
+            {format(selectedDate, "EEEE d 'de' MMMM", { locale: es })}
           </h2>
 
           {clasesOrdenadas.length > 0 ? (
@@ -374,22 +368,18 @@ const Clases = () => {
                                     <div className='avatar-container'>
                                       <img
                                         src={
-                                          imagenesFallidas[
-                                            typeof inscrito === 'string'
-                                              ? inscrito
-                                              : inscrito._id
-                                          ]
-                                            ? '/default-avatar.png'
-                                            : getImageUrl(inscrito)
+                                          getImageUrl(inscrito) ||
+                                          '/placeholder.svg'
                                         }
                                         alt='Usuario inscrito'
-                                        onError={() =>
-                                          handleImageError(
-                                            typeof inscrito === 'string'
-                                              ? inscrito
-                                              : inscrito._id
-                                          )
-                                        }
+                                        onError={(e) => {
+                                          if (
+                                            e.target.src !==
+                                            '/default-avatar.png'
+                                          ) {
+                                            e.target.src = '/default-avatar.png'
+                                          }
+                                        }}
                                       />
                                       {isCurrentUser && (
                                         <div className='usuario-indicador'>
@@ -407,6 +397,8 @@ const Clases = () => {
                         </div>
                       </div>
                     </div>
+
+                    <MonitorInfo monitor={clase.entrenador} />
 
                     <div className='clase-actions'>
                       {estaInscrito(clase) ? (
@@ -455,7 +447,10 @@ const Clases = () => {
             </div>
           ) : (
             <div className='no-clases'>
-              <p>No hay clases disponibles para {diaSeleccionado}.</p>
+              <p>
+                No hay clases disponibles para{' '}
+                {format(selectedDate, "EEEE d 'de' MMMM", { locale: es })}.
+              </p>
               <p>Por favor, selecciona otro día o vuelve más tarde.</p>
             </div>
           )}
