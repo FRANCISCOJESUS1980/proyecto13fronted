@@ -20,6 +20,7 @@
   margin: 0 auto;
   padding: 20px;
   font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
+  background-color: #e0e0e0;
 }
 
 .headerclases {
@@ -96,6 +97,9 @@
 .btn-icon.delete:hover {
   background-color: var(--danger);
   color: white;
+}
+.dia-btn {
+  margin: 0px 5px;
 }
 
 .clases-grupos {

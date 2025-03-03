@@ -7,8 +7,11 @@ import {
   Clock,
   Users,
   PlusCircle,
-  Trash
+  Trash,
+  Calendar
 } from 'lucide-react'
+import { format, parseISO, isValid } from 'date-fns'
+import { es } from 'date-fns/locale'
 import Header from '../../../components/Header/Header'
 import './AdminClases.css'
 
@@ -24,6 +27,7 @@ const AdminClases = () => {
     nivel: '',
     ubicacion: '',
     diaSemana: '',
+    fecha: '',
     imagen: null,
     entrenador: ''
   })
@@ -34,6 +38,7 @@ const AdminClases = () => {
   const [success, setSuccess] = useState(null)
   const [entrenadores, setEntrenadores] = useState([])
   const [diaSeleccionado, setDiaSeleccionado] = useState('todos')
+  const [modoCreacion, setModoCreacion] = useState('semanal')
 
   const categorias = [
     'yoga',
@@ -158,6 +163,14 @@ const AdminClases = () => {
         throw new Error('Todos los horarios deben tener hora y duración')
       }
 
+      if (modoCreacion === 'semanal' && !formData.diaSemana) {
+        throw new Error('Debes seleccionar un día de la semana')
+      }
+
+      if (modoCreacion === 'fecha' && !formData.fecha) {
+        throw new Error('Debes seleccionar una fecha específica')
+      }
+
       const clasesCreadas = []
       const clasesConError = []
 
@@ -172,7 +185,21 @@ const AdminClases = () => {
         formDataToSend.append('categoria', formData.categoria)
         formDataToSend.append('nivel', formData.nivel)
         formDataToSend.append('ubicacion', formData.ubicacion)
-        formDataToSend.append('diaSemana', formData.diaSemana)
+
+        if (modoCreacion === 'semanal') {
+          formDataToSend.append('diaSemana', formData.diaSemana)
+        } else {
+          const fechaSeleccionada = new Date(formData.fecha)
+          if (isValid(fechaSeleccionada)) {
+            const diaSemanaCalculado = format(fechaSeleccionada, 'EEEE', {
+              locale: es
+            }).toLowerCase()
+            formDataToSend.append('diaSemana', diaSemanaCalculado)
+            formDataToSend.append('fecha', formData.fecha)
+          } else {
+            throw new Error('La fecha seleccionada no es válida')
+          }
+        }
 
         if (formData.entrenador && formData.entrenador !== '') {
           formDataToSend.append('entrenador', formData.entrenador)
@@ -240,6 +267,8 @@ const AdminClases = () => {
   }
 
   const handleEdit = (clase) => {
+    const modoEdicion = clase.fecha ? 'fecha' : 'semanal'
+
     setFormData({
       nombre: clase.nombre || '',
       descripcion: clase.descripcion || '',
@@ -254,11 +283,13 @@ const AdminClases = () => {
       nivel: clase.nivel || '',
       ubicacion: clase.ubicacion || '',
       diaSemana: clase.diaSemana || '',
+      fecha: clase.fecha || '',
       imagen: null,
       entrenador: clase.entrenador?._id || ''
     })
     setPreviewUrl(clase.imagen || null)
     setEditingId(clase._id)
+    setModoCreacion(modoEdicion)
     setIsModalOpen(true)
   }
 
@@ -307,18 +338,24 @@ const AdminClases = () => {
       nivel: '',
       ubicacion: '',
       diaSemana: '',
+      fecha: '',
       imagen: null,
       entrenador: ''
     })
     setPreviewUrl(null)
     setEditingId(null)
     setError(null)
+    setModoCreacion('semanal')
   }
 
   const clasesFiltradas =
     diaSeleccionado === 'todos'
       ? clases
-      : clases.filter((clase) => clase.diaSemana === diaSeleccionado)
+      : clases.filter((clase) =>
+          clase.fecha
+            ? clase.fecha === diaSeleccionado
+            : clase.diaSemana === diaSeleccionado
+        )
 
   const clasesOrdenadas = [...clasesFiltradas].sort((a, b) => {
     const diasOrden = {
@@ -335,6 +372,14 @@ const AdminClases = () => {
       return diasOrden[a.diaSemana] - diasOrden[b.diaSemana]
     }
 
+    if (a.fecha && b.fecha) {
+      return new Date(a.fecha) - new Date(b.fecha)
+    } else if (a.fecha) {
+      return -1
+    } else if (b.fecha) {
+      return 1
+    }
+
     const [aHora, aMin] = a.horario.split(':').map(Number)
     const [bHora, bMin] = b.horario.split(':').map(Number)
 
@@ -346,12 +391,31 @@ const AdminClases = () => {
   })
 
   const clasesPorDia = clasesOrdenadas.reduce((grupos, clase) => {
-    if (!grupos[clase.diaSemana]) {
-      grupos[clase.diaSemana] = []
+    if (clase.fecha) {
+      const fechaFormato = format(parseISO(clase.fecha), 'yyyy-MM-dd')
+      if (!grupos[fechaFormato]) {
+        grupos[fechaFormato] = []
+      }
+      grupos[fechaFormato].push(clase)
+    } else {
+      if (!grupos[clase.diaSemana]) {
+        grupos[clase.diaSemana] = []
+      }
+      grupos[clase.diaSemana].push(clase)
     }
-    grupos[clase.diaSemana].push(clase)
     return grupos
   }, {})
+
+  const formatFecha = (fecha) => {
+    if (!fecha) return ''
+    try {
+      const fechaObj = parseISO(fecha)
+      return format(fechaObj, "d 'de' MMMM 'de' yyyy", { locale: es })
+    } catch (error) {
+      console.error('Error al formatear fecha:', error)
+      return fecha
+    }
+  }
 
   return (
     <div className='admin-clases'>
@@ -432,6 +496,12 @@ const AdminClases = () => {
                         {clase.inscritos.length}/{clase.capacidadMaxima}
                       </span>
                     </div>
+                    {clase.fecha && (
+                      <div className='clase-fecha'>
+                        <Calendar size={16} />
+                        <span>{formatFecha(clase.fecha)}</span>
+                      </div>
+                    )}
                     {clase.entrenador && (
                       <div className='clase-entrenador'>
                         <span>
@@ -557,24 +627,65 @@ const AdminClases = () => {
                 </div>
               </div>
 
-              <div className='form-group'>
-                <label htmlFor='diaSemana'>Día de la semana</label>
-                <select
-                  id='diaSemana'
-                  value={formData.diaSemana}
-                  onChange={(e) =>
-                    setFormData({ ...formData, diaSemana: e.target.value })
-                  }
-                  required
-                >
-                  <option value=''>Seleccionar día</option>
-                  {diasSemana.map((dia) => (
-                    <option key={dia} value={dia}>
-                      {dia.charAt(0).toUpperCase() + dia.slice(1)}
-                    </option>
-                  ))}
-                </select>
+              <div className='form-group modo-creacion'>
+                <label>Modo de creación</label>
+                <div className='radio-group'>
+                  <label>
+                    <input
+                      type='radio'
+                      name='modoCreacion'
+                      value='semanal'
+                      checked={modoCreacion === 'semanal'}
+                      onChange={() => setModoCreacion('semanal')}
+                    />
+                    Día de la semana (recurrente)
+                  </label>
+                  <label>
+                    <input
+                      type='radio'
+                      name='modoCreacion'
+                      value='fecha'
+                      checked={modoCreacion === 'fecha'}
+                      onChange={() => setModoCreacion('fecha')}
+                    />
+                    Fecha específica
+                  </label>
+                </div>
               </div>
+
+              {modoCreacion === 'semanal' ? (
+                <div className='form-group'>
+                  <label htmlFor='diaSemana'>Día de la semana</label>
+                  <select
+                    id='diaSemana'
+                    value={formData.diaSemana}
+                    onChange={(e) =>
+                      setFormData({ ...formData, diaSemana: e.target.value })
+                    }
+                    required={modoCreacion === 'semanal'}
+                  >
+                    <option value=''>Seleccionar día</option>
+                    {diasSemana.map((dia) => (
+                      <option key={dia} value={dia}>
+                        {dia.charAt(0).toUpperCase() + dia.slice(1)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              ) : (
+                <div className='form-group'>
+                  <label htmlFor='fecha'>Fecha específica</label>
+                  <input
+                    type='date'
+                    id='fecha'
+                    value={formData.fecha}
+                    onChange={(e) =>
+                      setFormData({ ...formData, fecha: e.target.value })
+                    }
+                    required={modoCreacion === 'fecha'}
+                  />
+                </div>
+              )}
 
               <div className='form-group'>
                 <div className='horarios-header'>

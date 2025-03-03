@@ -1,8 +1,25 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import axios from 'axios'
-import { format, addDays, startOfWeek, isToday } from 'date-fns'
+import {
+  format,
+  addDays,
+  subDays,
+  startOfWeek,
+  endOfWeek,
+  isToday,
+  addMonths,
+  subMonths,
+  startOfMonth,
+  endOfMonth,
+  eachDayOfInterval,
+  isSameMonth,
+  isSameDay,
+  parseISO,
+  addWeeks,
+  subWeeks
+} from 'date-fns'
 import { es } from 'date-fns/locale'
-import { Clock, Users } from 'lucide-react'
+import { Clock, Users, ChevronLeft, ChevronRight } from 'lucide-react'
 import Header from '../../components/Header/Header'
 import './Clases.css'
 
@@ -64,8 +81,9 @@ const Clases = () => {
   const [inscripcionExitosa, setInscripcionExitosa] = useState(null)
   const [claseSeleccionada, setClaseSeleccionada] = useState(null)
   const [selectedDate, setSelectedDate] = useState(new Date())
-  const [weekDates, setWeekDates] = useState([])
+  const [visibleDates, setVisibleDates] = useState([])
   const [cancelacionExitosa, setCancelacionExitosa] = useState(null)
+  const calendarRef = useRef(null)
 
   useEffect(() => {
     const img = new Image()
@@ -73,10 +91,27 @@ const Clases = () => {
   }, [])
 
   useEffect(() => {
-    const start = startOfWeek(new Date(), { weekStartsOn: 1 })
-    const dates = Array.from({ length: 7 }, (_, i) => addDays(start, i))
-    setWeekDates(dates)
-  }, [])
+    const start = subWeeks(selectedDate, 4)
+    const end = addWeeks(selectedDate, 4)
+    const dates = eachDayOfInterval({ start, end })
+    setVisibleDates(dates)
+
+    if (calendarRef.current) {
+      const dayWidth = 100
+      const selectedIndex = dates.findIndex(
+        (date) =>
+          format(date, 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd')
+      )
+      const scrollPosition =
+        selectedIndex * dayWidth -
+        calendarRef.current.offsetWidth / 2 +
+        dayWidth / 2
+      calendarRef.current.scrollTo({
+        left: scrollPosition,
+        behavior: 'smooth'
+      })
+    }
+  }, [selectedDate])
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -249,29 +284,49 @@ const Clases = () => {
     return getMinutos(a.horario) - getMinutos(b.horario)
   })
 
-  const CalendarioDias = () => (
-    <div className='calendario-dias'>
-      {weekDates.map((date) => {
-        const dayName = format(date, 'EEEE', { locale: es })
-        const dayNumber = format(date, 'd')
-        const month = format(date, 'MMM', { locale: es })
-        const isSelected =
-          format(selectedDate, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd')
+  const handlePrevWeek = () => {
+    setSelectedDate(subWeeks(selectedDate, 1))
+  }
 
-        return (
-          <button
-            key={date.toString()}
-            className={`dia-btn ${isSelected ? 'activo' : ''} ${
-              isToday(date) ? 'hoy' : ''
-            }`}
-            onClick={() => setSelectedDate(date)}
-          >
-            <span className='dia-nombre'>{dayName.slice(0, 3)}</span>
-            <span className='dia-numero'>{dayNumber}</span>
-            <span className='dia-mes'>{month}</span>
-          </button>
-        )
-      })}
+  const handleNextWeek = () => {
+    setSelectedDate(addWeeks(selectedDate, 1))
+  }
+
+  const CalendarioDias = () => (
+    <div className='calendario-container'>
+      <button className='scroll-button left' onClick={handlePrevWeek}>
+        <ChevronLeft size={20} />
+      </button>
+
+      <div className='calendario-dias' ref={calendarRef}>
+        {visibleDates.map((date) => {
+          const dayName = format(date, 'EEEE', { locale: es })
+          const dayNumber = format(date, 'd')
+          const month = format(date, 'MMM', { locale: es })
+          const isSelected =
+            format(selectedDate, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd')
+          const isPast = date < new Date(new Date().setHours(0, 0, 0, 0))
+
+          return (
+            <button
+              key={date.toString()}
+              className={`dia-btn ${isSelected ? 'activo' : ''} ${
+                isToday(date) ? 'hoy' : ''
+              } ${isPast ? 'pasado' : ''}`}
+              onClick={() => setSelectedDate(date)}
+              disabled={isPast}
+            >
+              <span className='dia-nombre'>{dayName.slice(0, 3)}</span>
+              <span className='dia-numero'>{dayNumber}</span>
+              <span className='dia-mes'>{month}</span>
+            </button>
+          )
+        })}
+      </div>
+
+      <button className='scroll-button right' onClick={handleNextWeek}>
+        <ChevronRight size={20} />
+      </button>
     </div>
   )
 
