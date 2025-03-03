@@ -2,24 +2,14 @@ import { useEffect, useState, useRef } from 'react'
 import axios from 'axios'
 import {
   format,
-  addDays,
-  subDays,
-  startOfWeek,
-  endOfWeek,
   isToday,
-  addMonths,
-  subMonths,
-  startOfMonth,
-  endOfMonth,
   eachDayOfInterval,
-  isSameMonth,
-  isSameDay,
   parseISO,
   addWeeks,
   subWeeks
 } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { Clock, Users, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import Header from '../../components/Header/Header'
 import './Clases.css'
 
@@ -272,7 +262,22 @@ const Clases = () => {
     const diaSeleccionado = format(selectedDate, 'EEEE', {
       locale: es
     }).toLowerCase()
-    return clases.filter((clase) => clase.diaSemana === diaSeleccionado)
+
+    const fechaSeleccionadaStr = format(selectedDate, 'yyyy-MM-dd')
+
+    return clases.filter((clase) => {
+      if (clase.esFechaEspecifica && clase.fecha) {
+        try {
+          const fechaClase = format(parseISO(clase.fecha), 'yyyy-MM-dd')
+          return fechaClase === fechaSeleccionadaStr
+        } catch (error) {
+          console.error('Error al comparar fechas:', error)
+          return false
+        }
+      }
+
+      return !clase.esFechaEspecifica && clase.diaSemana === diaSeleccionado
+    })
   }
 
   const clasesOrdenadas = getClasesPorDia().sort((a, b) => {
@@ -389,6 +394,9 @@ const Clases = () => {
                         <span className='clase-duracion'>
                           {clase.duracion} min
                         </span>
+                        {clase.esFechaEspecifica && (
+                          <span className='clase-unica'>Clase única</span>
+                        )}
                       </div>
                     </div>
 
@@ -424,6 +432,7 @@ const Clases = () => {
                                       <img
                                         src={
                                           getImageUrl(inscrito) ||
+                                          '/placeholder.svg' ||
                                           '/placeholder.svg'
                                         }
                                         alt='Usuario inscrito'
