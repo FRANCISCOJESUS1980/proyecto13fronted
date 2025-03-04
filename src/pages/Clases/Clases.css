@@ -687,3 +687,11 @@ img {
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
 }
+.scroll-button {
+  background-color: rgb(235, 62, 62);
+  margin-bottom: 5px;
+}
+.right {
+  position: absolute;
+  right: 20px;
+}
