@@ -24,7 +24,7 @@ body {
 }
 
 .edit-user-container {
-  width: 100%;
+  width: 100% (calc());
   padding: 20px;
   background-color: white;
   border-radius: 8px;
@@ -32,6 +32,8 @@ body {
   position: relative;
   overflow: hidden;
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .edit-user-container::before {
@@ -94,6 +96,8 @@ body {
   font-size: 1rem;
   transition: all 0.2s ease;
   background-color: var(--gray-100);
+  width: 92%;
+  flex-wrap: wrap;
 }
 
 .form-group input:focus {
@@ -226,7 +230,6 @@ body {
   object-fit: cover;
 }
 
-/* Estilo para el input de archivo */
 input[type='file'] {
   padding: 10px;
   border: 2px dashed var(--gray-400);
@@ -241,10 +244,8 @@ input[type='file']:hover {
   background-color: rgba(255, 87, 34, 0.05);
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .edit-user-container {
-    margin: 1rem;
     padding: 1.5rem;
   }
 
@@ -258,7 +259,6 @@ input[type='file']:hover {
   }
 }
 
-/* Elementos decorativos de CrossFit */
 .edit-user-container::after {
   content: '💪';
   position: absolute;

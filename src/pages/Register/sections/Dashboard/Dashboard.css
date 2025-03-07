@@ -17,15 +17,7 @@
   --gray-800: #343a40;
   --gray-900: #212529;
 }
-/*
-body {
-  background-color: var(--gray-100);
-  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
-  margin: 0;
-  padding: 0;
-  color: var(--gray-800);
-}
-*/
+
 .dashboard-container {
   min-height: 100vh;
   display: flex;
@@ -90,8 +82,8 @@ body {
 }
 
 .logout-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.5);
+  background-color: rgb(234, 51, 51);
+  border-color: black;
   transform: translateY(-2px);
 }
 

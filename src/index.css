@@ -33,17 +33,18 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  background-image: url('./assets/imagenes/grupocrosfit.JPG');
+  /*background-image: url('./assets/imagenes/grupocrosfit.JPG');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  z-index: -10000;*/
 }
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
-
+/*
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -61,7 +62,7 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
-}
+}*/
 
 @media (prefers-color-scheme: light) {
   :root {

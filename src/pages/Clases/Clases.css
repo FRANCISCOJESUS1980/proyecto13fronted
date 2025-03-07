@@ -688,8 +688,16 @@ img {
   backface-visibility: hidden;
 }
 .scroll-button {
-  background-color: rgb(235, 62, 62);
+  background-color: rgb(246, 79, 79);
   margin-bottom: 5px;
+  border-radius: 8px;
+  width: 80px;
+  height: 40px;
+}
+.scroll-button:hover {
+  background-color: #2196f3;
+  transform: scale(2px);
+  cursor: pointer;
 }
 .right {
   position: absolute;
