@@ -1,14 +1,24 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../../components/Header/Header'
-import './Iniciarsesion.css'
+import './iniciarsesion.css'
 
 const Iniciarsesion = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   })
+  const [isLoading, setIsLoading] = useState(false)
+  const [animationComplete, setAnimationComplete] = useState(false)
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAnimationComplete(true)
+    }, 1000)
+
+    return () => clearTimeout(timer)
+  }, [])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -17,6 +27,8 @@ const Iniciarsesion = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setIsLoading(true)
+
     try {
       const response = await fetch('http://localhost:5000/api/users/login', {
         method: 'POST',
@@ -28,56 +40,99 @@ const Iniciarsesion = () => {
 
       const data = await response.json()
 
-      console.log(data)
-
       if (response.ok) {
-        alert('Inicio de sesión exitoso')
-
         localStorage.setItem('token', data.data.token)
         localStorage.setItem('nombre', data.data.nombre)
         localStorage.setItem('rol', data.data.rol)
 
-        navigate('/dashboard')
+        setTimeout(() => {
+          navigate('/dashboard')
+        }, 500)
       } else {
         alert(data.message || 'Error en el inicio de sesión')
       }
     } catch (error) {
       console.error('Error en el inicio de sesión:', error)
       alert('Error en la conexión con el servidor')
+    } finally {
+      setIsLoading(false)
     }
   }
 
   return (
-    <div className='login-container'>
+    <div className='login-page'>
       <Header />
-      <h2 className='h2iniciarsesion'>Iniciar Sesión</h2>
-      <form className='forminiciarsesion' onSubmit={handleSubmit}>
-        <input
-          type='email'
-          name='email'
-          placeholder='Correo electrónico'
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type='password'
-          name='password'
-          placeholder='Contraseña'
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
-        <button className='botonlogin' type='submit'>
-          Iniciar Sesión
-        </button>
-      </form>
-      <p className='piniciarsesion'>
-        ¿No tienes una cuenta?{' '}
-        <span className='link' onClick={() => navigate('/registro')}>
-          Regístrate aquí
-        </span>
-      </p>
+      <div className='animation-wrapper'>
+        <div className='dumbbell-anim'></div>
+        <div className='kettlebell-anim'></div>
+        <div className='barbell-anim'></div>
+      </div>
+
+      <div
+        className={`form-wrapper ${animationComplete ? 'form-visible' : ''}`}
+      >
+        <div className='logo-wrapper'>
+          <div className='dumbbell-logo'></div>
+        </div>
+
+        <h2 className='login-heading'>Iniciar Sesión</h2>
+
+        <form onSubmit={handleSubmit} className='login-form'>
+          <div className='input-wrapper'>
+            <div className='input-field'>
+              <span className='input-icon user-icon'></span>
+              <input
+                type='email'
+                name='email'
+                placeholder='Correo electrónico'
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className='text-input'
+                autoComplete='email'
+              />
+            </div>
+
+            <div className='input-field'>
+              <span className='input-icon lock-icon'></span>
+              <input
+                type='password'
+                name='password'
+                placeholder='Contraseña'
+                value={formData.password}
+                onChange={handleChange}
+                required
+                className='text-input'
+                autoComplete='current-password'
+              />
+            </div>
+          </div>
+
+          <button type='submit' disabled={isLoading} className='submit-button'>
+            <span className={isLoading ? 'hidden-text' : ''}>
+              Iniciar Sesión
+              <span className='arrow-right'></span>
+            </span>
+
+            {isLoading && (
+              <div className='loader-wrapper'>
+                <div className='spinner'></div>
+              </div>
+            )}
+
+            <div className='progress-container'>
+              <div className='progress-indicator'></div>
+            </div>
+          </button>
+        </form>
+
+        <p className='signup-text'>
+          ¿No tienes una cuenta?{' '}
+          <span onClick={() => navigate('/registro')} className='signup-link'>
+            Regístrate aquí
+          </span>
+        </p>
+      </div>
     </div>
   )
 }

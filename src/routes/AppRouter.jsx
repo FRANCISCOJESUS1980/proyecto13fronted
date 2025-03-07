@@ -16,6 +16,7 @@ import AdminClases from '../pages/Administracion/AdminClases/AdminClases'
 import AdminProductos from '../pages/Administracion/AdminProductos/AdminProductos'
 import AdminUsuarios from '../pages/Administracion/AdminUsuarios/AdminUsuarios'
 import Chat from '../components/Chat/Chat'
+import EditarPerfil from '../pages/EditUser/EditUser'
 
 const AppRouter = () => {
   return (
@@ -40,6 +41,7 @@ const AppRouter = () => {
         <Route path='/dashboard/aspecto' element={<Aspecto />} />
         <Route path='/dashboard/marcas' element={<Marcas />} />
         <Route path='/dashboard/chat' element={<Chat />} />
+        <Route path='/dashboard/editar-perfil/:id' element={<EditarPerfil />} />
       </Routes>
     </Router>
   )

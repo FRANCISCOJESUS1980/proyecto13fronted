@@ -15,7 +15,17 @@ const Register = () => {
   const [selectedImage, setSelectedImage] = useState(null)
   const [previewUrl, setPreviewUrl] = useState(null)
   const [registroExitoso, setRegistroExitoso] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [animationComplete, setAnimationComplete] = useState(false)
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAnimationComplete(true)
+    }, 1000)
+
+    return () => clearTimeout(timer)
+  }, [])
 
   const handleImageChange = (e) => {
     const file = e.target.files[0]
@@ -74,6 +84,8 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setIsLoading(true)
+
     try {
       const formDataToSend = new FormData()
       formDataToSend.append('nombre', formData.nombre)
@@ -92,7 +104,6 @@ const Register = () => {
 
       const data = await response.json()
       if (response.ok) {
-        alert('Registro exitoso')
         localStorage.setItem('token', data.data.token)
         localStorage.setItem('nombre', formData.nombre)
         localStorage.setItem('rol', data.data.rol)
@@ -104,90 +115,169 @@ const Register = () => {
     } catch (error) {
       console.error('Error en el registro:', error)
       alert('Error en la conexión con el servidor')
+    } finally {
+      setIsLoading(false)
     }
   }
 
   return (
-    <div className='register-container'>
+    <div className='cf-register-page'>
       {registroExitoso ? (
         <Consentimiento onConsentAccepted={() => navigate('/dashboard')} />
       ) : (
         <>
           <Header />
-          <h2>Registro</h2>
-          <form onSubmit={handleSubmit}>
-            <div className='image-upload-container'>
-              {previewUrl && (
-                <img
-                  src={previewUrl || '/placeholder.svg'}
-                  alt='Vista previa'
-                  className='image-preview'
-                />
-              )}
-              <input
-                type='file'
-                accept='image/*'
-                onChange={handleImageChange}
-                className='image-input'
-              />
+
+          <div className='cf-animation-wrapper'>
+            <div className='cf-dumbbell-anim'></div>
+            <div className='cf-kettlebell-anim'></div>
+            <div className='cf-barbell-anim'></div>
+          </div>
+
+          <div
+            className={`cf-form-wrapper ${
+              animationComplete ? 'cf-form-visible' : ''
+            }`}
+          >
+            <div className='cf-logo-wrapper'>
+              <div className='cf-dumbbell-logo'></div>
             </div>
 
-            <input
-              className='inputregistro'
-              type='text'
-              name='nombre'
-              placeholder='Nombre'
-              value={formData.nombre}
-              onChange={handleChange}
-              required
-            />
-            <input
-              className='inputcorreo'
-              type='email'
-              name='email'
-              placeholder='Correo electrónico'
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-            <input
-              className='inputcontraseña'
-              type='password'
-              name='password'
-              placeholder='Contraseña'
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-            <input
-              className='inputregistro'
-              type='text'
-              name='codigoAutorizacion'
-              placeholder='Código de acceso (opcional)'
-              value={formData.codigoAutorizacion}
-              onChange={handleChange}
-              autoComplete='off'
-            />
-            <input
-              className='inputregistro'
-              type='text'
-              name='rol'
-              value={formData.rol}
-              readOnly
-            />
-            <p>
+            <h2 className='cf-register-heading'>Registro</h2>
+
+            <form onSubmit={handleSubmit} className='cf-register-form'>
+              <div className='cf-avatar-upload'>
+                <div
+                  className='cf-avatar-preview'
+                  style={{
+                    backgroundImage: previewUrl
+                      ? `url(${previewUrl})`
+                      : "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23999999' strokeWidth='1.5'%3E%3Cpath strokeLinecap='round' strokeLinejoin='round' d='M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z'/%3E%3C/svg%3E\")"
+                  }}
+                >
+                  <div className='cf-avatar-overlay'>
+                    <span>Cambiar</span>
+                  </div>
+                </div>
+                <input
+                  type='file'
+                  accept='image/*'
+                  onChange={handleImageChange}
+                  className='cf-avatar-input'
+                  id='avatar-upload'
+                />
+                <label htmlFor='avatar-upload' className='cf-avatar-label'>
+                  Seleccionar imagen de perfil
+                </label>
+              </div>
+
+              <div className='cf-input-wrapper'>
+                <div className='cf-input-field'>
+                  <span className='cf-input-icon cf-user-icon'></span>
+                  <input
+                    type='text'
+                    name='nombre'
+                    placeholder='Nombre'
+                    value={formData.nombre}
+                    onChange={handleChange}
+                    required
+                    className='cf-text-input'
+                    autoComplete='name'
+                  />
+                </div>
+
+                <div className='cf-input-field'>
+                  <span className='cf-input-icon cf-email-icon'></span>
+                  <input
+                    type='email'
+                    name='email'
+                    placeholder='Correo electrónico'
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    className='cf-text-input'
+                    autoComplete='email'
+                  />
+                </div>
+
+                <div className='cf-input-field'>
+                  <span className='cf-input-icon cf-lock-icon'></span>
+                  <input
+                    type='password'
+                    name='password'
+                    placeholder='Contraseña'
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                    className='cf-text-input'
+                    autoComplete='new-password'
+                  />
+                </div>
+
+                <div className='cf-input-field'>
+                  <span className='cf-input-icon cf-key-icon'></span>
+                  <input
+                    type='text'
+                    name='codigoAutorizacion'
+                    placeholder='Código de acceso (opcional)'
+                    value={formData.codigoAutorizacion}
+                    onChange={handleChange}
+                    className='cf-text-input'
+                    autoComplete='off'
+                  />
+                </div>
+
+                <div className='cf-input-field cf-role-field'>
+                  <span className='cf-input-icon cf-badge-icon'></span>
+                  <input
+                    type='text'
+                    name='rol'
+                    value={formData.rol}
+                    readOnly
+                    className='cf-text-input cf-role-input'
+                  />
+                  <div className='cf-role-badge'>
+                    {formData.rol === 'admin'
+                      ? 'Administrador'
+                      : formData.rol === 'entrenador'
+                      ? 'Entrenador'
+                      : 'Usuario'}
+                  </div>
+                </div>
+              </div>
+
+              <button
+                type='submit'
+                disabled={isLoading}
+                className='cf-submit-button'
+              >
+                <span className={isLoading ? 'cf-hidden-text' : ''}>
+                  Registrarse
+                  <span className='cf-arrow-right'></span>
+                </span>
+
+                {isLoading && (
+                  <div className='cf-loader-wrapper'>
+                    <div className='cf-spinner'></div>
+                  </div>
+                )}
+
+                <div className='cf-progress-container'>
+                  <div className='cf-progress-indicator'></div>
+                </div>
+              </button>
+            </form>
+
+            <p className='cf-login-text'>
               ¿Ya tienes una cuenta?{' '}
               <span
-                className='link'
                 onClick={() => navigate('/iniciar-sesion')}
+                className='cf-login-link'
               >
                 Inicia sesión aquí
               </span>
             </p>
-            <button className='botonregistro' type='submit'>
-              Registrarse
-            </button>
-          </form>
+          </div>
         </>
       )}
     </div>

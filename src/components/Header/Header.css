@@ -18,7 +18,7 @@
   margin: 0;
   padding: 0;
 }
-
+/*
 .header-content {
   margin: 0;
   padding: 0;
@@ -30,8 +30,13 @@
   justify-content: center;
   z-index: 1;
   flex-wrap: wrap;
+}*/
+.header-content {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  background-color: black;
 }
-
 .logo {
   height: 150px;
 
