@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import { useParams, useNavigate } from 'react-router-dom'
 import Header from '../../components/Header/Header'
+import {
+  obtenerPerfilUsuario,
+  actualizarPerfilUsuario
+} from '../../services/api'
 import './EditUser.css'
 
 const EditUser = () => {
@@ -29,14 +32,9 @@ const EditUser = () => {
           return
         }
 
-        const response = await axios.get(
-          'http://localhost:5000/api/users/profile',
-          {
-            headers: { Authorization: `Bearer ${token}` }
-          }
-        )
+        const response = await obtenerPerfilUsuario(token)
 
-        const userData = response.data.data
+        const userData = response.data
         if (!userData.direccion) {
           userData.direccion = {
             calle: '',
@@ -92,38 +90,9 @@ const EditUser = () => {
         return
       }
 
-      const formData = new FormData()
+      const response = await actualizarPerfilUsuario(token, user, avatarFile)
 
-      formData.append('nombre', user.nombre || '')
-      formData.append('email', user.email || '')
-      formData.append('telefono', user.telefono || '')
-
-      formData.append(
-        'direccion',
-        JSON.stringify({
-          calle: user.direccion?.calle || '',
-          ciudad: user.direccion?.ciudad || '',
-          codigoPostal: user.direccion?.codigoPostal || '',
-          pais: user.direccion?.pais || ''
-        })
-      )
-
-      if (avatarFile) {
-        formData.append('avatar', avatarFile)
-      }
-
-      const response = await axios.put(
-        'http://localhost:5000/api/users/profile',
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-      )
-
-      if (response.data.success) {
+      if (response.success) {
         localStorage.setItem('nombre', user.nombre)
 
         alert('Perfil actualizado con éxito')
@@ -131,16 +100,12 @@ const EditUser = () => {
       } else {
         alert(
           'Error al actualizar el perfil: ' +
-            (response.data.message || 'Error desconocido')
+            (response.message || 'Error desconocido')
         )
       }
     } catch (error) {
       console.error('Error completo:', error)
-      console.error('Respuesta del servidor:', error.response?.data)
-      alert(
-        'Error al actualizar el perfil: ' +
-          (error.response?.data?.message || error.message)
-      )
+      alert('Error al actualizar el perfil: ' + error.message)
     } finally {
       setIsSubmitting(false)
     }

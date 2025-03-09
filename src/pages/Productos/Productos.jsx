@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import { Search, Filter, ShoppingCart } from 'lucide-react'
 import Header from '../../components/Header/Header'
+import { obtenerProductos, buscarProductos } from '../../services/api'
 import './Productos.css'
 
-const API_URL = 'http://localhost:5000/api/productos'
 const CATEGORIAS = [
   'suplementos',
   'ropa',
@@ -24,29 +23,20 @@ const Productos = () => {
   const [ordenar, setOrdenar] = useState('destacado')
 
   useEffect(() => {
-    obtenerProductos()
+    cargarProductos()
   }, [currentPage, categoriaFiltro, ordenar])
 
-  const obtenerProductos = async () => {
+  const cargarProductos = async () => {
     setLoading(true)
     try {
-      let url = `${API_URL}?page=${currentPage}&limit=${ITEMS_PER_PAGE}`
-      if (categoriaFiltro) {
-        url += `&categoria=${categoriaFiltro}`
-      }
-      if (ordenar) {
-        url += `&sort=${
-          ordenar === 'destacado'
-            ? '-destacado'
-            : ordenar === 'precio-asc'
-            ? 'precio'
-            : '-precio'
-        }`
-      }
-
-      const res = await axios.get(url)
-      setProductos(res.data.data)
-      setTotalPages(res.data.pagination.pages)
+      const response = await obtenerProductos(
+        currentPage,
+        ITEMS_PER_PAGE,
+        categoriaFiltro,
+        ordenar
+      )
+      setProductos(response.data)
+      setTotalPages(response.pagination.pages)
     } catch (error) {
       console.error('Error al obtener productos:', error)
     } finally {
@@ -54,16 +44,16 @@ const Productos = () => {
     }
   }
 
-  const buscarProductos = async () => {
+  const handleBuscarProductos = async () => {
     if (!searchTerm) {
-      obtenerProductos()
+      cargarProductos()
       return
     }
 
     setLoading(true)
     try {
-      const res = await axios.get(`${API_URL}/search?q=${searchTerm}`)
-      setProductos(res.data.data)
+      const response = await buscarProductos(searchTerm)
+      setProductos(response.data)
     } catch (error) {
       console.error('Error en la búsqueda:', error)
     } finally {
@@ -86,9 +76,13 @@ const Productos = () => {
             placeholder='Buscar productos...'
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && buscarProductos()}
+            onKeyPress={(e) => e.key === 'Enter' && handleBuscarProductos()}
           />
-          <Search size={20} className='search-icon' onClick={buscarProductos} />
+          <Search
+            size={20}
+            className='search-icon'
+            onClick={handleBuscarProductos}
+          />
         </div>
 
         <div className='filter-group'>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../../components/Header/Header'
+import { iniciarSesion } from '../../services/api'
 import './iniciarsesion.css'
 
 const Iniciarsesion = () => {
@@ -30,26 +31,19 @@ const Iniciarsesion = () => {
     setIsLoading(true)
 
     try {
-      const response = await fetch('http://localhost:5000/api/users/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      })
-
-      const data = await response.json()
+      const response = await iniciarSesion(formData.email, formData.password)
 
       if (response.ok) {
-        localStorage.setItem('token', data.data.token)
-        localStorage.setItem('nombre', data.data.nombre)
-        localStorage.setItem('rol', data.data.rol)
+        const { data } = response.data
+        localStorage.setItem('token', data.token)
+        localStorage.setItem('nombre', data.nombre)
+        localStorage.setItem('rol', data.rol)
 
         setTimeout(() => {
           navigate('/dashboard')
         }, 500)
       } else {
-        alert(data.message || 'Error en el inicio de sesión')
+        alert(response.data.message || 'Error en el inicio de sesión')
       }
     } catch (error) {
       console.error('Error en el inicio de sesión:', error)

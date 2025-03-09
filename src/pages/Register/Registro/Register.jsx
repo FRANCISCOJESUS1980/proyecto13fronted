@@ -2,6 +2,10 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Consentimiento from '../sections/Consentimiento/Consentimiento'
 import Header from '../../../components/Header/Header'
+import {
+  verificarCodigoAutorizacion,
+  registrarUsuario
+} from '../../../services/api'
 import './Register.css'
 
 const Register = () => {
@@ -43,22 +47,11 @@ const Register = () => {
     const verificarCodigo = async () => {
       if (formData.codigoAutorizacion) {
         try {
-          const response = await fetch(
-            'http://localhost:5000/api/users/verificar-codigo',
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-              },
-              body: JSON.stringify({
-                codigo: formData.codigoAutorizacion.trim()
-              })
-            }
+          const data = await verificarCodigoAutorizacion(
+            formData.codigoAutorizacion
           )
 
-          const data = await response.json()
-          if (response.ok && data.success) {
+          if (data.success) {
             setFormData((prev) => ({ ...prev, rol: data.rol }))
           } else {
             setFormData((prev) => ({ ...prev, rol: 'usuario' }))
@@ -87,30 +80,17 @@ const Register = () => {
     setIsLoading(true)
 
     try {
-      const formDataToSend = new FormData()
-      formDataToSend.append('nombre', formData.nombre)
-      formDataToSend.append('email', formData.email)
-      formDataToSend.append('password', formData.password)
-      formDataToSend.append('rol', formData.rol)
-      formDataToSend.append('codigoAutorizacion', formData.codigoAutorizacion)
-      if (selectedImage) {
-        formDataToSend.append('avatar', selectedImage)
-      }
+      const response = await registrarUsuario(formData, selectedImage)
 
-      const response = await fetch('http://localhost:5000/api/users/register', {
-        method: 'POST',
-        body: formDataToSend
-      })
-
-      const data = await response.json()
       if (response.ok) {
-        localStorage.setItem('token', data.data.token)
+        const { data } = response.data
+        localStorage.setItem('token', data.token)
         localStorage.setItem('nombre', formData.nombre)
-        localStorage.setItem('rol', data.data.rol)
-        localStorage.setItem('avatar', data.data.avatar)
+        localStorage.setItem('rol', data.rol)
+        localStorage.setItem('avatar', data.avatar)
         setRegistroExitoso(true)
       } else {
-        alert(data.message || 'Error en el registro')
+        alert(response.data.message || 'Error en el registro')
       }
     } catch (error) {
       console.error('Error en el registro:', error)

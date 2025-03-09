@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import Button from '../boton/boton'
 import './Header.css'
 import logo from '../../assets/imagenes/logoalex.jpg'
-import background from '../../assets/imagenes/background.jpg'
 
 const Header = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -19,11 +18,6 @@ const Header = () => {
 
   return (
     <header className='headerheader'>
-      <img
-        src={background || '/placeholder.svg'}
-        alt='Background'
-        className='header-background'
-      />
       <div className='header-content'>
         <img src={logo || '/placeholder.svg'} alt='Logo' className='logo' />
         <nav className='nav'>

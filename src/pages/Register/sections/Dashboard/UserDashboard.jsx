@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
 import './Dashboard.css'
 import Header from '../../../../components/Header/Header'
+import { obtenerPerfilUsuario } from '../../../../services/api'
 
 const UserDashboard = () => {
   const navigate = useNavigate()
@@ -32,15 +32,10 @@ const UserDashboard = () => {
           setUserName(storedName)
         }
 
-        const response = await axios.get(
-          'http://localhost:5000/api/users/profile',
-          {
-            headers: { Authorization: `Bearer ${token}` }
-          }
-        )
+        const response = await obtenerPerfilUsuario(token)
 
-        if (response.data.success && response.data.data) {
-          const userData = response.data.data
+        if (response.success && response.data) {
+          const userData = response.data
 
           setUserName(userData.nombre || 'Usuario')
 

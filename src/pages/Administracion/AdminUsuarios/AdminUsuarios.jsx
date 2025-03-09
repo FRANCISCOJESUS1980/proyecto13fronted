@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Header from '../../../components/Header/Header'
+import { obtenerTodosUsuarios } from '../../../services/api'
 import './AdminUsuarios.css'
 
 const AdminUsuarios = () => {
@@ -13,25 +14,10 @@ const AdminUsuarios = () => {
         const token = localStorage.getItem('token')
         if (!token) throw new Error('No hay token de autenticación')
 
-        const response = await fetch('http://localhost:5000/api/users', {
-          method: 'GET',
-          credentials: 'include',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        })
-
-        const data = await response.json()
-
-        if (!response.ok) {
-          console.log('Error en la respuesta:', response)
-          console.log('Datos recibidos:', data)
-          throw new Error(data.message || 'Error al obtener los usuarios')
-        }
-
-        setUsuarios(Array.isArray(data) ? data : data.data)
+        const data = await obtenerTodosUsuarios(token)
+        setUsuarios(data)
       } catch (error) {
+        console.error('Error al obtener usuarios:', error)
         setError(error.message)
       } finally {
         setLoading(false)

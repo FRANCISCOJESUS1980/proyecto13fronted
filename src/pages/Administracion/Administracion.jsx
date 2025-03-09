@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './Administracion.css'
 import Header from '../../components/Header/Header'
+import { obtenerTodosUsuarios } from '../../services/api'
 
 const Administracion = () => {
   const navigate = useNavigate()
@@ -26,28 +27,11 @@ const Administracion = () => {
 
     const fetchUsuarios = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/users', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          }
-        })
-
-        const data = await response.json()
-
-        console.log(data)
-
-        if (response.ok) {
-          setUsuarios(data.data || [])
-        } else {
-          console.error('Error al obtener usuarios:', data.message)
-          setError(data.message || 'Error al obtener usuarios.')
-          setUsuarios([])
-        }
+        const data = await obtenerTodosUsuarios(token)
+        setUsuarios(data || [])
       } catch (error) {
-        console.error('Error en la solicitud:', error)
-        setError('Error en la conexión con el servidor.')
+        console.error('Error al obtener usuarios:', error)
+        setError(error.message || 'Error en la conexión con el servidor.')
         setUsuarios([])
       }
     }

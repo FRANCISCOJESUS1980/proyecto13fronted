@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import {
   Search,
   Plus,
@@ -15,9 +14,16 @@ import {
   AlertCircle
 } from 'lucide-react'
 import Header from '../../../components/Header/Header'
+import {
+  obtenerProductosAdmin,
+  buscarProductosAdmin,
+  crearProducto,
+  actualizarProducto,
+  eliminarProducto,
+  cambiarEstadoProducto
+} from '../../../services/api'
 import './AdminProductos.css'
 
-const API_URL = 'http://localhost:5000/api/productos'
 const CATEGORIAS = [
   'suplementos',
   'ropa',
@@ -55,16 +61,15 @@ const AdminProductos = () => {
   const token = localStorage.getItem('token')
 
   useEffect(() => {
-    obtenerProductos()
+    cargarProductos()
   }, [currentPage, categoriaFiltro])
 
   useEffect(() => {
     if (token) {
-      obtenerProductos()
+      cargarProductos()
     }
   }, [token])
 
-  // Limpiar mensajes después de 3 segundos
   useEffect(() => {
     if (successMessage || error) {
       const timer = setTimeout(() => {
@@ -75,52 +80,37 @@ const AdminProductos = () => {
     }
   }, [successMessage, error])
 
-  const obtenerProductos = async () => {
+  const cargarProductos = async () => {
     setLoading(true)
     try {
-      let url = `${API_URL}?page=${currentPage}&limit=${ITEMS_PER_PAGE}`
-      if (categoriaFiltro) {
-        url += `&categoria=${categoriaFiltro}`
-      }
-
-      const res = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-
-      setProductos(res.data.data)
-      setTotalPages(res.data.pagination.pages)
-    } catch (error) {
-      setError(
-        'Error al obtener productos: ' +
-          (error.response?.data?.message || error.message)
+      const response = await obtenerProductosAdmin(
+        token,
+        currentPage,
+        ITEMS_PER_PAGE,
+        categoriaFiltro
       )
+      setProductos(response.data)
+      setTotalPages(response.pagination.pages)
+    } catch (error) {
+      setError('Error al obtener productos: ' + error.message)
     } finally {
       setLoading(false)
     }
   }
 
-  const buscarProductos = async () => {
+  const handleBuscarProductos = async () => {
     if (!searchTerm) {
-      obtenerProductos()
+      cargarProductos()
       return
     }
 
     setLoading(true)
     try {
-      const res = await axios.get(`${API_URL}/search?q=${searchTerm}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-      setProductos(res.data.data)
-      setTotalPages(1) // Reset pagination for search results
+      const response = await buscarProductosAdmin(token, searchTerm)
+      setProductos(response.data)
+      setTotalPages(1)
     } catch (error) {
-      setError(
-        'Error en la búsqueda: ' +
-          (error.response?.data?.message || error.message)
-      )
+      setError('Error en la búsqueda: ' + error.message)
     } finally {
       setLoading(false)
     }
@@ -145,7 +135,6 @@ const AdminProductos = () => {
     const file = e.target.files[0]
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        // 5MB limit
         setError('La imagen no debe superar los 5MB')
         return
       }
@@ -172,53 +161,28 @@ const AdminProductos = () => {
     setError('')
 
     try {
-      const formData = new FormData()
-
-      // Manejar campos numéricos y booleanos correctamente
-      const numericFields = ['precio', 'stock']
-      Object.keys(form).forEach((key) => {
-        if (key === 'imagen') {
-          // Solo añadir la imagen si hay una nueva
-          if (form.imagen instanceof File) {
-            formData.append('imagen', form.imagen)
-          }
-        } else if (numericFields.includes(key)) {
-          formData.append(key, Number(form[key]))
-        } else if (key === 'destacado') {
-          formData.append(key, form[key].toString())
-        } else {
-          formData.append(key, form[key])
-        }
-      })
-
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
-        }
-      }
-
       if (editando) {
-        const response = await axios.put(
-          `${API_URL}/${editando}`,
-          formData,
-          config
+        const response = await actualizarProducto(
+          token,
+          editando,
+          form,
+          form.imagen
         )
-        if (response.data.success) {
+        if (response.success) {
           setSuccessMessage('Producto actualizado correctamente')
         }
       } else {
-        const response = await axios.post(API_URL, formData, config)
-        if (response.data.success) {
+        const response = await crearProducto(token, form, form.imagen)
+        if (response.success) {
           setSuccessMessage('Producto creado correctamente')
         }
       }
 
       resetForm()
-      obtenerProductos()
+      cargarProductos()
       setModalOpen(false)
     } catch (error) {
-      setError(error.response?.data?.message || 'Error al guardar el producto')
+      setError(error.message || 'Error al guardar el producto')
     } finally {
       setLoading(false)
     }
@@ -247,50 +211,32 @@ const AdminProductos = () => {
 
     setLoading(true)
     try {
-      const response = await axios.delete(`${API_URL}/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-      if (response.data.success) {
+      const response = await eliminarProducto(token, id)
+      if (response.success) {
         setSuccessMessage('Producto eliminado correctamente')
-        obtenerProductos()
+        cargarProductos()
       }
     } catch (error) {
-      setError(
-        'Error al eliminar el producto: ' +
-          (error.response?.data?.message || error.message)
-      )
+      setError('Error al eliminar el producto: ' + error.message)
     } finally {
       setLoading(false)
     }
   }
 
-  const toggleEstado = async (id, estadoActual) => {
+  const toggleEstado = async (id) => {
     setLoading(true)
     try {
-      const response = await axios.patch(
-        `${API_URL}/${id}/estado`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      )
-      if (response.data.success) {
+      const response = await cambiarEstadoProducto(token, id)
+      if (response.success) {
         setSuccessMessage(
           `Estado del producto ${
-            response.data.data.estado === 'activo' ? 'activado' : 'desactivado'
+            response.data.estado === 'activo' ? 'activado' : 'desactivado'
           }`
         )
-        obtenerProductos()
+        cargarProductos()
       }
     } catch (error) {
-      setError(
-        'Error al cambiar estado: ' +
-          (error.response?.data?.message || error.message)
-      )
+      setError('Error al cambiar estado: ' + error.message)
     } finally {
       setLoading(false)
     }
@@ -317,7 +263,6 @@ const AdminProductos = () => {
     <div className='admin-productos'>
       <Header />
 
-      {/* Mensajes de éxito y error */}
       {successMessage && <div className='alert success'>{successMessage}</div>}
       {error && (
         <div className='alert error'>
@@ -348,9 +293,13 @@ const AdminProductos = () => {
             placeholder='Buscar productos...'
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && buscarProductos()}
+            onKeyPress={(e) => e.key === 'Enter' && handleBuscarProductos()}
           />
-          <Search size={20} className='search-icon' onClick={buscarProductos} />
+          <Search
+            size={20}
+            className='search-icon'
+            onClick={handleBuscarProductos}
+          />
         </div>
 
         <div className='category-filter'>
@@ -429,9 +378,7 @@ const AdminProductos = () => {
                     </button>
                     <button
                       className='btn-icon toggle'
-                      onClick={() =>
-                        toggleEstado(producto._id, producto.estado)
-                      }
+                      onClick={() => toggleEstado(producto._id)}
                       title={
                         producto.estado === 'activo' ? 'Desactivar' : 'Activar'
                       }
