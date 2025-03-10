@@ -18,7 +18,7 @@
 .admin-clases {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+
   font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
   background-color: #e0e0e0;
 }
@@ -107,6 +107,9 @@
   grid-template-columns: 1fr;
   gap: 30px;
 }
+.clases-grid {
+  margin: 30px;
+}
 
 .grupo-clase {
   background-color: white;
@@ -174,7 +177,9 @@
   background-color: var(--primary-light);
   color: var(--primary-dark);
 }
-
+.filtro-dias {
+  margin: 20px;
+}
 .grupo-info {
   padding: 20px;
   border-bottom: 1px solid var(--gray-light);

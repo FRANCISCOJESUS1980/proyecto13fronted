@@ -1,4 +1,4 @@
-import axios from 'axios'
+/*import axios from 'axios'
 
 const API_URL = 'http://localhost:5000/api'
 
@@ -79,4 +79,36 @@ export const cancelarClase = async (claseId) => {
         'Error al cancelar la inscripción'
     )
   }
+}*/
+import {
+  fetchClasesUsuario as fetchClasesUsuarioApi,
+  inscribirClase as inscribirClaseApi,
+  cancelarClase as cancelarClaseApi
+} from '../../../services/api'
+
+export const fetchClasesUsuario = async () => {
+  const token = localStorage.getItem('token')
+  if (!token) {
+    throw new Error('No hay token disponible')
+  }
+
+  return await fetchClasesUsuarioApi(token)
+}
+
+export const inscribirClase = async (claseId) => {
+  const token = localStorage.getItem('token')
+  if (!token) {
+    throw new Error('No hay token disponible')
+  }
+
+  return await inscribirClaseApi(token, claseId)
+}
+
+export const cancelarClase = async (claseId) => {
+  const token = localStorage.getItem('token')
+  if (!token) {
+    throw new Error('No hay token disponible')
+  }
+
+  return await cancelarClaseApi(token, claseId)
 }

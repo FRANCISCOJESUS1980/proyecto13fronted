@@ -2,15 +2,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+
   text-align: center;
-  height: 100vh;
+  height: 100%;
   background-color: rgb(186, 219, 220);
 }
 
 .titulo {
   font-size: 2rem;
-  margin-top: 500px;
+
   font-weight: bold;
   color: #333;
 }

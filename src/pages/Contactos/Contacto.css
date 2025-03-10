@@ -1,6 +1,6 @@
 .contacto-container {
   margin-top: auto;
-  padding: 40px;
+
   text-align: center;
   background-color: #c1c6c8;
   max-width: 100%;
@@ -16,6 +16,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 40px;
+  margin: 20px;
   justify-content: center;
 }
 
@@ -130,6 +131,7 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
   width: 300px;
+  margin: 20px;
 }
 
 .testimonio-card img {

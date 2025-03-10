@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000/api'
+/*const API_URL = 'http://localhost:5000/api'
 
 export const fetchEntrenadoresAPI = async () => {
   const response = await fetch(`${API_URL}/users/entrenadores`)
@@ -8,4 +8,9 @@ export const fetchEntrenadoresAPI = async () => {
   }
 
   return await response.json()
+}*/
+import { fetchEntrenadores as fetchEntrenadoresApi } from '../../../../services/api'
+
+export const fetchEntrenadoresAPI = async () => {
+  return await fetchEntrenadoresApi()
 }

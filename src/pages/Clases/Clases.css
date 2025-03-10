@@ -18,7 +18,7 @@
 .clases-container {
   max-width: 1000px;
   margin: 0 auto;
-  padding: 20px;
+
   font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
   color: var(--dark);
   background-color: #f9f9f9;
@@ -45,7 +45,9 @@
   max-width: 600px;
   margin: 0 auto;
 }
-
+.calendario-container {
+  margin: 20px;
+}
 .calendario-dias {
   display: flex;
   justify-content: space-between;
@@ -166,6 +168,7 @@
   background-color: var(--white);
   border-radius: 12px;
   padding: 20px;
+  margin: 20px;
   box-shadow: 0 4px 12px var(--shadow);
 }
 
