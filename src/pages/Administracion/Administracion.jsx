@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './Administracion.css'
 import Header from '../../components/Header/Header'
-import { obtenerTodosUsuarios } from '../../services/api'
+import { obtenerTodosUsuarios } from '../../services/Api/index'
 
 const Administracion = () => {
   const navigate = useNavigate()

@@ -1,15 +1,13 @@
 import { useEffect, useState, useRef } from 'react'
-import { io } from 'socket.io-client'
-import Header from '../Header/Header'
 import { useNavigate } from 'react-router-dom'
+import Header from '../Header/Header'
+import {
+  loadChatMessages,
+  createSocketConnection
+} from '../../services/Api/index'
 import './Chat.css'
 
-const BACKEND_URL = 'http://localhost:5000'
-const socket = io(BACKEND_URL, {
-  reconnectionAttempts: 5,
-  transports: ['websocket'],
-  withCredentials: true
-})
+const socket = createSocketConnection()
 
 const Chat = () => {
   const navigate = useNavigate()
@@ -24,38 +22,15 @@ const Chat = () => {
     }, 100)
   }
 
-  const loadInitialMessages = async () => {
+  const fetchInitialMessages = async () => {
     try {
       const token = localStorage.getItem('token')
+      const data = await loadChatMessages(token)
 
-      const response = await fetch(`${BACKEND_URL}/api/chat/messages`, {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: token ? `Bearer ${token}` : ''
-        }
-      })
-
-      if (response.status === 401) {
-        console.warn('Token inválido. Redirigiendo al login...')
-        localStorage.removeItem('token')
-        window.location.href = '/login'
-        return
+      if (data && Array.isArray(data)) {
+        setMessages(data)
       }
 
-      if (response.status === 429) {
-        console.warn('Demasiadas solicitudes. Esperando...')
-        setTimeout(loadInitialMessages, 5000)
-        return
-      }
-
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: No autorizado`)
-      }
-
-      const data = await response.json()
-      setMessages(data)
       setIsLoading(false)
       scrollToBottom()
     } catch (error) {
@@ -65,7 +40,7 @@ const Chat = () => {
   }
 
   useEffect(() => {
-    loadInitialMessages()
+    fetchInitialMessages()
 
     const handleChatHistory = (history) => {
       setMessages(history)

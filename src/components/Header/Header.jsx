@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import Button from '../boton/boton'
+import Button from '../Button/Button'
 import './Header.css'
 import logo from '../../assets/imagenes/logoalex.jpg'
 

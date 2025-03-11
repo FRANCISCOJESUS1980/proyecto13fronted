@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import Header from '../../../components/Header/Header'
-import { obtenerTodosUsuarios } from '../../../services/api'
+import { obtenerTodosUsuarios } from '../../../services/Api/index'
 import './AdminUsuarios.css'
 
 const AdminUsuarios = () => {

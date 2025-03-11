@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import './Boton.css'
+import './Button.css'
 
 const Button = React.forwardRef(
   (

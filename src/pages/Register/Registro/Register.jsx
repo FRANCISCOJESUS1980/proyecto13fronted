@@ -5,7 +5,7 @@ import Header from '../../../components/Header/Header'
 import {
   verificarCodigoAutorizacion,
   registrarUsuario
-} from '../../../services/api'
+} from '../../../services/Api/index'
 import './Register.css'
 
 const Register = () => {

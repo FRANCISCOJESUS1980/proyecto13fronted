@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './Dashboard.css'
 import Header from '../../../../components/Header/Header'
-import { obtenerPerfilUsuario } from '../../../../services/api'
+import { obtenerPerfilUsuario } from '../../../../services/Api/index'
 
 const UserDashboard = () => {
   const navigate = useNavigate()

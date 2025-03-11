@@ -21,7 +21,7 @@ import {
   actualizarProducto,
   eliminarProducto,
   cambiarEstadoProducto
-} from '../../../services/api'
+} from '../../../services/Api/index'
 import './AdminProductos.css'
 
 const CATEGORIAS = [

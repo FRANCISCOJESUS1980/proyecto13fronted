@@ -4,7 +4,7 @@ import Header from '../../components/Header/Header'
 import {
   obtenerPerfilUsuario,
   actualizarPerfilUsuario
-} from '../../services/api'
+} from '../../services/Api/index'
 import './EditUser.css'
 
 const EditUser = () => {

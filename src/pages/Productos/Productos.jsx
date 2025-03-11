@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Search, Filter, ShoppingCart } from 'lucide-react'
 import Header from '../../components/Header/Header'
-import { obtenerProductos, buscarProductos } from '../../services/api'
+import { obtenerProductos, buscarProductos } from '../../services/Api/index'
 import './Productos.css'
 
 const CATEGORIAS = [
