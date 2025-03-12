@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './Administracion.css'
-import Header from '../../components/Header/Header'
-import { obtenerTodosUsuarios } from '../../services/Api/index'
+import Header from '../../../components/Header/Header'
+import { obtenerTodosUsuarios } from '../../../services/Api/index'
 
 const Administracion = () => {
   const navigate = useNavigate()
@@ -66,6 +66,14 @@ const Administracion = () => {
         >
           <h2>👥 Ver Usuarios</h2>
           <p>Lista de todos los usuarios registrados.</p>
+        </div>
+
+        <div
+          className='section-card'
+          onClick={() => navigate('/admin/medical-info')}
+        >
+          <h2>❤️ Información Médica</h2>
+          <p>Revisa y gestiona los datos médicos de todos los usuarios.</p>
         </div>
       </div>
 

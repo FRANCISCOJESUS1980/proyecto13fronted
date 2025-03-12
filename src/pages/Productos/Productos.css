@@ -44,16 +44,6 @@
   font-size: 1rem;
 }
 
-.search-icon {
-  position: relative;
-  right: 0.75rem;
-
-  transform: translateY(-50%);
-  color: #6b7280;
-  cursor: pointer;
-  margin-top: 30px;
-}
-
 .filter-group {
   display: flex;
   gap: 1rem;

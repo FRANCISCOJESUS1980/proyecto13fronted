@@ -1,10 +1,16 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import {
+  getUserMedicalInfo,
+  saveMedicalInfo
+} from '../../../../services/Api/index'
 import Header from '../../../../components/Header/Header'
 import './Medico.css'
 
 const Medico = () => {
   const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState({ text: '', type: '' })
   const [medicalInfo, setMedicalInfo] = useState({
     bloodType: '',
     allergies: '',
@@ -17,10 +23,53 @@ const Medico = () => {
     doctorPhone: ''
   })
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    const fetchMedicalInfo = async () => {
+      try {
+        setLoading(true)
+        const token = localStorage.getItem('token')
+
+        const data = await getUserMedicalInfo(token)
+        setMedicalInfo(data)
+      } catch (error) {
+        console.error('Error al obtener información médica:', error)
+        setMessage({
+          text: 'Error al cargar la información médica',
+          type: 'error'
+        })
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchMedicalInfo()
+  }, [])
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Aquí irá la lógica para guardar la información
-    console.log('Información médica:', medicalInfo)
+    try {
+      setLoading(true)
+      const token = localStorage.getItem('token')
+
+      await saveMedicalInfo(token, medicalInfo)
+
+      setMessage({
+        text: 'Información médica guardada correctamente',
+        type: 'success'
+      })
+
+      setTimeout(() => {
+        setMessage({ text: '', type: '' })
+      }, 3000)
+    } catch (error) {
+      console.error('Error al guardar información médica:', error)
+      setMessage({
+        text: 'Error al guardar la información médica',
+        type: 'error'
+      })
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleChange = (e) => {
@@ -40,6 +89,10 @@ const Medico = () => {
         </button>
         <h1>Información Médica</h1>
       </div>
+
+      {message.text && (
+        <div className={`message ${message.type}`}>{message.text}</div>
+      )}
 
       <form onSubmit={handleSubmit} className='medico-form'>
         <div className='form-section'>
@@ -173,8 +226,8 @@ const Medico = () => {
         </div>
 
         <div className='form-actions'>
-          <button type='submit' className='save-button'>
-            Guardar Información Médica
+          <button type='submit' className='save-button' disabled={loading}>
+            {loading ? 'Guardando...' : 'Guardar Información Médica'}
           </button>
         </div>
       </form>
