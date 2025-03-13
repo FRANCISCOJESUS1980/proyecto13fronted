@@ -11,7 +11,20 @@ export const getAllMedicalInfo = async (token) => {
     })
 
     const data = await checkResponse(response)
-    return data.data || []
+    //console.log('Respuesta completa de la API:', data)
+
+    if (data && data.data) {
+      const firstUser = data.data[0]?.user
+      if (firstUser) {
+        // console.log('Primer usuario:', firstUser)
+        // console.log('Campos del primer usuario:', Object.keys(firstUser))
+        // console.log('Nombre del primer usuario:', firstUser.nombre)
+      }
+      return data.data || []
+    } else {
+      console.error('Formato de respuesta inesperado:', data)
+      throw new Error('Error en el formato de datos recibidos del servidor')
+    }
   } catch (error) {
     handleApiError(error, 'Error al obtener información médica:')
     return []
@@ -30,6 +43,7 @@ export const getUserMedicalInfo = async (token) => {
 
     const data = await checkResponse(response)
 
+    // Formatear la fecha si existe
     if (data.data && data.data.lastCheckup) {
       data.data.lastCheckup = new Date(data.data.lastCheckup)
         .toISOString()
