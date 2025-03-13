@@ -17,9 +17,9 @@
 }
 
 .back-button {
-  background-color: transparent;
+  background-color: rgb(0, 119, 255);
   border: none;
-  color: #555;
+  color: white;
   font-size: 1rem;
   cursor: pointer;
   margin-right: 15px;
@@ -29,7 +29,7 @@
 }
 
 .back-button:hover {
-  background-color: #f0f0f0;
+  background-color: rgb(241, 28, 28);
 }
 
 .medical-info-grid {

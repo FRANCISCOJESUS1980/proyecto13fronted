@@ -65,7 +65,10 @@
 }
 @media (max-width: 480px) {
   .headerheader {
-    height: 285px;
+    height: 275px;
+  }
+  .button {
+    height: 30px;
   }
 }
 @media (min-width: 1004px) {

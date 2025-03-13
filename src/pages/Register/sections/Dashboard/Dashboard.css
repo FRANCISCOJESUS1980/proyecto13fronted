@@ -96,7 +96,7 @@
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 2rem;
   background-color: #343a40;
-
+  min-height: 72vh;
   width: 100%;
 }
 
@@ -114,6 +114,7 @@
   align-items: center;
   text-align: center;
   border-bottom: 4px solid transparent;
+  justify-content: center;
 }
 
 .section-card::before {
