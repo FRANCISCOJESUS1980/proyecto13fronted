@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getAllMedicalInfo } from '../../../services/Api/index'
 import Header from '../../../components/Header/Header'
+import Button from '../../../components/Button/Button'
 import './MedicalInfoList.css'
 
 const MedicalInfoList = () => {
@@ -86,12 +87,14 @@ const MedicalInfoList = () => {
     <div className='medical-info-admin-container'>
       <Header />
       <div className='admin-header'>
-        <button
-          className='back-button'
-          onClick={() => navigate('/administracion')}
+        <Button
+          variant='secondary'
+          onClick={() => navigate('/dashboard')}
+          leftIcon={<span>←</span>}
         >
-          ← Volver a Administracion
-        </button>
+          Volver a Administracion
+        </Button>
+
         <h1>Información Médica de Usuarios</h1>
       </div>
 

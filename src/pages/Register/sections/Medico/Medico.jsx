@@ -5,6 +5,7 @@ import {
   saveMedicalInfo
 } from '../../../../services/Api/index'
 import Header from '../../../../components/Header/Header'
+import Button from '../../../../components/Button/Button'
 import './Medico.css'
 
 const Medico = () => {
@@ -84,12 +85,16 @@ const Medico = () => {
     <div className='medico-container'>
       <Header />
       <div className='medico-header'>
-        <button className='back-button' onClick={() => navigate('/dashboard')}>
-          ← Volver al Dashboard
-        </button>
         <h1>Información Médica</h1>
-      </div>
 
+        <Button
+          variant='secondary'
+          onClick={() => navigate('/dashboard')}
+          leftIcon={<span>←</span>}
+        >
+          Volver al Dashboard
+        </Button>
+      </div>
       {message.text && (
         <div className={`message ${message.type}`}>{message.text}</div>
       )}
@@ -226,9 +231,14 @@ const Medico = () => {
         </div>
 
         <div className='form-actions'>
-          <button type='submit' className='save-button' disabled={loading}>
-            {loading ? 'Guardando...' : 'Guardar Información Médica'}
-          </button>
+          <Button
+            type='submit'
+            variant='secondary'
+            size='lg'
+            isLoading={loading}
+          >
+            Guardar Información Médica
+          </Button>
         </div>
       </form>
     </div>

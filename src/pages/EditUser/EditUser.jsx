@@ -5,6 +5,7 @@ import {
   obtenerPerfilUsuario,
   actualizarPerfilUsuario
 } from '../../services/Api/index'
+import Button from '../../components/Button/Button'
 import './EditUser.css'
 
 const EditUser = () => {
@@ -118,9 +119,14 @@ const EditUser = () => {
   return (
     <div className='edit-user-container'>
       <Header />
-      <button className='back-button' onClick={() => navigate('/dashboard')}>
-        ← Volver al Dashboard
-      </button>
+      <Button
+        variant='secondary'
+        onClick={() => navigate('/dashboard')}
+        leftIcon={<span>←</span>}
+      >
+        Volver al Dashboard
+      </Button>
+
       <h2>Editar Perfil</h2>
       <form onSubmit={handleSubmit} className='edit-user-form'>
         <div className='form-group'>
@@ -235,16 +241,23 @@ const EditUser = () => {
         </div>
 
         <div className='form-actions'>
-          <button type='submit' className='update-btn' disabled={isSubmitting}>
-            {isSubmitting ? 'Actualizando...' : 'Actualizar Perfil'}
-          </button>
-          <button
+          <Button
+            type='submit'
+            variant='secondary'
+            size='lg'
+            isLoading={isSubmitting}
+          >
+            Actualizar Perfil
+          </Button>
+
+          <Button
             type='button'
-            className='cancel-btn'
+            variant='secondary'
+            size='md'
             onClick={() => navigate('/dashboard')}
           >
             Cancelar
-          </button>
+          </Button>
         </div>
       </form>
     </div>

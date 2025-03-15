@@ -1,6 +1,7 @@
 import MonitorInfo from './Monitorinfo'
 import { getNivelBadgeClass } from '../utils/formatters'
 import { getImageUrl } from '../utils/imageUtils'
+import Button from '../../../components/Button/Button'
 
 const ClaseCard = ({
   clase,
@@ -43,43 +44,31 @@ const ClaseCard = ({
 
       <div className='clase-actions'>
         {inscrito ? (
-          <button
-            className={`btn-cancelar ${
-              claseSeleccionada === clase._id ? 'loading' : ''
-            }`}
+          <Button
+            className='btn-cancelar'
+            variant='secondary'
+            size='md'
+            isLoading={claseSeleccionada === clase._id}
             onClick={() => handleCancelar(clase._id)}
             disabled={loading || claseSeleccionada === clase._id}
           >
-            {claseSeleccionada === clase._id ? (
-              <>
-                <span className='btn-spinner'></span>
-                Cancelando...
-              </>
-            ) : (
-              'Cancelar reserva'
-            )}
-          </button>
+            Cancelar reserva
+          </Button>
         ) : completa ? (
           <button className='btn-completo' disabled>
             Clase completa
           </button>
         ) : (
-          <button
-            className={`btn-inscribir ${
-              claseSeleccionada === clase._id ? 'loading' : ''
-            }`}
+          <Button
+            className='btn-inscribir'
+            variant='primary'
+            size='md'
+            isLoading={claseSeleccionada === clase._id}
             onClick={() => handleInscribir(clase._id)}
             disabled={loading || claseSeleccionada === clase._id}
           >
-            {claseSeleccionada === clase._id ? (
-              <>
-                <span className='btn-spinner'></span>
-                Reservando...
-              </>
-            ) : (
-              'Reservar plaza'
-            )}
-          </button>
+            Reservar plaza
+          </Button>
         )}
       </div>
     </div>

@@ -169,7 +169,7 @@ const ClaseModal = ({
                   checked={modoCreacion === 'semanal'}
                   onChange={() => setModoCreacion('semanal')}
                 />
-                Día de la semana (recurrente)
+                <p>Día de la semana (recurrente)</p>
               </label>
               <label>
                 <input
@@ -179,7 +179,7 @@ const ClaseModal = ({
                   checked={modoCreacion === 'fecha'}
                   onChange={() => setModoCreacion('fecha')}
                 />
-                Fecha específica
+                <p>Fecha específica</p>
               </label>
             </div>
           </div>

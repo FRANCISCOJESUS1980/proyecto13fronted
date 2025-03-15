@@ -30,6 +30,7 @@
   line-height: 1.5;
   text-decoration: none;
   white-space: nowrap;
+  margin: 20px;
 }
 
 .button:focus-visible {

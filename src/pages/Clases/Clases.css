@@ -391,54 +391,7 @@
   display: flex;
   justify-content: flex-end;
 }
-
-.btn-inscribir,
-.btn-cancelar,
-.btn-completo {
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-inscribir {
-  background-color: var(--primary);
-  color: white;
-}
-
-.btn-inscribir:hover:not(:disabled) {
-  background-color: var(--primary-dark);
-  transform: translateY(-2px);
-}
-
-.btn-cancelar {
-  background-color: var(--gray);
-  color: white;
-}
-
-.btn-cancelar:hover:not(:disabled) {
-  background-color: var(--danger);
-}
-
-.btn-completo {
-  background-color: var(--gray);
-  color: white;
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
-.btn-inscribir:disabled,
-.btn-cancelar:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
+/*
 .btn-spinner {
   width: 14px;
   height: 14px;
@@ -447,7 +400,7 @@
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-right: 8px;
-}
+}*/
 
 .no-clases {
   text-align: center;

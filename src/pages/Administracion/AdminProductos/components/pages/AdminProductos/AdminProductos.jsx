@@ -6,6 +6,7 @@ import ProductoForm from '../../ProductoForm/ProductoForm'
 import ProductoFilters from '../../ProductoFilters/ProductoFilters'
 import Pagination from '../../Pagination/Pagination'
 import Alert from '../../Alert/Alert'
+import Button from '../../../../../../components/Button/Button'
 import './AdminProductos.css'
 
 const AdminProductos = () => {
@@ -34,10 +35,15 @@ const AdminProductos = () => {
 
       <div className='headerproductos'>
         <h1>Administración de Productos</h1>
-        <button className='btn-primary' onClick={openModal}>
-          <Plus size={20} />
+        <Button
+          className='btn-primary'
+          variant='primary'
+          size='md'
+          onClick={openModal}
+          leftIcon={<Plus size={20} />}
+        >
           Nuevo Producto
-        </button>
+        </Button>
       </div>
 
       <ProductoFilters

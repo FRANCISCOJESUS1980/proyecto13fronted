@@ -1,26 +1,30 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import Button from '../../../../../components/Button/Button'
 import './Pagination.css'
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   return (
     <div className='pagination'>
-      <button
+      <Button
+        className='pagination-button'
+        variant='outline'
+        size='icon'
         onClick={() => onPageChange(Math.max(1, currentPage - 1))}
         disabled={currentPage === 1}
-        className='pagination-button'
-      >
-        <ChevronLeft size={20} />
-      </button>
+        leftIcon={<ChevronLeft size={20} />}
+      />
+
       <span>
         Página {currentPage} de {totalPages}
       </span>
-      <button
+      <Button
+        className='pagination-button'
+        variant='outline'
+        size='icon'
         onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
         disabled={currentPage === totalPages}
-        className='pagination-button'
-      >
-        <ChevronRight size={20} />
-      </button>
+        rightIcon={<ChevronRight size={20} />}
+      />
     </div>
   )
 }

@@ -1,4 +1,5 @@
 import { X } from 'lucide-react'
+import Button from '../../../../../components/Button/Button'
 import './ProductoForm.css'
 
 const CATEGORIAS = [
@@ -25,9 +26,13 @@ const ProductoForm = ({
       <div className='modal'>
         <div className='modal-header'>
           <h2>{editando ? 'Editar Producto' : 'Nuevo Producto'}</h2>
-          <button className='btn-icon' onClick={onClose}>
-            <X size={20} />
-          </button>
+          <Button
+            className='btn-icon'
+            variant='outline'
+            size='icon'
+            onClick={onClose}
+            rightIcon={<X size={20} />}
+          />
         </div>
 
         <form onSubmit={onSubmit}>
@@ -186,14 +191,16 @@ const ProductoForm = ({
           </div>
 
           <div className='modal-footer'>
-            <button
-              type='button'
+            <Button
               className='btn-secondary'
+              variant='secondary'
+              size='md'
               onClick={onClose}
               disabled={loading}
             >
               Cancelar
-            </button>
+            </Button>
+
             <button type='submit' className='btn-primary' disabled={loading}>
               {loading ? (
                 <>

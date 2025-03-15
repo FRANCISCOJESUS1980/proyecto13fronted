@@ -2,6 +2,7 @@ import { isToday } from 'date-fns'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import Button from '../../../components/Button/Button'
 
 const CalendarioDias = ({
   selectedDate,
@@ -13,12 +14,21 @@ const CalendarioDias = ({
 }) => {
   return (
     <div className='calendario-container'>
-      <button className='scroll-button left' onClick={handlePrevWeek}>
-        <ChevronLeft size={20} />
-      </button>
-      <button className='scroll-button right' onClick={handleNextWeek}>
-        <ChevronRight size={20} />
-      </button>
+      <Button
+        className='scroll-button left'
+        onClick={handlePrevWeek}
+        variant='secondary'
+        size='icon'
+        leftIcon={<ChevronLeft size={20} />}
+      />
+
+      <Button
+        className='scroll-button right'
+        onClick={handleNextWeek}
+        variant='secondary'
+        size='icon'
+        rightIcon={<ChevronRight size={20} />}
+      />
 
       <div className='calendario-dias' ref={calendarRef}>
         {visibleDates.map((date) => {

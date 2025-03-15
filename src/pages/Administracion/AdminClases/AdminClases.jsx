@@ -8,6 +8,7 @@ import { useFiltros } from './hooks/useFiltros'
 import { organizarClasesPorDia } from './utils/organizarClases'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import Button from '../../../components/Button/Button'
 import './AdminClases.css'
 
 const AdminClases = () => {
@@ -110,10 +111,15 @@ const AdminClases = () => {
       <Header />
       <div className='headerclases'>
         <h1>Administración de Clases</h1>
-        <button className='btn-primary' onClick={() => setIsModalOpen(true)}>
-          <Plus size={20} />
+        <Button
+          className='btn-primary'
+          variant='primary'
+          size='md'
+          onClick={() => setIsModalOpen(true)}
+          leftIcon={<Plus size={20} />}
+        >
           Nueva Clase
-        </button>
+        </Button>
       </div>
 
       {error && (

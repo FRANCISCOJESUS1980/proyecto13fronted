@@ -5,6 +5,7 @@ import {
   loadChatMessages,
   createSocketConnection
 } from '../../services/Api/index'
+import Button from '../Button/Button'
 import './Chat.css'
 
 const socket = createSocketConnection()
@@ -79,9 +80,14 @@ const Chat = () => {
   return (
     <div className='chat-container'>
       <Header />
-      <button className='back-button' onClick={() => navigate('/dashboard')}>
-        ← Volver al Dashboard
-      </button>
+      <Button
+        variant='secondary'
+        onClick={() => navigate('/dashboard')}
+        leftIcon={<span>←</span>}
+      >
+        Volver al Dashboard
+      </Button>
+
       <div className='chat-content'>
         <h2 className='chat-title'>Chat en Vivo</h2>
         <div className='chat-box'>
@@ -111,9 +117,9 @@ const Chat = () => {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
           />
-          <button type='submit' className='send-button'>
+          <Button type='submit' variant='primary' size='md'>
             Enviar
-          </button>
+          </Button>
         </form>
       </div>
     </div>
