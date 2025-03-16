@@ -6,6 +6,7 @@ import {
   verificarCodigoAutorizacion,
   registrarUsuario
 } from '../../../services/Api/index'
+import handleSubmitHelper from '../../../hooks/HandleSubmit'
 import './Register.css'
 
 const Register = () => {
@@ -74,7 +75,7 @@ const Register = () => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
-
+  /*
   const handleSubmit = async (e) => {
     e.preventDefault()
     setIsLoading(true)
@@ -98,6 +99,14 @@ const Register = () => {
     } finally {
       setIsLoading(false)
     }
+  }*/
+  const handleSubmit = async (e) => {
+    await handleSubmitHelper(e, 'registro', {
+      formData,
+      selectedImage,
+      setIsLoading,
+      setRegistroExitoso
+    })
   }
 
   return (

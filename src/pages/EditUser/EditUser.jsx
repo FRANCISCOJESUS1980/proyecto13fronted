@@ -6,6 +6,7 @@ import {
   actualizarPerfilUsuario
 } from '../../services/Api/index'
 import Button from '../../components/Button/Button'
+//import handleSubmitHelper from '../../hooks/HandleSubmit'
 import './EditUser.css'
 
 const EditUser = () => {
@@ -111,6 +112,14 @@ const EditUser = () => {
       setIsSubmitting(false)
     }
   }
+  /*const handleSubmit = (e) => {
+    handleSubmitHelper(e, 'editarUsuario', {
+      user,
+      avatarFile,
+      setIsSubmitting,
+      navigate
+    })
+  }*/
 
   if (loading) {
     return <div className='loading'>Cargando...</div>

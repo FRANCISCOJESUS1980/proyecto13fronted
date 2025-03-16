@@ -40,14 +40,15 @@ const Consentimiento = ({ onConsentAccepted }) => {
               <div className='consent-text'>
                 <p>
                   Yo, con D.N.I. mayor de edad [y/o como padre/madre/tutor del
-                  menor con D.N.I. AUTORIZO) y (me) considero física y
+                  menor con D.N.I. AUTORIZO] y (me) considero física y
                   psicológicamente apto y estoy de acuerdo en participar en uno
                   o más programas de aptitud física(s)/clase(s) o entrenamientos
-                  libres realizados por EL CENTRO DEPORTIVO ADER (en adelante EL
-                  CENTRO) que puede incluir, pero no necesariamente limitarse a
-                  CrossFit, entrenamientos de alta intensidad y/o entrenamientos
-                  de cualquier tipo dirigidos por ENTRENADORES contratados por
-                  EL CENTRO al igual que entrenamientos de forma libre.
+                  libres realizados por EL CENTRO DEPORTIVO ADERCROSSFIT (en
+                  adelante EL CENTRO) que puede incluir, pero no necesariamente
+                  limitarse a CrossFit, entrenamientos de alta intensidad y/o
+                  entrenamientos de cualquier tipo dirigidos por ENTRENADORES
+                  contratados por EL CENTRO al igual que entrenamientos de forma
+                  libre.
                 </p>
 
                 <p>

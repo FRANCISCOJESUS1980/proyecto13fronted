@@ -1,13 +1,18 @@
 import React, { useState } from 'react'
 import Header from '../../components/Header/Header'
+import handleSubmitHelper from '../../hooks/HandleSubmit'
 import './Contacto.css'
 
 const Contacto = () => {
   const [mensajeEnviado, setMensajeEnviado] = useState(false)
-
+  /*
   const handleSubmit = (e) => {
     e.preventDefault()
     setMensajeEnviado(true)
+  }*/
+
+  const handleSubmit = (e) => {
+    handleSubmitHelper(e, 'contacto', { setMensajeEnviado })
   }
 
   const handleNuevoMensaje = () => {

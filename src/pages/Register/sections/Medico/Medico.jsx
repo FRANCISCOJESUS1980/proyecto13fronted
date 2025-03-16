@@ -6,6 +6,7 @@ import {
 } from '../../../../services/Api/index'
 import Header from '../../../../components/Header/Header'
 import Button from '../../../../components/Button/Button'
+import handleSubmitHelper from '../../../../hooks/HandleSubmit'
 import './Medico.css'
 
 const Medico = () => {
@@ -46,7 +47,7 @@ const Medico = () => {
     fetchMedicalInfo()
   }, [])
 
-  const handleSubmit = async (e) => {
+  /* const handleSubmit = async (e) => {
     e.preventDefault()
     try {
       setLoading(true)
@@ -71,6 +72,9 @@ const Medico = () => {
     } finally {
       setLoading(false)
     }
+  }*/
+  const handleSubmit = (e) => {
+    handleSubmitHelper(e, 'medico', { medicalInfo, setLoading, setMessage })
   }
 
   const handleChange = (e) => {
