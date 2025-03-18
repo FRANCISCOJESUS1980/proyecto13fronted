@@ -18,6 +18,8 @@ import AdminUsuarios from '../pages/Administracion/AdminUsuarios/AdminUsuarios'
 import Chat from '../components/Chat/Chat'
 import EditarPerfil from '../pages/EditUser/EditUser'
 import MedicalInfoList from '../pages/Administracion/AdministracionMedico/MedicalinfoList'
+import Videos from '../pages/Videos/Videos'
+import NotFound from '../pages/NotFound/NotFound'
 
 import {
   PhysicalStatsProvider,
@@ -38,6 +40,7 @@ const AppRouter = () => {
           <Route path='/precios' element={<Precios />} />
           <Route path='/entrenamientos' element={<Entrenamientos />} />
           <Route path='/administracion' element={<Administracion />} />
+          <Route path='/videos' element={<Videos />} />
 
           <Route path='/administracion/clases' element={<AdminClases />} />
           <Route
@@ -57,6 +60,8 @@ const AppRouter = () => {
             path='/dashboard/editar-perfil/:id'
             element={<EditarPerfil />}
           />
+
+          <Route path='*' element={<NotFound />} />
         </Routes>
       </PhysicalStatsProvider>
     </Router>

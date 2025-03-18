@@ -6,7 +6,7 @@ import {
   verificarCodigoAutorizacion,
   registrarUsuario
 } from '../../../services/Api/index'
-import handleSubmitHelper from '../../../hooks/HandleSubmit'
+import handleSubmitHelper from '../../../utils/HandleSubmit'
 import './Register.css'
 
 const Register = () => {
