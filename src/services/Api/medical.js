@@ -2,6 +2,12 @@ import { API_BASE_URL, handleApiError, checkResponse } from './config'
 
 export const getAllMedicalInfo = async (token) => {
   try {
+    console.log(
+      'Obteniendo información médica con token:',
+      token ? 'Token presente' : 'Token ausente'
+    )
+    console.log('Rol del usuario:', localStorage.getItem('rol'))
+
     const response = await fetch(`${API_BASE_URL}/medical-info/admin/all`, {
       method: 'GET',
       headers: {
@@ -11,16 +17,28 @@ export const getAllMedicalInfo = async (token) => {
     })
 
     const data = await checkResponse(response)
-    //console.log('Respuesta completa de la API:', data)
 
     if (data && data.data) {
       const firstUser = data.data[0]?.user
       if (firstUser) {
-        // console.log('Primer usuario:', firstUser)
-        // console.log('Campos del primer usuario:', Object.keys(firstUser))
-        // console.log('Nombre del primer usuario:', firstUser.nombre)
+        console.log('Primer usuario:', firstUser)
+        console.log('Campos del primer usuario:', Object.keys(firstUser))
+        console.log('Nombre del primer usuario:', firstUser.nombre)
       }
-      return data.data || []
+
+      const validData = data.data.filter(
+        (item) => item && item.user && item.user._id
+      )
+
+      if (validData.length !== data.data.length) {
+        console.warn(
+          `Se filtraron ${
+            data.data.length - validData.length
+          } registros inválidos`
+        )
+      }
+
+      return validData || []
     } else {
       console.error('Formato de respuesta inesperado:', data)
       throw new Error('Error en el formato de datos recibidos del servidor')
@@ -43,7 +61,6 @@ export const getUserMedicalInfo = async (token) => {
 
     const data = await checkResponse(response)
 
-    // Formatear la fecha si existe
     if (data.data && data.data.lastCheckup) {
       data.data.lastCheckup = new Date(data.data.lastCheckup)
         .toISOString()

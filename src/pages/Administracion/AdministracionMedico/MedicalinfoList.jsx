@@ -22,6 +22,13 @@ const MedicalInfoList = () => {
       try {
         setLoading(true)
         const token = localStorage.getItem('token')
+        const rol = localStorage.getItem('rol')?.toLowerCase().trim()
+
+        if (rol !== 'admin' && rol !== 'administrador' && rol !== 'creador') {
+          setError('No tienes permisos para acceder a esta información')
+          setLoading(false)
+          return
+        }
 
         const data = await getAllMedicalInfo(token)
         setMedicalInfoList(data)
@@ -68,7 +75,22 @@ const MedicalInfoList = () => {
   }, [medicalInfoList, searchTerm, filterType, bloodTypeFilter])
 
   const handleUserSelect = (userId) => {
-    const user = medicalInfoList.find((info) => info.user._id === userId)
+    if (!userId) {
+      console.error('ID de usuario no válido')
+      return
+    }
+
+    const user = medicalInfoList.find(
+      (info) => info.user && info.user._id === userId
+    )
+
+    if (!user) {
+      console.error(
+        `No se encontró información médica para el usuario con ID: ${userId}`
+      )
+      return
+    }
+
     setSelectedUser(user)
   }
 
@@ -89,7 +111,7 @@ const MedicalInfoList = () => {
       <div className='admin-header'>
         <Button
           variant='secondary'
-          onClick={() => navigate('/dashboard')}
+          onClick={() => navigate('/administracion')}
           leftIcon={<span>←</span>}
         >
           Volver a Administracion
@@ -204,7 +226,11 @@ const MedicalInfoList = () => {
                         ? 'selected'
                         : ''
                     }
-                    onClick={() => handleUserSelect(info.user._id)}
+                    onClick={() =>
+                      info.user && info.user._id
+                        ? handleUserSelect(info.user._id)
+                        : null
+                    }
                   >
                     <div className='user-list-item'>
                       {info.user.avatar && (
