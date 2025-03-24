@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../../../../components/Header/Header'
+import Button from '../../../../components/Button/Button'
 import './Marcas.css'
 
 const PersonalRecords = () => {
@@ -36,9 +37,13 @@ const PersonalRecords = () => {
     <div className='records-container'>
       <Header />
       <div className='records-header'>
-        <button className='back-button' onClick={() => navigate('/dashboard')}>
-          ← Volver al Dashboard
-        </button>
+        <Button
+          variant='secondary'
+          onClick={() => navigate('/dashboard')}
+          leftIcon={<span>←</span>}
+        >
+          Volver al Dashboard
+        </Button>
         <h2>Marcas Personales</h2>
         <button className='add-record-btn' onClick={() => setShowForm(true)}>
           + Nueva Marca

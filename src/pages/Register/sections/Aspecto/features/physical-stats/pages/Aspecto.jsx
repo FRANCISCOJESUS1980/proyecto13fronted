@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+/*import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../../../../../../../components/Header/Header'
+import Button from '../../../../../../../components/Button/Button'
 import './Aspecto.css'
 
 const fetchLatestStats = async () => {
@@ -225,9 +226,13 @@ const PhysicalStats = () => {
     <div className='stats-container'>
       <Header />
       <div className='stats-header'>
-        <button className='back-button' onClick={() => navigate('/dashboard')}>
-          ← Volver al Dashboard
-        </button>
+        <Button
+          variant='secondary'
+          onClick={() => navigate('/dashboard')}
+          leftIcon={<span>←</span>}
+        >
+          Volver al Dashboard
+        </Button>
         <h2>Estadísticas Físicas</h2>
       </div>
 
@@ -620,4 +625,113 @@ const PhysicalStats = () => {
   )
 }
 
-export default PhysicalStats
+export default PhysicalStats*/
+
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import Header from '../../../../../../../components/Header/Header'
+import MedidasTab from '../components/Medidas/MedidasTab'
+import ProgresoTab from '../components/Progreso/ProgresoTab'
+import ObjetivosTab from '../components/Objetivos/ObjetivosTab'
+import Alert from '../components/ui/Alert/Alert'
+import Tabs from '../components/ui/Tabs/Tabs'
+import usePhysicalStats from '../hooks/usePhysicalStats'
+import './Aspecto.css'
+
+const PhysicalStatsPage = () => {
+  const navigate = useNavigate()
+  const [activeTab, setActiveTab] = useState('medidas')
+  const [message, setMessage] = useState({ text: '', type: '' })
+
+  const {
+    loading,
+    error,
+    fetchLatestStats,
+    fetchStatsHistory,
+    fetchObjetivos,
+    clearError
+  } = usePhysicalStats()
+
+  useEffect(() => {
+    const loadTabData = async () => {
+      switch (activeTab) {
+        case 'medidas':
+          await fetchLatestStats()
+          break
+        case 'progreso':
+          await fetchStatsHistory()
+          break
+        case 'objetivos':
+          await fetchObjetivos()
+          break
+        default:
+          break
+      }
+    }
+
+    loadTabData()
+  }, [activeTab, fetchLatestStats, fetchStatsHistory, fetchObjetivos])
+
+  useEffect(() => {
+    if (error) {
+      setMessage({ text: error, type: 'error' })
+
+      setTimeout(() => {
+        clearError()
+        setMessage({ text: '', type: '' })
+      }, 5000)
+    }
+  }, [error, clearError])
+
+  const tabs = [
+    { id: 'medidas', label: 'Medidas' },
+    { id: 'progreso', label: 'Progreso' },
+    { id: 'objetivos', label: 'Objetivos' }
+  ]
+
+  const handleMessage = (msg) => {
+    setMessage(msg)
+
+    setTimeout(() => {
+      setMessage({ text: '', type: '' })
+    }, 5000)
+  }
+
+  return (
+    <div className='stats-container'>
+      <Header />
+      <div className='stats-header'>
+        <button className='back-button' onClick={() => navigate('/dashboard')}>
+          ← Volver al Dashboard
+        </button>
+        <h2>Estadísticas Físicas</h2>
+      </div>
+
+      {message.text && (
+        <Alert
+          type={message.type}
+          onClose={() => setMessage({ text: '', type: '' })}
+        >
+          {message.text}
+        </Alert>
+      )}
+
+      <Tabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
+
+      {loading && <div className='loading-spinner'>Cargando...</div>}
+
+      <div className='tab-content'>
+        {console.log(activeTab)}
+        {activeTab === 'medidas' && <MedidasTab onMessage={handleMessage} />}
+
+        {activeTab === 'progreso' && <ProgresoTab />}
+
+        {activeTab === 'objetivos' && (
+          <ObjetivosTab onMessage={handleMessage} />
+        )}
+      </div>
+    </div>
+  )
+}
+
+export default PhysicalStatsPage

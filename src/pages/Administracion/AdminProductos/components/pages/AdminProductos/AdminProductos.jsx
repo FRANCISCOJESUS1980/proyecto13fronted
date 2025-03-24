@@ -7,9 +7,11 @@ import ProductoFilters from '../../ProductoFilters/ProductoFilters'
 import Pagination from '../../Pagination/Pagination'
 import Alert from '../../Alert/Alert'
 import Button from '../../../../../../components/Button/Button'
+import { useNavigate } from 'react-router-dom'
 import './AdminProductos.css'
 
 const AdminProductos = () => {
+  const navigate = useNavigate()
   const {
     state,
     handleBuscarProductos,
@@ -32,6 +34,13 @@ const AdminProductos = () => {
 
       <Alert type='success' message={state.successMessage} />
       <Alert type='error' message={state.error} />
+      <Button
+        variant='secondary'
+        onClick={() => navigate('/administracion')}
+        leftIcon={<span>←</span>}
+      >
+        Volver a Administracion
+      </Button>
 
       <div className='headerproductos'>
         <h1>Administración de Productos</h1>

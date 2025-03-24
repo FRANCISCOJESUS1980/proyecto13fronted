@@ -9,9 +9,11 @@ import { organizarClasesPorDia } from './utils/organizarClases'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import Button from '../../../components/Button/Button'
+import { useNavigate } from 'react-router-dom'
 import './AdminClases.css'
 
 const AdminClases = () => {
+  const navigate = useNavigate()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [formData, setFormData] = useState(null)
@@ -110,6 +112,13 @@ const AdminClases = () => {
     <div className='admin-clases'>
       <Header />
       <div className='headerclases'>
+        <Button
+          variant='secondary'
+          onClick={() => navigate('/administracion')}
+          leftIcon={<span>←</span>}
+        >
+          Volver a Administracion
+        </Button>
         <h1>Administración de Clases</h1>
         <Button
           className='btn-primary'
