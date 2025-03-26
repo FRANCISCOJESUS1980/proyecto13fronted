@@ -15,7 +15,7 @@ import 'chartjs-adapter-date-fns'
 import { es } from 'date-fns/locale'
 import usePhysicalStats from '../../hooks/usePhysicalStats'
 import { fetchTrendsApi } from '../../api/physicalStatsApi'
-import Card from '../Progreso/ProgresoTab'
+import Card from '../ui/Card/Card'
 import Select from '../ui/Select/Select'
 import './ProgresoTab.css'
 
@@ -31,6 +31,7 @@ ChartJS.register(
 )
 
 const ProgresoTab = () => {
+  console.log('hola manu')
   const { historialMedidas, loading } = usePhysicalStats()
   const [selectedMedida, setSelectedMedida] = useState('peso')
   const [trendsData, setTrendsData] = useState(null)
@@ -151,7 +152,7 @@ const ProgresoTab = () => {
   }
 
   const chartData = prepareChartData()
-
+  console.log('hola manu vamos avanzando')
   return (
     <div className='progreso-container'>
       <Card className='progreso-card'>

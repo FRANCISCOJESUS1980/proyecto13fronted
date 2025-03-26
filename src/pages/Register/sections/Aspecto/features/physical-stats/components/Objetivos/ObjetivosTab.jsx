@@ -1,12 +1,10 @@
-import { useState } from 'react'
-import usePhysicalStats from '../../hooks/usePhysicalStats.js'
-import Card from '../ui/Card/Card.jsx'
-import Button from '../../../../../../../../components/Button/Button.jsx'
-import ProgressBar from '../ui/ProgressBar/ProgressBar.jsx'
+import { useState, useEffect } from 'react'
+import usePhysicalStats from '../../hooks/usePhysicalStats'
 import './ObjetivosTab.css'
 
 const ObjetivosTab = ({ onMessage }) => {
-  const { objetivos, loading, createObjetivo } = usePhysicalStats()
+  const { objetivos, loading, createObjetivo, fetchObjetivos } =
+    usePhysicalStats()
   const [showForm, setShowForm] = useState(false)
   const [formData, setFormData] = useState({
     tipo: 'peso',
@@ -14,6 +12,11 @@ const ObjetivosTab = ({ onMessage }) => {
     valorObjetivo: '',
     fechaObjetivo: ''
   })
+
+  useEffect(() => {
+    console.log('ObjetivosTab: Cargando objetivos...')
+    fetchObjetivos()
+  }, [fetchObjetivos])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -52,6 +55,8 @@ const ObjetivosTab = ({ onMessage }) => {
         valorObjetivo: '',
         fechaObjetivo: ''
       })
+
+      fetchObjetivos()
     }
 
     onMessage({
@@ -95,6 +100,21 @@ const ObjetivosTab = ({ onMessage }) => {
     }
   }
 
+  const renderProgressBar = (progreso) => {
+    return (
+      <div className='progress-bar-container'>
+        <div
+          className='progress-bar-fill'
+          style={{
+            width: `${progreso}%`,
+            backgroundColor: progreso >= 100 ? '#2ecc71' : '#3498db'
+          }}
+        ></div>
+        <span className='progress-text'>{Math.round(progreso)}%</span>
+      </div>
+    )
+  }
+
   const calcularDiasRestantes = (fechaObjetivo) => {
     const hoy = new Date()
     const fecha = new Date(fechaObjetivo)
@@ -102,20 +122,22 @@ const ObjetivosTab = ({ onMessage }) => {
     return Math.max(0, Math.ceil(diferencia / (1000 * 60 * 60 * 24)))
   }
 
+  console.log('ObjetivosTab: Objetivos cargados:', objetivos)
+
   return (
     <div className='objetivos-container'>
       <div className='objetivos-header'>
         <h3>Mis Objetivos</h3>
-        <Button
+        <button
+          className={`add-goal-btn ${showForm ? 'cancel' : ''}`}
           onClick={() => setShowForm(!showForm)}
-          className={showForm ? 'cancel-btn' : 'add-btn'}
         >
           {showForm ? 'Cancelar' : 'Añadir Nuevo Objetivo'}
-        </Button>
+        </button>
       </div>
 
       {showForm && (
-        <Card className='objetivo-form-card'>
+        <div className='objetivo-form-card'>
           <form onSubmit={handleSubmit} className='objetivo-form'>
             <div className='form-row'>
               <div className='form-group'>
@@ -184,23 +206,17 @@ const ObjetivosTab = ({ onMessage }) => {
               </div>
             </div>
 
-            <Button
-              type='submit'
-              disabled={loading}
-              className='save-objetivo-btn'
-            >
+            <button type='submit' className='save-goal-btn' disabled={loading}>
               {loading ? 'Guardando...' : 'Guardar Objetivo'}
-            </Button>
+            </button>
           </form>
-        </Card>
+        </div>
       )}
 
       {loading ? (
-        <div className='loading-container'>
-          <div className='loading-spinner'>Cargando objetivos...</div>
-        </div>
+        <div className='loading-container'>Cargando objetivos...</div>
       ) : objetivos.length === 0 ? (
-        <Card className='no-objetivos-card'>
+        <div className='no-objetivos-card'>
           <div className='no-data'>
             <p>No tienes objetivos establecidos.</p>
             <p>
@@ -208,11 +224,11 @@ const ObjetivosTab = ({ onMessage }) => {
               progreso.
             </p>
           </div>
-        </Card>
+        </div>
       ) : (
         <div className='objetivos-grid'>
           {objetivos.map((objetivo, index) => (
-            <Card
+            <div
               key={index}
               className={`objetivo-card ${
                 objetivo.completado ? 'completed' : ''
@@ -241,11 +257,7 @@ const ObjetivosTab = ({ onMessage }) => {
                 </div>
 
                 <div className='objetivo-progress'>
-                  <ProgressBar
-                    progress={objetivo.progreso}
-                    showLabel={true}
-                    color={objetivo.completado ? '#2ecc71' : '#3498db'}
-                  />
+                  {renderProgressBar(objetivo.progreso)}
                 </div>
 
                 <div className='objetivo-meta'>
@@ -266,7 +278,7 @@ const ObjetivosTab = ({ onMessage }) => {
                   )}
                 </div>
               </div>
-            </Card>
+            </div>
           ))}
         </div>
       )}

@@ -1,5 +1,8 @@
 .medidas-card {
+  background-color: #fff;
+  border-radius: 8px;
   padding: 30px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .medidas-form {
@@ -40,10 +43,28 @@
 }
 
 .save-btn {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
   width: 100%;
   max-width: 300px;
   margin: 0 auto;
   display: block;
+}
+
+.save-btn:hover {
+  background-color: #2980b9;
+}
+
+.save-btn:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
 }
 
 @media (max-width: 768px) {

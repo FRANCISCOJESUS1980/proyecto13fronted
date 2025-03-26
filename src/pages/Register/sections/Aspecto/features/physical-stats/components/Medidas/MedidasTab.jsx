@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react'
 import usePhysicalStats from '../../hooks/usePhysicalStats'
-import Card from '../ui/Card/Card'
-import Button from '../../../../../../../../components/Button/Button'
 import './MedidasTab.css'
 
 const MedidasTab = ({ onMessage }) => {
-  const { stats, loading, saveStats } = usePhysicalStats()
+  const { stats, loading, saveStats, fetchLatestStats } = usePhysicalStats()
 
   const [formData, setFormData] = useState({
     altura: '',
@@ -20,7 +18,20 @@ const MedidasTab = ({ onMessage }) => {
   })
 
   useEffect(() => {
+    const loadLatestStats = async () => {
+      try {
+        await fetchLatestStats()
+      } catch (error) {
+        console.error('Error al cargar las últimas medidas:', error)
+      }
+    }
+
+    loadLatestStats()
+  }, [fetchLatestStats])
+
+  useEffect(() => {
     if (stats) {
+      console.log('Medidas cargadas:', stats)
       setFormData({
         altura: stats.altura || '',
         peso: stats.peso || '',
@@ -60,7 +71,7 @@ const MedidasTab = ({ onMessage }) => {
   }
 
   return (
-    <Card className='medidas-card'>
+    <div className='medidas-card'>
       <form onSubmit={handleSubmit} className='medidas-form'>
         <div className='medidas-grid'>
           <div className='form-group'>
@@ -180,11 +191,11 @@ const MedidasTab = ({ onMessage }) => {
           </div>
         </div>
 
-        <Button type='submit' disabled={loading} className='save-btn'>
+        <button type='submit' className='save-btn' disabled={loading}>
           {loading ? 'Guardando...' : 'Guardar Medidas'}
-        </Button>
+        </button>
       </form>
-    </Card>
+    </div>
   )
 }
 

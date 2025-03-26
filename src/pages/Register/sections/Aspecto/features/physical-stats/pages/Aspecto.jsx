@@ -636,9 +636,10 @@ import ObjetivosTab from '../components/Objetivos/ObjetivosTab'
 import Alert from '../components/ui/Alert/Alert'
 import Tabs from '../components/ui/Tabs/Tabs'
 import usePhysicalStats from '../hooks/usePhysicalStats'
+import Button from '../../../../../../../components/Button/Button'
 import './Aspecto.css'
 
-const PhysicalStatsPage = () => {
+const Aspecto = () => {
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('medidas')
   const [message, setMessage] = useState({ text: '', type: '' })
@@ -651,6 +652,14 @@ const PhysicalStatsPage = () => {
     fetchObjetivos,
     clearError
   } = usePhysicalStats()
+
+  useEffect(() => {
+    const loadInitialData = async () => {
+      await fetchLatestStats()
+    }
+
+    loadInitialData()
+  }, [fetchLatestStats])
 
   useEffect(() => {
     const loadTabData = async () => {
@@ -697,13 +706,22 @@ const PhysicalStatsPage = () => {
     }, 5000)
   }
 
+  const handleTabChange = (tabId) => {
+    console.log('Cambiando a pestaña:', tabId)
+    setActiveTab(tabId)
+  }
+
   return (
     <div className='stats-container'>
       <Header />
       <div className='stats-header'>
-        <button className='back-button' onClick={() => navigate('/dashboard')}>
-          ← Volver al Dashboard
-        </button>
+        <Button
+          variant='secondary'
+          onClick={() => navigate('/dashboard')}
+          leftIcon={<span>←</span>}
+        >
+          Volver al Dashboard
+        </Button>
         <h2>Estadísticas Físicas</h2>
       </div>
 
@@ -716,12 +734,11 @@ const PhysicalStatsPage = () => {
         </Alert>
       )}
 
-      <Tabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
+      <Tabs tabs={tabs} activeTab={activeTab} onChange={handleTabChange} />
 
       {loading && <div className='loading-spinner'>Cargando...</div>}
 
       <div className='tab-content'>
-        {console.log(activeTab)}
         {activeTab === 'medidas' && <MedidasTab onMessage={handleMessage} />}
 
         {activeTab === 'progreso' && <ProgresoTab />}
@@ -734,4 +751,4 @@ const PhysicalStatsPage = () => {
   )
 }
 
-export default PhysicalStatsPage
+export default Aspecto
