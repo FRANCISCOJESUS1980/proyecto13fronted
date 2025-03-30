@@ -6,7 +6,7 @@ import {
   actualizarPerfilUsuario
 } from '../../services/Api/index'
 import Button from '../../components/Button/Button'
-//import handleSubmitHelper from '../../hooks/HandleSubmit'
+import handleSubmitHelper from '../../utils/HandleSubmit'
 import './EditUser.css'
 
 const EditUser = () => {
@@ -78,48 +78,15 @@ const EditUser = () => {
     }
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-
-    if (isSubmitting) return
-
-    try {
-      setIsSubmitting(true)
-
-      const token = localStorage.getItem('token')
-      if (!token) {
-        navigate('/iniciar-sesion')
-        return
-      }
-
-      const response = await actualizarPerfilUsuario(token, user, avatarFile)
-
-      if (response.success) {
-        localStorage.setItem('nombre', user.nombre)
-
-        alert('Perfil actualizado con éxito')
-        navigate('/dashboard')
-      } else {
-        alert(
-          'Error al actualizar el perfil: ' +
-            (response.message || 'Error desconocido')
-        )
-      }
-    } catch (error) {
-      console.error('Error completo:', error)
-      alert('Error al actualizar el perfil: ' + error.message)
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-  /*const handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     handleSubmitHelper(e, 'editarUsuario', {
       user,
       avatarFile,
+      isSubmitting,
       setIsSubmitting,
       navigate
     })
-  }*/
+  }
 
   if (loading) {
     return <div className='loading'>Cargando...</div>

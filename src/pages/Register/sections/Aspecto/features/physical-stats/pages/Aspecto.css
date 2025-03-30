@@ -4,3 +4,22 @@
   flex-direction: column;
   margin-bottom: 30px;
 }
+.stats-container {
+  height: 100svh;
+  background: linear-gradient(
+    135deg,
+    var(--secondary) 0%,
+    var(--gray-800) 100%
+  );
+}
+.tituloaspecto {
+  color: red;
+}
+.tab-content {
+  max-height: 100svh;
+  background: linear-gradient(
+    135deg,
+    var(--secondary) 0%,
+    var(--gray-800) 100%
+  );
+}

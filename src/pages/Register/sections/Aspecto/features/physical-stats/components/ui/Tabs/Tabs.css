@@ -2,6 +2,7 @@
   display: flex;
   border-bottom: 1px solid #e0e0e0;
   margin-bottom: 20px;
+  justify-content: center;
 }
 
 .tab-button {
@@ -40,11 +41,11 @@
     overflow-x: auto;
     white-space: nowrap;
     -webkit-overflow-scrolling: touch;
-    scrollbar-width: none; /* Firefox */
+    scrollbar-width: none;
   }
 
   .tabs-container::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Edge */
+    display: none;
   }
 
   .tab-button {

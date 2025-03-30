@@ -34,15 +34,16 @@ const AdminProductos = () => {
 
       <Alert type='success' message={state.successMessage} />
       <Alert type='error' message={state.error} />
-      <Button
-        variant='secondary'
-        onClick={() => navigate('/administracion')}
-        leftIcon={<span>←</span>}
-      >
-        Volver a Administracion
-      </Button>
 
       <div className='headerproductos'>
+        <Button
+          variant='secondary'
+          onClick={() => navigate('/administracion')}
+          leftIcon={<span>←</span>}
+        >
+          Volver a Administracion
+        </Button>
+
         <h1>Administración de Productos</h1>
         <Button
           className='btn-primary'

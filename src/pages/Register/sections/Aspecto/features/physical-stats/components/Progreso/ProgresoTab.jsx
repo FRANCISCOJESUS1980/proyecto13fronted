@@ -15,8 +15,6 @@ import 'chartjs-adapter-date-fns'
 import { es } from 'date-fns/locale'
 import usePhysicalStats from '../../hooks/usePhysicalStats'
 import { fetchTrendsApi } from '../../api/physicalStatsApi'
-import Card from '../ui/Card/Card'
-import Select from '../ui/Select/Select'
 import './ProgresoTab.css'
 
 ChartJS.register(
@@ -31,11 +29,11 @@ ChartJS.register(
 )
 
 const ProgresoTab = () => {
-  console.log('hola manu')
   const { historialMedidas, loading } = usePhysicalStats()
   const [selectedMedida, setSelectedMedida] = useState('peso')
   const [trendsData, setTrendsData] = useState(null)
   const [loadingTrends, setLoadingTrends] = useState(false)
+  const [error, setError] = useState(null)
 
   const medidasOptions = [
     { value: 'peso', label: 'Peso (kg)' },
@@ -52,11 +50,14 @@ const ProgresoTab = () => {
     const loadTrends = async () => {
       if (selectedMedida) {
         setLoadingTrends(true)
+        setError(null)
         try {
           const data = await fetchTrendsApi(selectedMedida)
           setTrendsData(data)
         } catch (error) {
           console.error('Error al cargar tendencias:', error)
+          setError(error.message || 'Error al cargar tendencias')
+          setTrendsData(null)
         } finally {
           setLoadingTrends(false)
         }
@@ -76,9 +77,10 @@ const ProgresoTab = () => {
     )
 
     const labels = sortedData.map((item) => new Date(item.fecha))
-    const values = sortedData.map(
-      (item) => item.medidas[selectedMedida] || null
-    )
+    const values = sortedData.map((item) => {
+      const value = item.medidas && item.medidas[selectedMedida]
+      return value !== undefined ? value : null
+    })
 
     return {
       labels,
@@ -138,13 +140,21 @@ const ProgresoTab = () => {
       tooltip: {
         callbacks: {
           title: (context) => {
-            const date = new Date(context[0].parsed.x)
-            return date.toLocaleDateString('es-ES', {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })
+            if (
+              context &&
+              context[0] &&
+              context[0].parsed &&
+              context[0].parsed.x
+            ) {
+              const date = new Date(context[0].parsed.x)
+              return date.toLocaleDateString('es-ES', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })
+            }
+            return ''
           }
         }
       }
@@ -152,23 +162,41 @@ const ProgresoTab = () => {
   }
 
   const chartData = prepareChartData()
-  console.log('hola manu vamos avanzando')
+
+  const safeToFixed = (value, decimals = 2) => {
+    if (value === undefined || value === null) return '0.00'
+    return Number(value).toFixed(decimals)
+  }
+
   return (
     <div className='progreso-container'>
-      <Card className='progreso-card'>
+      <div className='progreso-card'>
         <div className='progreso-header'>
           <h3>Progreso de Medidas</h3>
-          <Select
-            options={medidasOptions}
-            value={selectedMedida}
-            onChange={(e) => setSelectedMedida(e.target.value)}
-            label='Seleccionar medida'
-          />
+          <div className='select-container'>
+            <label htmlFor='medida-select'>Seleccionar medida</label>
+            <select
+              id='medida-select'
+              value={selectedMedida}
+              onChange={(e) => setSelectedMedida(e.target.value)}
+              className='select-input'
+            >
+              {medidasOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {loading || loadingTrends ? (
           <div className='loading-container'>
             <div className='loading-spinner'>Cargando datos...</div>
+          </div>
+        ) : error ? (
+          <div className='error-container'>
+            <p>Error: {error}</p>
           </div>
         ) : historialMedidas.length < 2 ? (
           <div className='no-data'>
@@ -184,15 +212,19 @@ const ProgresoTab = () => {
             )}
           </div>
         )}
-      </Card>
+      </div>
 
-      {trendsData && (
-        <Card className='tendencias-card'>
+      {trendsData && !error && !loadingTrends && (
+        <div className='tendencias-card'>
           <h3>Análisis de Tendencias</h3>
           <div className='tendencias-grid'>
             <div className='tendencia-item'>
               <span className='tendencia-label'>Tendencia:</span>
-              <span className={`tendencia-value ${trendsData.tendencia}`}>
+              <span
+                className={`tendencia-value ${
+                  trendsData.tendencia || 'neutral'
+                }`}
+              >
                 {trendsData.tendencia === 'aumento'
                   ? '↗️ Aumento'
                   : trendsData.tendencia === 'disminución'
@@ -205,7 +237,7 @@ const ProgresoTab = () => {
               <span className='tendencia-label'>Cambio total:</span>
               <span className='tendencia-value'>
                 {trendsData.diferencia > 0 ? '+' : ''}
-                {trendsData.diferencia.toFixed(2)}
+                {safeToFixed(trendsData.diferencia)}
                 {selectedMedida === 'peso'
                   ? ' kg'
                   : selectedMedida === 'grasa' || selectedMedida === 'musculo'
@@ -218,25 +250,25 @@ const ProgresoTab = () => {
               <span className='tendencia-label'>Tasa de cambio:</span>
               <span className='tendencia-value'>
                 {trendsData.tasaCambio > 0 ? '+' : ''}
-                {trendsData.tasaCambio} {trendsData.unidad}
+                {safeToFixed(trendsData.tasaCambio)} {trendsData.unidad || ''}
               </span>
             </div>
 
             <div className='tendencia-item'>
               <span className='tendencia-label'>Período analizado:</span>
               <span className='tendencia-value'>
-                {trendsData.valores.length > 0
+                {trendsData.valores && trendsData.valores.length > 0
                   ? `${new Date(
                       trendsData.valores[0].fecha
                     ).toLocaleDateString()} - 
-                   ${new Date(
-                     trendsData.valores[trendsData.valores.length - 1].fecha
-                   ).toLocaleDateString()}`
+                     ${new Date(
+                       trendsData.valores[trendsData.valores.length - 1].fecha
+                     ).toLocaleDateString()}`
                   : 'N/A'}
               </span>
             </div>
           </div>
-        </Card>
+        </div>
       )}
     </div>
   )

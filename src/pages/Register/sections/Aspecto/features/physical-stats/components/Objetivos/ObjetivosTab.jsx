@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import usePhysicalStats from '../../hooks/usePhysicalStats'
+import ConfirmModal from '../ui/ConfirmModal/ConfirmModal'
 import './ObjetivosTab.css'
 
 const ObjetivosTab = ({ onMessage }) => {
-  const { objetivos, loading, createObjetivo, fetchObjetivos } =
+  const { objetivos, loading, createObjetivo, fetchObjetivos, deleteObjetivo } =
     usePhysicalStats()
   const [showForm, setShowForm] = useState(false)
   const [formData, setFormData] = useState({
@@ -11,6 +12,13 @@ const ObjetivosTab = ({ onMessage }) => {
     medida: 'peso',
     valorObjetivo: '',
     fechaObjetivo: ''
+  })
+
+  const [confirmModal, setConfirmModal] = useState({
+    isOpen: false,
+    objetivoId: null,
+    title: '',
+    message: ''
   })
 
   useEffect(() => {
@@ -55,13 +63,73 @@ const ObjetivosTab = ({ onMessage }) => {
         valorObjetivo: '',
         fechaObjetivo: ''
       })
-
-      fetchObjetivos()
     }
 
     onMessage({
       text: result.message,
       type: result.success ? 'success' : 'error'
+    })
+  }
+
+  const handleDeleteClick = (objetivoId) => {
+    setConfirmModal({
+      isOpen: true,
+      objetivoId,
+      title: 'Eliminar Objetivo',
+      message:
+        '¿Estás seguro de que deseas eliminar este objetivo? Esta acción no se puede deshacer.'
+    })
+  }
+
+  const handleConfirmDelete = async () => {
+    try {
+      const { objetivoId } = confirmModal
+
+      if (typeof deleteObjetivo !== 'function') {
+        console.error('deleteObjetivo no es una función:', deleteObjetivo)
+        onMessage({
+          text: 'Error interno: función de eliminación no disponible',
+          type: 'error'
+        })
+        return
+      }
+
+      const result = await deleteObjetivo(objetivoId)
+
+      setConfirmModal({
+        isOpen: false,
+        objetivoId: null,
+        title: '',
+        message: ''
+      })
+
+      onMessage({
+        text: result.message,
+        type: result.success ? 'success' : 'error'
+      })
+    } catch (error) {
+      console.error('Error al eliminar objetivo:', error)
+
+      setConfirmModal({
+        isOpen: false,
+        objetivoId: null,
+        title: '',
+        message: ''
+      })
+
+      onMessage({
+        text: error.message || 'Error al eliminar objetivo',
+        type: 'error'
+      })
+    }
+  }
+
+  const handleCancelDelete = () => {
+    setConfirmModal({
+      isOpen: false,
+      objetivoId: null,
+      title: '',
+      message: ''
     })
   }
 
@@ -121,8 +189,6 @@ const ObjetivosTab = ({ onMessage }) => {
     const diferencia = fecha - hoy
     return Math.max(0, Math.ceil(diferencia / (1000 * 60 * 60 * 24)))
   }
-
-  console.log('ObjetivosTab: Objetivos cargados:', objetivos)
 
   return (
     <div className='objetivos-container'>
@@ -229,20 +295,45 @@ const ObjetivosTab = ({ onMessage }) => {
         <div className='objetivos-grid'>
           {objetivos.map((objetivo, index) => (
             <div
-              key={index}
+              key={objetivo._id || index}
               className={`objetivo-card ${
                 objetivo.completado ? 'completed' : ''
               }`}
             >
               <div className='objetivo-header'>
                 <h4>{getMedidaNombre(objetivo.medida)}</h4>
-                <span
-                  className={`objetivo-status ${
-                    objetivo.completado ? 'completed' : ''
-                  }`}
-                >
-                  {objetivo.completado ? 'Completado' : 'En progreso'}
-                </span>
+                <div className='objetivo-actions'>
+                  <span
+                    className={`objetivo-status ${
+                      objetivo.completado ? 'completed' : ''
+                    }`}
+                  >
+                    {objetivo.completado ? 'Completado' : 'En progreso'}
+                  </span>
+                  <button
+                    className='delete-btn'
+                    onClick={() => handleDeleteClick(objetivo._id)}
+                    title='Eliminar objetivo'
+                  >
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      width='16'
+                      height='16'
+                      viewBox='0 0 24 24'
+                      fill='none'
+                      stroke='currentColor'
+                      strokeWidth='2'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    >
+                      <path d='M3 6h18'></path>
+                      <path d='M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6'></path>
+                      <path d='M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2'></path>
+                      <line x1='10' y1='11' x2='10' y2='17'></line>
+                      <line x1='14' y1='11' x2='14' y2='17'></line>
+                    </svg>
+                  </button>
+                </div>
               </div>
 
               <div className='objetivo-details'>
@@ -282,6 +373,14 @@ const ObjetivosTab = ({ onMessage }) => {
           ))}
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+      />
     </div>
   )
 }

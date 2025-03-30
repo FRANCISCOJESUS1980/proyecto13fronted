@@ -6,7 +6,8 @@ import {
   fetchStatsHistoryApi,
   fetchObjetivosApi,
   saveStatsApi,
-  createObjetivoApi
+  createObjetivoApi,
+  deleteObjetivoApi
 } from '../api/physicalStatsApi'
 
 const PhysicalStatsProvider = ({ children }) => {
@@ -105,7 +106,6 @@ const PhysicalStatsProvider = ({ children }) => {
       setLoading()
       try {
         const newObjetivo = await createObjetivoApi(objetivoData)
-
         dispatch({
           type: ACTIONS.SET_OBJETIVOS,
           payload: [...state.objetivos, newObjetivo]
@@ -125,6 +125,32 @@ const PhysicalStatsProvider = ({ children }) => {
     [state.objetivos]
   )
 
+  const deleteObjetivo = useCallback(async (objetivoId) => {
+    setLoading()
+    try {
+      const result = await deleteObjetivoApi(objetivoId)
+
+      dispatch({
+        type: ACTIONS.REMOVE_OBJETIVO,
+        payload: objetivoId
+      })
+
+      return {
+        success: true,
+        message: result.message || 'Objetivo eliminado correctamente'
+      }
+    } catch (error) {
+      dispatch({
+        type: ACTIONS.SET_ERROR,
+        payload: error.message || 'Error al eliminar objetivo'
+      })
+      return {
+        success: false,
+        message: error.message || 'Error al eliminar objetivo'
+      }
+    }
+  }, [])
+
   return (
     <PhysicalStatsContext.Provider
       value={{
@@ -134,6 +160,7 @@ const PhysicalStatsProvider = ({ children }) => {
         fetchObjetivos,
         saveStats,
         createObjetivo,
+        deleteObjetivo,
         clearError
       }}
     >

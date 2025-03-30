@@ -1,12 +1,13 @@
 .progreso-container {
   display: flex;
   flex-direction: column;
-  gap: 30px;
 }
 
 .progreso-card,
 .tendencias-card {
   padding: 30px;
+  margin: 30px;
+  background-color: #f9f9f9;
 }
 
 .progreso-header {

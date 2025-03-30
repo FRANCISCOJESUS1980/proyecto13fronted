@@ -6,6 +6,7 @@
 
 .admin-header {
   display: flex;
+  flex-direction: column;
   align-items: center;
   margin-bottom: 30px;
 }
@@ -13,7 +14,7 @@
 .admin-header h1 {
   margin: 0;
   font-size: 1.8rem;
-  color: #333;
+  color: #3a7bc8;
 }
 
 .search-container {

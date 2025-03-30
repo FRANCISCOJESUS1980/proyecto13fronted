@@ -8,12 +8,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin: 30px;
 }
 
 .objetivos-header h3 {
   margin: 0;
   font-size: 20px;
   font-weight: 600;
+  color: #2ecc71;
 }
 
 .add-goal-btn {
@@ -102,6 +104,7 @@
   padding: 20px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
+  margin: 20px;
 }
 
 .objetivo-card:hover {
@@ -125,6 +128,12 @@
   font-weight: 600;
 }
 
+.objetivo-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .objetivo-status {
   font-size: 12px;
   padding: 5px 10px;
@@ -135,6 +144,23 @@
 
 .objetivo-status.completed {
   background-color: #2ecc71;
+}
+
+.delete-btn {
+  background-color: transparent;
+  border: none;
+  color: #e74c3c;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.delete-btn:hover {
+  background-color: rgba(231, 76, 60, 0.1);
 }
 
 .objetivo-details {

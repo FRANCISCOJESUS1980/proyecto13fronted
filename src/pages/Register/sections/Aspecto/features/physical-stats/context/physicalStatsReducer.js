@@ -43,6 +43,12 @@ const physicalStatsReducer = (state, action) => {
         objetivos: action.payload,
         loading: false
       }
+    case ACTIONS.REMOVE_OBJETIVO:
+      return {
+        ...state,
+        objetivos: state.objetivos.filter((obj) => obj._id !== action.payload),
+        loading: false
+      }
     default:
       return state
   }

@@ -3,6 +3,7 @@ import { X, PlusCircle, Trash } from 'lucide-react'
 import { useFormData } from '../hooks/useFormData'
 import { useEntrenadores } from '../hooks/useEntrenadores'
 import { guardarClase } from '../services/clasesService'
+//import { handleClaseSubmit } from '../utils/HandleSubmit'
 
 const ClaseModal = ({
   onClose,
@@ -81,6 +82,18 @@ const ClaseModal = ({
       setLoading(false)
     }
   }
+  /*const handleSubmit = async (e) => {
+    return handleClaseSubmit({
+      e,
+      formData,
+      editingId,
+      modoCreacion,
+      onSuccess,
+      setLoading,
+      setError,
+      setSuccess
+    })
+  }*/
 
   return (
     <div className='modal-overlay'>

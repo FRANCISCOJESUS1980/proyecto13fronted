@@ -91,3 +91,25 @@ export const createObjetivoApi = async (objetivoData) => {
 
   return handleResponse(response)
 }
+
+export const deleteObjetivoApi = async (objetivoId) => {
+  const token = getAuthToken()
+
+  const response = await fetch(`${API_URL}/objetivos/${objetivoId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  const data = await response.json()
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Error al eliminar objetivo')
+  }
+
+  return {
+    success: true,
+    message: data.message || 'Objetivo eliminado correctamente'
+  }
+}

@@ -10,7 +10,8 @@ const PhysicalStatsContext = createContext({
   fetchLatestStats: () => {},
   fetchStatsHistory: () => {},
   fetchObjetivos: () => {},
-  createObjetivo: () => {}
+  createObjetivo: () => {},
+  deleteObjetivo: () => {}
 })
 
 export default PhysicalStatsContext
