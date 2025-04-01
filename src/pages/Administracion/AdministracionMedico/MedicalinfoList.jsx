@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { getAllMedicalInfo } from '../../../services/Api/index'
 import Header from '../../../components/Header/Header'
 import Button from '../../../components/Button/Button'
-import './MedicalInfoList.css'
+import './MedicalinfoList.css'
 
 const MedicalInfoList = () => {
   const navigate = useNavigate()
