@@ -75,6 +75,17 @@ const Administracion = () => {
           <h2>❤️ Información Médica</h2>
           <p>Revisa y gestiona los datos médicos de todos los usuarios.</p>
         </div>
+
+        <div
+          className='section-card'
+          onClick={() => navigate('/administracion/consentimientos')}
+        >
+          <h2>📝 Consentimientos</h2>
+          <p>
+            Revisa los consentimientos y autorizaciones de imagen de los
+            usuarios.
+          </p>
+        </div>
       </div>
 
       <h2>Usuarios Registrados</h2>

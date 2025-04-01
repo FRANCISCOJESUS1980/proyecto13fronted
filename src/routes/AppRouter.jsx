@@ -7,7 +7,7 @@ import Contacto from '../pages/Contactos/Contacto'
 import UserDashboard from '../pages/Register/sections/Dashboard/UserDashboard'
 import Medico from '../pages/Register/sections/Medico/Medico'
 import Aspecto from '../pages/Register/sections/Aspecto/features/physical-stats/pages/Aspecto'
-import Marcas from '../pages/Register/sections/Marcas/Marcas'
+import Marcas from '../pages/Register/sections/Marcas/page/Marcas'
 import Iniciarsesion from '../pages/Iniciar Sesion/iniciarsesion'
 import Productos from '../pages/Productos/Productos'
 import Precios from '../pages/Precios/Precios'
@@ -15,6 +15,7 @@ import Administracion from '../pages/Administracion/Administracion/Administracio
 import AdminClases from '../pages/Administracion/AdminClases/AdminClases'
 import AdminProductos from '../pages/Administracion/AdminProductos/components/pages/AdminProductos/AdminProductos'
 import AdminUsuarios from '../pages/Administracion/AdminUsuarios/AdminUsuarios'
+import AdminConsentimientos from '../pages/Administracion/AdminConsentimientos/AdminConsentimientos'
 import Chat from '../components/Chat/Chat'
 import EditarPerfil from '../pages/EditUser/EditUser'
 import MedicalInfoList from '../pages/Administracion/AdministracionMedico/MedicalinfoList'
@@ -49,6 +50,10 @@ const AppRouter = () => {
           />
           <Route path='/administracion/usuarios' element={<AdminUsuarios />} />
           <Route path='/admin/medical-info' element={<MedicalInfoList />} />
+          <Route
+            path='/administracion/consentimientos'
+            element={<AdminConsentimientos />}
+          />
 
           <Route path='/dashboard' element={<UserDashboard />} />
           <Route path='/dashboard/medico' element={<Medico />} />

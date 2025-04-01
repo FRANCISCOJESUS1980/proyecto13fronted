@@ -1,19 +1,100 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import './Consentimiento.css'
+import { guardarConsentimiento } from '../../../../services/Api'
 
 const Consentimiento = ({ onConsentAccepted }) => {
   const [aceptado, setAceptado] = useState(false)
-
   const [autorizaImagen, setAutorizaImagen] = useState(null)
   const contentRef = useRef(null)
+  const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [userId, setUserId] = useState(null)
 
-  const handleAccept = () => {
-    setAceptado(true)
-    onConsentAccepted()
+  useEffect(() => {
+    try {
+      const userString = localStorage.getItem('user')
+      if (userString) {
+        const user = JSON.parse(userString)
+        if (user && user._id) {
+          console.log('UserId obtenido del localStorage (user):', user._id)
+          setUserId(user._id)
+          return
+        }
+      }
+
+      const storedUserId = localStorage.getItem('userId')
+      if (storedUserId) {
+        console.log('UserId obtenido del localStorage (userId):', storedUserId)
+        setUserId(storedUserId)
+        return
+      }
+
+      console.error('No se encontró userId en localStorage')
+      setError(
+        'No se pudo identificar al usuario. Por favor, inicie sesión nuevamente.'
+      )
+    } catch (err) {
+      console.error('Error al obtener userId del localStorage:', err)
+      setError(
+        'Error al identificar al usuario. Por favor, inicie sesión nuevamente.'
+      )
+    }
+  }, [])
+
+  const handleAccept = async () => {
+    if (autorizaImagen === null) {
+      setError('Por favor, seleccione si autoriza o no el uso de su imagen')
+      return
+    }
+
+    if (!userId) {
+      setError(
+        'Error: No se pudo identificar al usuario. Por favor, inicie sesión nuevamente.'
+      )
+      console.error('Error: userId no disponible')
+      return
+    }
+
+    setError(null)
+    setLoading(true)
+
+    try {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        throw new Error(
+          'No hay token disponible. Por favor, inicie sesión nuevamente.'
+        )
+      }
+
+      console.log('Enviando consentimiento con userId:', userId)
+
+      const response = await guardarConsentimiento(
+        {
+          userId,
+          aceptado: true,
+          autorizaImagen,
+          fechaAceptacion: new Date()
+        },
+        token
+      )
+
+      console.log('Consentimiento guardado:', response)
+
+      setAceptado(true)
+      onConsentAccepted()
+    } catch (err) {
+      console.error('Error al guardar el consentimiento:', err)
+      setError(
+        'Hubo un error al guardar su consentimiento. Por favor, inténtelo de nuevo.'
+      )
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleAutorizaImagen = (value) => {
     setAutorizaImagen(value)
+    setError(null)
   }
 
   return (
@@ -150,17 +231,21 @@ const Consentimiento = ({ onConsentAccepted }) => {
                     <span>NO autorizo</span>
                   </div>
                 </div>
+
+                {error && <p className='error-message'>{error}</p>}
               </div>
             </div>
           </div>
 
           <div className='consent-footer'>
             <button
-              className={`accept-button`}
-              text-context='ACEPTAR'
+              className={`accept-button ${
+                autorizaImagen === null || loading ? 'disabled' : ''
+              }`}
+              disabled={autorizaImagen === null || loading}
               onClick={handleAccept}
             >
-              ACEPTAR
+              {loading ? 'PROCESANDO...' : 'ACEPTAR'}
             </button>
           </div>
         </>
