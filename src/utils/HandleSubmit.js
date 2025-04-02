@@ -471,13 +471,12 @@ const handlers = {
       if (response.ok && response.data) {
         console.log('Contenido del objeto data:', response.data)
 
-        const userData = response.data.data || response.data // ✅ Asegura que userData existe correctamente
+        const userData = response.data.data || response.data
         console.log('Contenido de userData:', userData)
 
         if (userData._id) {
-          // 💾 Guarda el userId en localStorage
           localStorage.setItem('user', JSON.stringify({ _id: userData._id }))
-          // También guardar como userId para compatibilidad
+
           localStorage.setItem('userId', userData._id)
 
           localStorage.setItem('token', userData.token)

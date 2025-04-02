@@ -45,3 +45,71 @@ export const loadChatMessages = async (token) => {
     return []
   }
 }
+
+export const updateChatMessage = async (messageId, text, token) => {
+  try {
+    const response = await fetch(`/api/chat/messages/${messageId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ text })
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Error al actualizar el mensaje')
+    }
+
+    return data
+  } catch (error) {
+    console.error('Error en updateChatMessage:', error)
+    throw error
+  }
+}
+
+export const deleteChatMessage = async (messageId, token) => {
+  try {
+    const response = await fetch(`/api/chat/messages/${messageId}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Error al eliminar el mensaje')
+    }
+
+    return data
+  } catch (error) {
+    console.error('Error en deleteChatMessage:', error)
+    throw error
+  }
+}
+
+export const deleteAllChatMessages = async (token) => {
+  try {
+    const response = await fetch(`/api/chat/messages`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Error al eliminar todos los mensajes')
+    }
+
+    return data
+  } catch (error) {
+    console.error('Error en deleteAllChatMessages:', error)
+    throw error
+  }
+}
