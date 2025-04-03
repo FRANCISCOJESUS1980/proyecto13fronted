@@ -195,6 +195,7 @@ const Register = () => {
                     type='password'
                     name='password'
                     placeholder='Contraseña'
+                    button
                     value={formData.password}
                     onChange={handleChange}
                     required

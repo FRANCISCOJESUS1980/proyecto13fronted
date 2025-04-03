@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { isToday } from 'date-fns'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
@@ -12,6 +13,17 @@ const CalendarioDias = ({
   handleNextWeek,
   setSelectedDate
 }) => {
+  const todayRef = useRef(null)
+
+  useEffect(() => {
+    if (todayRef.current && calendarRef.current) {
+      calendarRef.current.scrollTo({
+        left: todayRef.current.offsetLeft - calendarRef.current.offsetLeft,
+        behavior: 'smooth'
+      })
+    }
+  }, [visibleDates])
+
   return (
     <div className='calendario-container'>
       <Button
@@ -30,7 +42,11 @@ const CalendarioDias = ({
         rightIcon={<ChevronRight size={20} />}
       />
 
-      <div className='calendario-dias' ref={calendarRef}>
+      <div
+        className='calendario-dias'
+        ref={calendarRef}
+        style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
+      >
         {visibleDates.map((date) => {
           const dayName = format(date, 'EEEE', { locale: es })
           const dayNumber = format(date, 'd')
@@ -42,6 +58,7 @@ const CalendarioDias = ({
           return (
             <button
               key={date.toString()}
+              ref={isToday(date) ? todayRef : null}
               className={`dia-btn ${isSelected ? 'activo' : ''} ${
                 isToday(date) ? 'hoy' : ''
               } ${isPast ? 'pasado' : ''}`}

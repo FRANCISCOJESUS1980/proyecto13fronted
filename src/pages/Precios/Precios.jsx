@@ -1,38 +1,23 @@
-/*import { useEffect, useState } from 'react'
-import Header from '../../components/Header/Header'
-import './Precios.css'
-
-const Precios = () => {
-  return (
-    <div className='Precios-container'>
-      <Header />
-    </div>
-  )
-}
-
-export default Precios*/
-'use client'
-
 import { useState } from 'react'
 import Header from '../../components/Header/Header'
 import './Precios.css'
 
 const Precios = () => {
-  const [isAnnual, setIsAnnual] = useState(false)
+  const [selectedPlan, setSelectedPlan] = useState('mensual')
 
   const planes = [
     {
-      nombre: 'Plan Básico',
-      precioMensual: 49.99,
-      precioAnual: 539.89,
+      nombre: 'Bono Básico',
+      sesiones: 8,
+      precio: 40,
       caracteristicas: [
-        'Acceso a clases grupales 3 veces por semana',
+        '8 sesiones mensuales',
         'Evaluación física inicial',
         'Acceso a la app de seguimiento',
-        'Casillero personal'
+        'Casillero durante la sesión'
       ],
       noIncluido: [
-        'Clases ilimitadas',
+        'Sesiones ilimitadas',
         'Programación personalizada',
         'Nutrición personalizada',
         'Acceso 24/7'
@@ -40,35 +25,57 @@ const Precios = () => {
       popular: false
     },
     {
-      nombre: 'Plan Premium',
-      precioMensual: 79.99,
-      precioAnual: 863.89,
+      nombre: 'Bono Estándar',
+      sesiones: 12,
+      precio: 55,
       caracteristicas: [
-        'Clases grupales ilimitadas',
-        'Evaluación física mensual',
+        '12 sesiones mensuales',
+        'Evaluación física inicial',
         'Acceso a la app de seguimiento',
         'Casillero personal',
-        'Programación personalizada',
-        '2 sesiones PT al mes'
+        '1 sesión PT al mes'
       ],
-      noIncluido: ['Nutrición personalizada', 'Acceso 24/7'],
+      noIncluido: [
+        'Sesiones ilimitadas',
+        'Programación personalizada',
+        'Nutrición personalizada',
+        'Acceso 24/7'
+      ],
       popular: true
     },
     {
-      nombre: 'Plan Elite',
-      precioMensual: 129.99,
-      precioAnual: 1403.89,
+      nombre: 'Bono Premium',
+      sesiones: 20,
+      precio: 80,
       caracteristicas: [
-        'Acceso total 24/7',
-        'Clases ilimitadas',
-        'Evaluación física semanal',
+        '20 sesiones mensuales',
+        'Evaluación física mensual',
+        'Acceso a la app premium',
+        'Casillero personal',
+        '2 sesiones PT al mes',
+        'Programación básica personalizada'
+      ],
+      noIncluido: [
+        'Sesiones ilimitadas',
+        'Nutrición personalizada',
+        'Acceso 24/7'
+      ],
+      popular: false
+    },
+    {
+      nombre: 'Bono Ilimitado',
+      sesiones: 'Ilimitadas',
+      precio: 120,
+      caracteristicas: [
+        'Sesiones ilimitadas',
+        'Evaluación física mensual',
         'Acceso a la app premium',
         'Casillero personal premium',
-        'Programación personalizada',
         '4 sesiones PT al mes',
-        'Plan nutricional personalizado'
+        'Programación personalizada',
+        'Consulta nutricional básica'
       ],
-      noIncluido: [],
+      noIncluido: ['Plan nutricional completo', 'Acceso 24/7'],
       popular: false
     }
   ]
@@ -79,20 +86,26 @@ const Precios = () => {
 
       <main className='precios-main'>
         <section className='precios-hero'>
-          <h1>Planes y Membresías</h1>
-          <p>Encuentra el plan perfecto para alcanzar tus objetivos</p>
+          <h1>Bonos de Sesiones</h1>
+          <p>Elige el bono que mejor se adapte a tu rutina de entrenamiento</p>
 
-          <div className='toggle-container'>
-            <span className={!isAnnual ? 'active' : ''}>Mensual</span>
-            <div
-              className={`toggle ${isAnnual ? 'active' : ''}`}
-              onClick={() => setIsAnnual(!isAnnual)}
+          <div className='planes-tipo'>
+            <button
+              className={`plan-btn ${
+                selectedPlan === 'mensual' ? 'active' : ''
+              }`}
+              onClick={() => setSelectedPlan('mensual')}
             >
-              <div className='toggle-button'></div>
-            </div>
-            <span className={isAnnual ? 'active' : ''}>
-              Anual <span className='descuento'>¡10% descuento!</span>
-            </span>
+              Bonos Mensuales
+            </button>
+            <button
+              className={`plan-btn ${
+                selectedPlan === 'trimestral' ? 'active' : ''
+              }`}
+              onClick={() => setSelectedPlan('trimestral')}
+            >
+              Bonos Trimestrales
+            </button>
           </div>
         </section>
 
@@ -104,18 +117,24 @@ const Precios = () => {
             >
               {plan.popular && <div className='popular-badge'>Más Popular</div>}
               <h2>{plan.nombre}</h2>
+              <div className='sesiones-info'>
+                <span className='sesiones-num'>{plan.sesiones}</span>
+                <span className='sesiones-text'>sesiones</span>
+              </div>
               <div className='precio'>
                 <span className='moneda'>€</span>
                 <span className='cantidad'>
-                  {isAnnual
-                    ? (plan.precioAnual / 12).toFixed(2)
-                    : plan.precioMensual}
+                  {selectedPlan === 'trimestral'
+                    ? (plan.precio * 3 * 0.9).toFixed(0)
+                    : plan.precio}
                 </span>
-                <span className='periodo'>/mes</span>
+                <span className='periodo'>
+                  /{selectedPlan === 'trimestral' ? 'trimestre' : 'mes'}
+                </span>
               </div>
-              {isAnnual && (
-                <div className='precio-total'>
-                  Total anual: €{plan.precioAnual}
+              {selectedPlan === 'trimestral' && (
+                <div className='precio-ahorro'>
+                  Ahorras: €{(plan.precio * 3 * 0.1).toFixed(0)}
                 </div>
               )}
               <button
@@ -175,28 +194,31 @@ const Precios = () => {
           <h2>Preguntas Frecuentes</h2>
           <div className='faq-grid'>
             <div className='faq-item'>
-              <h3>¿Necesito experiencia previa?</h3>
+              <h3>¿Cómo funcionan los bonos de sesiones?</h3>
               <p>
-                No, todos nuestros programas se adaptan a cualquier nivel de
-                experiencia.
+                Cada bono te da acceso a un número determinado de sesiones
+                mensuales que puedes utilizar cuando mejor te convenga.
               </p>
             </div>
             <div className='faq-item'>
-              <h3>¿Puedo cambiar de plan?</h3>
-              <p>Sí, puedes cambiar tu plan en cualquier momento del mes.</p>
+              <h3>¿Puedo acumular sesiones no utilizadas?</h3>
+              <p>
+                Las sesiones no utilizadas no se acumulan para el siguiente mes,
+                excepto en casos especiales.
+              </p>
             </div>
             <div className='faq-item'>
               <h3>¿Hay permanencia mínima?</h3>
               <p>
-                No hay permanencia mínima en los planes mensuales. Los planes
-                anuales tienen 12 meses de compromiso.
+                No hay permanencia mínima en los bonos mensuales. Los bonos
+                trimestrales tienen 3 meses de compromiso.
               </p>
             </div>
             <div className='faq-item'>
-              <h3>¿Qué incluye la evaluación física?</h3>
+              <h3>¿Qué pasa si quiero más sesiones?</h3>
               <p>
-                Mediciones corporales, pruebas de capacidad física y
-                establecimiento de objetivos personalizados.
+                Puedes adquirir sesiones adicionales o cambiar a un bono
+                superior en cualquier momento.
               </p>
             </div>
           </div>
