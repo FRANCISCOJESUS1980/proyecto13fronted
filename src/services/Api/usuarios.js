@@ -67,6 +67,22 @@ export const obtenerTodosUsuarios = async (token) => {
     handleApiError(error, 'Error al obtener todos los usuarios:')
   }
 }
+export const obtenerUsuarioPorId = async (userId, token) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    })
+
+    return await checkResponse(response)
+  } catch (error) {
+    handleApiError(error, `Error al obtener usuario con ID ${userId}:`)
+  }
+}
 
 export const fetchEntrenadores = async () => {
   try {

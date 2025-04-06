@@ -223,3 +223,66 @@ export const cancelarClase = async (token, claseId) => {
     handleApiError(error, 'Error al cancelar inscripción:')
   }
 }
+export const inscribirClaseAdmin = async (token, claseId, userId) => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/classes/${claseId}/inscribir-usuario`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ userId }),
+        credentials: 'include'
+      }
+    )
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || 'Error al inscribir al usuario')
+    }
+
+    const data = await response.json()
+
+    if (data.success) {
+      return data.data
+    } else {
+      throw new Error(data.message || 'Error al inscribir al usuario')
+    }
+  } catch (error) {
+    handleApiError(error, 'Error al inscribir al usuario:')
+  }
+}
+
+export const cancelarClaseAdmin = async (token, claseId, userId) => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/classes/${claseId}/cancelar-usuario`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ userId }),
+        credentials: 'include'
+      }
+    )
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || 'Error al cancelar inscripción')
+    }
+
+    const data = await response.json()
+
+    if (data.success) {
+      return data.data
+    } else {
+      throw new Error(data.message || 'Error al cancelar inscripción')
+    }
+  } catch (error) {
+    handleApiError(error, 'Error al cancelar inscripción:')
+  }
+}

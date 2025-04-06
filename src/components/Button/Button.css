@@ -1,6 +1,6 @@
 :root {
   --button-primary: #3b82f6;
-  --button-primary-hover: #2563eb;
+  --button-primary-hover: rgb(235, 62, 62);
   --button-primary-active: #1d4ed8;
   --button-secondary: rgb(235, 62, 62);
   --button-secondary-hover: #3b82f6;

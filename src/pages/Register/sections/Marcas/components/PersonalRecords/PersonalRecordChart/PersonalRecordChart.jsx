@@ -1,22 +1,34 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import {
   LineChart,
   Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer
+  ResponsiveContainer,
+  ReferenceLine,
+  Label
 } from 'recharts'
 import './PersonalRecordChart.css'
 
 const PersonalRecordsChart = ({ records, uniqueExercises }) => {
   const [selectedExercise, setSelectedExercise] = useState('')
-  const [chartData, setChartData] = useState([])
+  const [chartType, setChartType] = useState('line')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString)
+    return `${date.getDate()}/${date.getMonth() + 1}/${date
+      .getFullYear()
+      .toString()
+      .substr(-2)}`
+  }
 
   useEffect(() => {
     if (uniqueExercises.length > 0 && !selectedExercise) {
@@ -24,50 +36,87 @@ const PersonalRecordsChart = ({ records, uniqueExercises }) => {
     }
   }, [uniqueExercises, selectedExercise])
 
-  useEffect(() => {
-    const fetchChartData = async () => {
-      if (!selectedExercise) return
+  const chartData = useMemo(() => {
+    if (!selectedExercise) return []
 
-      setIsLoading(true)
-      setError(null)
+    const filteredRecords = records
+      .filter((record) => record.ejercicio === selectedExercise)
+      .map((record) => ({
+        ...record,
 
-      try {
-        const response = await fetch(
-          `/api/personal-records/stats?ejercicio=${encodeURIComponent(
-            selectedExercise
-          )}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`
-            }
-          }
-        )
+        dateObj: new Date(record.fecha),
+        peso: Number.parseFloat(record.peso),
+        repeticiones: Number.parseInt(record.repeticiones || '1')
+      }))
 
-        if (!response.ok) {
-          throw new Error('Error al cargar los datos del gráfico')
-        }
+      .sort((a, b) => a.dateObj - b.dateObj)
 
-        const data = await response.json()
+    return filteredRecords.map((record) => ({
+      _id: record._id,
+      fecha: formatDate(record.fecha),
+      fechaCompleta: new Date(record.fecha).toLocaleDateString('es-ES', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      }),
+      peso: record.peso,
+      repeticiones: record.repeticiones
+    }))
+  }, [records, selectedExercise])
 
-        const formattedData = data.data.map((record) => ({
-          fecha: new Date(record.fecha).toLocaleDateString(),
-          peso: Number.parseFloat(record.peso),
-          repeticiones: Number.parseInt(record.repeticiones || '1')
-        }))
+  const maxWeight = useMemo(() => {
+    if (chartData.length === 0) return 100
+    return Math.ceil(Math.max(...chartData.map((item) => item.peso)) * 1.1)
+  }, [chartData])
 
-        setChartData(formattedData)
-      } catch (err) {
-        setError(err.message)
-      } finally {
-        setIsLoading(false)
-      }
+  const maxReps = useMemo(() => {
+    if (chartData.length === 0) return 10
+    return Math.ceil(
+      Math.max(...chartData.map((item) => item.repeticiones)) * 1.2
+    )
+  }, [chartData])
+
+  const avgWeight = useMemo(() => {
+    if (chartData.length === 0) return 0
+    const sum = chartData.reduce((acc, item) => acc + item.peso, 0)
+    return Math.round((sum / chartData.length) * 10) / 10
+  }, [chartData])
+
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className='custom-tooltip'>
+          <p className='tooltip-date'>{payload[0]?.payload.fechaCompleta}</p>
+          <p className='tooltip-weight'>
+            <span className='tooltip-label'>Peso:</span>
+            <span className='tooltip-value'>{payload[0]?.value} kg</span>
+          </p>
+          {payload[1] && (
+            <p className='tooltip-reps'>
+              <span className='tooltip-label'>Repeticiones:</span>
+              <span className='tooltip-value'>{payload[1]?.value}</span>
+            </p>
+          )}
+        </div>
+      )
     }
+    return null
+  }
 
-    fetchChartData()
-  }, [selectedExercise])
+  const chartColors = {
+    weight: '#3366cc',
+    reps: '#ff9933',
+    avgLine: '#e53935',
+    grid: '#e0e0e0',
+    axis: '#9e9e9e'
+  }
 
   const handleExerciseChange = (e) => {
     setSelectedExercise(e.target.value)
+  }
+
+  const handleChartTypeChange = (type) => {
+    setChartType(type)
   }
 
   if (records.length === 0) {
@@ -85,18 +134,40 @@ const PersonalRecordsChart = ({ records, uniqueExercises }) => {
         <h3>Progreso de Marcas Personales</h3>
 
         <div className='chart-controls'>
-          <label htmlFor='exercise-select'>Selecciona un ejercicio:</label>
-          <select
-            id='exercise-select'
-            value={selectedExercise}
-            onChange={handleExerciseChange}
-          >
-            {uniqueExercises.map((exercise) => (
-              <option key={exercise} value={exercise}>
-                {exercise}
-              </option>
-            ))}
-          </select>
+          <div className='chart-select-container'>
+            <label htmlFor='exercise-select'>Ejercicio:</label>
+            <select
+              id='exercise-select'
+              value={selectedExercise}
+              onChange={handleExerciseChange}
+              className='chart-select'
+            >
+              {uniqueExercises.map((exercise) => (
+                <option key={exercise} value={exercise}>
+                  {exercise}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className='chart-type-selector'>
+            <button
+              className={`chart-type-btn ${
+                chartType === 'line' ? 'active' : ''
+              }`}
+              onClick={() => handleChartTypeChange('line')}
+            >
+              Línea
+            </button>
+            <button
+              className={`chart-type-btn ${
+                chartType === 'bar' ? 'active' : ''
+              }`}
+              onClick={() => handleChartTypeChange('bar')}
+            >
+              Barras
+            </button>
+          </div>
         </div>
       </div>
 
@@ -110,59 +181,216 @@ const PersonalRecordsChart = ({ records, uniqueExercises }) => {
             No hay suficientes datos para este ejercicio.
           </div>
         ) : (
-          <ResponsiveContainer width='100%' height={400}>
-            <LineChart
-              data={chartData}
-              margin={{
-                top: 20,
-                right: 30,
-                left: 20,
-                bottom: 50
-              }}
-            >
-              <CartesianGrid strokeDasharray='3 3' />
-              <XAxis dataKey='fecha' angle={-45} textAnchor='end' height={70} />
-              <YAxis
-                yAxisId='left'
-                orientation='left'
-                stroke='#8884d8'
-                label={{
-                  value: 'Peso (kg)',
-                  angle: -90,
-                  position: 'insideLeft'
-                }}
-              />
-              <YAxis
-                yAxisId='right'
-                orientation='right'
-                stroke='#82ca9d'
-                label={{
-                  value: 'Repeticiones',
-                  angle: 90,
-                  position: 'insideRight'
-                }}
-              />
-              <Tooltip />
-              <Legend verticalAlign='top' height={36} />
-              <Line
-                yAxisId='left'
-                type='monotone'
-                dataKey='peso'
-                name='Peso (kg)'
-                stroke='#8884d8'
-                activeDot={{ r: 8 }}
-                strokeWidth={2}
-              />
-              <Line
-                yAxisId='right'
-                type='monotone'
-                dataKey='repeticiones'
-                name='Repeticiones'
-                stroke='#82ca9d'
-                strokeWidth={2}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+          <>
+            <div className='chart-stats'>
+              <div className='stat-card'>
+                <div className='stat-label'>Promedio</div>
+                <div className='stat-value'>{avgWeight} kg</div>
+              </div>
+              <div className='stat-card'>
+                <div className='stat-label'>Máximo</div>
+                <div className='stat-value'>
+                  {Math.max(...chartData.map((item) => item.peso))} kg
+                </div>
+              </div>
+              <div className='stat-card'>
+                <div className='stat-label'>Progreso</div>
+                <div className='stat-value'>
+                  {chartData.length > 1
+                    ? `${(
+                        (chartData[chartData.length - 1].peso /
+                          chartData[0].peso -
+                          1) *
+                        100
+                      ).toFixed(1)}%`
+                    : 'N/A'}
+                </div>
+              </div>
+            </div>
+
+            <ResponsiveContainer width='100%' height={400}>
+              {chartType === 'line' ? (
+                <LineChart
+                  data={chartData}
+                  margin={{
+                    top: 20,
+                    right: 30,
+                    left: 20,
+                    bottom: 60
+                  }}
+                >
+                  <CartesianGrid
+                    strokeDasharray='3 3'
+                    stroke={chartColors.grid}
+                  />
+                  <XAxis
+                    dataKey='fecha'
+                    angle={-45}
+                    textAnchor='end'
+                    height={70}
+                    tick={{ fill: chartColors.axis, fontSize: 12 }}
+                    tickMargin={10}
+                  />
+                  <YAxis
+                    yAxisId='left'
+                    orientation='left'
+                    stroke={chartColors.weight}
+                    domain={[0, maxWeight]}
+                    tickCount={6}
+                    tick={{ fill: chartColors.axis }}
+                  >
+                    <Label
+                      value='Peso (kg)'
+                      angle={-90}
+                      position='insideLeft'
+                      style={{ textAnchor: 'middle', fill: chartColors.axis }}
+                    />
+                  </YAxis>
+                  <YAxis
+                    yAxisId='right'
+                    orientation='right'
+                    stroke={chartColors.reps}
+                    domain={[0, maxReps]}
+                    tickCount={5}
+                    tick={{ fill: chartColors.axis }}
+                  >
+                    <Label
+                      value='Repeticiones'
+                      angle={90}
+                      position='insideRight'
+                      style={{ textAnchor: 'middle', fill: chartColors.axis }}
+                    />
+                  </YAxis>
+                  <Tooltip content={<CustomTooltip />} />
+                  <Legend verticalAlign='top' height={36} />
+                  <ReferenceLine
+                    y={avgWeight}
+                    yAxisId='left'
+                    stroke={chartColors.avgLine}
+                    strokeDasharray='3 3'
+                    strokeWidth={2}
+                  >
+                    <Label
+                      value={`Promedio: ${avgWeight} kg`}
+                      position='insideBottomRight'
+                      fill={chartColors.avgLine}
+                    />
+                  </ReferenceLine>
+                  <Line
+                    yAxisId='left'
+                    type='monotone'
+                    dataKey='peso'
+                    name='Peso (kg)'
+                    stroke={chartColors.weight}
+                    activeDot={{ r: 8 }}
+                    strokeWidth={3}
+                    dot={{
+                      stroke: chartColors.weight,
+                      strokeWidth: 2,
+                      r: 4,
+                      fill: 'white'
+                    }}
+                  />
+                  <Line
+                    yAxisId='right'
+                    type='monotone'
+                    dataKey='repeticiones'
+                    name='Repeticiones'
+                    stroke={chartColors.reps}
+                    strokeWidth={2}
+                    dot={{
+                      stroke: chartColors.reps,
+                      strokeWidth: 2,
+                      r: 4,
+                      fill: 'white'
+                    }}
+                  />
+                </LineChart>
+              ) : (
+                <BarChart
+                  data={chartData}
+                  margin={{
+                    top: 20,
+                    right: 30,
+                    left: 20,
+                    bottom: 60
+                  }}
+                >
+                  <CartesianGrid
+                    strokeDasharray='3 3'
+                    stroke={chartColors.grid}
+                  />
+                  <XAxis
+                    dataKey='fecha'
+                    angle={-45}
+                    textAnchor='end'
+                    height={70}
+                    tick={{ fill: chartColors.axis, fontSize: 12 }}
+                    tickMargin={10}
+                  />
+                  <YAxis
+                    yAxisId='left'
+                    orientation='left'
+                    stroke={chartColors.weight}
+                    domain={[0, maxWeight]}
+                    tickCount={6}
+                    tick={{ fill: chartColors.axis }}
+                  >
+                    <Label
+                      value='Peso (kg)'
+                      angle={-90}
+                      position='insideLeft'
+                      style={{ textAnchor: 'middle', fill: chartColors.axis }}
+                    />
+                  </YAxis>
+                  <YAxis
+                    yAxisId='right'
+                    orientation='right'
+                    stroke={chartColors.reps}
+                    domain={[0, maxReps]}
+                    tickCount={5}
+                    tick={{ fill: chartColors.axis }}
+                  >
+                    <Label
+                      value='Repeticiones'
+                      angle={90}
+                      position='insideRight'
+                      style={{ textAnchor: 'middle', fill: chartColors.axis }}
+                    />
+                  </YAxis>
+                  <Tooltip content={<CustomTooltip />} />
+                  <Legend verticalAlign='top' height={36} />
+                  <ReferenceLine
+                    y={avgWeight}
+                    yAxisId='left'
+                    stroke={chartColors.avgLine}
+                    strokeDasharray='3 3'
+                    strokeWidth={2}
+                  >
+                    <Label
+                      value={`Promedio: ${avgWeight} kg`}
+                      position='insideBottomRight'
+                      fill={chartColors.avgLine}
+                    />
+                  </ReferenceLine>
+                  <Bar
+                    yAxisId='left'
+                    dataKey='peso'
+                    name='Peso (kg)'
+                    fill={chartColors.weight}
+                    radius={[4, 4, 0, 0]}
+                  />
+                  <Bar
+                    yAxisId='right'
+                    dataKey='repeticiones'
+                    name='Repeticiones'
+                    fill={chartColors.reps}
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              )}
+            </ResponsiveContainer>
+          </>
         )}
       </div>
     </div>

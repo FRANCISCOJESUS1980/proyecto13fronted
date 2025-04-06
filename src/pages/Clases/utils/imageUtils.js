@@ -16,5 +16,16 @@ export const getImageUrl = (user) => {
     return `http://localhost:5000/uploads/${user.avatar}`
   }
 
+  if (user.imagen && user.imagen !== 'default-avatar.jpg') {
+    if (
+      user.imagen.includes('cloudinary.com') ||
+      user.imagen.startsWith('http')
+    ) {
+      return user.imagen
+    }
+
+    return `http://localhost:5000/uploads/${user.imagen}`
+  }
+
   return '/default-avatar.png'
 }

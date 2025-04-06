@@ -5,7 +5,6 @@ import Button from '../../../../../components/Button/Button'
 import PersonalRecordForm from '../components/PersonalRecords/PersonalRecordForm/PersonalRecordForm'
 import PersonalRecordsList from '../components/PersonalRecords/PersonalRecordList/PersonalRecordList'
 import PersonalRecordsChart from '../components/PersonalRecords/PersonalRecordChart/PersonalRecordChart'
-import Spinner from '../components/Spinner/Spinner'
 import { toast } from 'react-toastify'
 import './Marcas.css'
 
@@ -131,12 +130,18 @@ const PersonalRecordsPage = () => {
 
       const data = await response.json()
 
-      setRecords(
-        records.map((record) => (record._id === id ? data.data : record))
+      setRecords((prevRecords) =>
+        prevRecords.map((record) => (record._id === id ? data.data : record))
       )
 
       setSelectedRecord(null)
       toast.success('Marca personal actualizada')
+
+      if (
+        updatedRecord.ejercicio !== records.find((r) => r._id === id)?.ejercicio
+      ) {
+        fetchUniqueExercises()
+      }
     } catch (err) {
       toast.error(err.message)
     }
@@ -198,8 +203,7 @@ const PersonalRecordsPage = () => {
       <div className='records-content'>
         {isLoading ? (
           <div className='loading-container'>
-            <Spinner />
-            <p>Cargando marcas personales...</p>
+            <div className='loading-text'>Cargando marcas personales...</div>
           </div>
         ) : error ? (
           <div className='error-container'>

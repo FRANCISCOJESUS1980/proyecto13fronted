@@ -95,12 +95,10 @@ const OcupacionVisual = ({ clase, estaInscrito }) => {
               {inscrito ? (
                 <div className='avatar-container'>
                   <img
-                    src={getImageUrl(inscrito) || '/placeholder.svg'}
-                    alt='Usuario inscrito'
+                    src={getImageUrl(inscrito) || '/default-avatar.jpg'}
+                    alt={inscrito.nombre || 'Usuario inscrito'}
                     onError={(e) => {
-                      if (e.target.src !== '/default-avatar.png') {
-                        e.target.src = '/default-avatar.png'
-                      }
+                      e.target.src = '/default-avatar.jpg'
                     }}
                   />
                   {isCurrentUser && <div className='usuario-indicador'>Tú</div>}

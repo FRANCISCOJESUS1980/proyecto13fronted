@@ -20,6 +20,7 @@ import Chat from '../pages/Register/sections/Chat/Chat'
 import EditarPerfil from '../pages/EditUser/EditUser'
 import MedicalInfoList from '../pages/Administracion/AdministracionMedico/MedicalinfoList'
 import Videos from '../pages/Videos/Videos'
+import AdminUsuarioClases from '../pages/Administracion/AdminUsuarios/AdminUsuarioClases/AdminUsuarioClases'
 import NotFound from '../pages/NotFound/NotFound'
 
 import {
@@ -53,6 +54,10 @@ const AppRouter = () => {
           <Route
             path='/administracion/consentimientos'
             element={<AdminConsentimientos />}
+          />
+          <Route
+            path='/admin/usuario/:userId/clases'
+            element={<AdminUsuarioClases />}
           />
 
           <Route path='/dashboard' element={<UserDashboard />} />
