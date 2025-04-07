@@ -1,5 +1,6 @@
-export const API_BASE_URL = 'http://localhost:5000/api'
-export const BASE_URL = 'http://localhost:5000'
+export const API_BASE_URL = 'https://proyecto13backend.onrender.com'
+export const BASE_URL =
+  'http://localhost:5000' /*'https://proyecto13backend.onrender.com/'*/
 
 export const handleApiError = (error, customMessage) => {
   console.error(customMessage || 'Error en la API:', error)
