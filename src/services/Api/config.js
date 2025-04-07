@@ -1,4 +1,4 @@
-export const API_BASE_URL = 'https://proyecto13backend.onrender.com'
+export const API_BASE_URL = 'https://proyecto13backend.onrender.com/api'
 export const BASE_URL =
   'http://localhost:5000' /*'https://proyecto13backend.onrender.com/'*/
 
