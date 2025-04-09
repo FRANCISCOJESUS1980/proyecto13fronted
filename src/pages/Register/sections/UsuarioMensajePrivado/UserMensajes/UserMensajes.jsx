@@ -8,10 +8,10 @@ import {
   enviarMensajePrivado,
   marcarMensajesComoLeidos
 } from '../../../../services/Api/mensajesPrivados'
-import { getImageUrl } from '../../../../pages/Clases/utils/imageUtils'
-import './UsuarioMensajePrivado.css'
+import { getImageUrl } from '../../../../Clases/utils/imageUtils'
+import './UserMensajes.css'
 
-const UsuarioMensajePrivado = () => {
+const UserMensajes = () => {
   const navigate = useNavigate()
   const [adminInfo, setAdminInfo] = useState(null)
   const [conversacionId, setConversacionId] = useState(null)
@@ -79,7 +79,6 @@ const UsuarioMensajePrivado = () => {
         setMensajes(data.data || [])
 
         await marcarMensajesComoLeidos(token, convId)
-        console.log('Mensajes marcados como leídos')
       } else {
         console.error('Error en la respuesta al obtener mensajes:', data)
         setError('No se pudieron cargar los mensajes.')
@@ -229,4 +228,4 @@ const UsuarioMensajePrivado = () => {
   )
 }
 
-export default UsuarioMensajePrivado
+export default UserMensajes

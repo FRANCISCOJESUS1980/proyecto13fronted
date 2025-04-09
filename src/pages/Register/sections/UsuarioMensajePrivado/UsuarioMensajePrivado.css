@@ -1,4 +1,4 @@
-.admin-mensajes-container {
+.user-mensajes-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
@@ -7,56 +7,52 @@
   height: calc(100vh - 80px);
 }
 
-.admin-mensajes-header {
+.user-mensajes-header {
   display: flex;
   flex-direction: column;
   gap: 15px;
   margin-bottom: 20px;
 }
 
-.back-button {
-  align-self: flex-start;
-  padding: 8px 15px;
-  background-color: #f0f0f0;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  transition: background-color 0.2s;
-}
-
-.back-button:hover {
-  background-color: #e0e0e0;
-}
-
-.usuario-info {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.usuario-avatar-small {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #f0f0f0;
-}
-
-.usuario-info h1 {
+.user-mensajes-header h1 {
   margin: 0;
   font-size: 24px;
+}
+
+.mensajes-simple-layout {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.mensajes-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px;
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+}
+
+.mensajes-header h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.conversacion-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .mensajes-container {
   flex: 1;
   overflow-y: auto;
   padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  margin-bottom: 20px;
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -107,8 +103,11 @@
 }
 
 .mensaje-form {
+  padding: 15px;
   display: flex;
   gap: 10px;
+  background-color: #fff;
+  border-top: 1px solid #eee;
 }
 
 .mensaje-form textarea {
@@ -138,22 +137,22 @@
   padding: 40px 0;
 }
 
-.loading-container {
+.loading-container-small {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 300px;
+  padding: 20px;
 }
 
-.loading-spinner {
-  border: 4px solid rgba(0, 0, 0, 0.1);
+.loading-spinner-small {
+  border: 3px solid rgba(0, 0, 0, 0.1);
   border-radius: 50%;
-  border-top: 4px solid #3182ce;
-  width: 40px;
-  height: 40px;
+  border-top: 3px solid #3182ce;
+  width: 24px;
+  height: 24px;
   animation: spin 1s linear infinite;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 @keyframes spin {
