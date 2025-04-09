@@ -75,31 +75,7 @@ const Register = () => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
-  /*
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setIsLoading(true)
 
-    try {
-      const response = await registrarUsuario(formData, selectedImage)
-
-      if (response.ok) {
-        const { data } = response.data
-        localStorage.setItem('token', data.token)
-        localStorage.setItem('nombre', formData.nombre)
-        localStorage.setItem('rol', data.rol)
-        localStorage.setItem('avatar', data.avatar)
-        setRegistroExitoso(true)
-      } else {
-        alert(response.data.message || 'Error en el registro')
-      }
-    } catch (error) {
-      console.error('Error en el registro:', error)
-      alert('Error en la conexión con el servidor')
-    } finally {
-      setIsLoading(false)
-    }
-  }*/
   const handleSubmit = async (e) => {
     await handleSubmitHelper(e, 'registro', {
       formData,
