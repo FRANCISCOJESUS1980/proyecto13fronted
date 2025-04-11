@@ -287,11 +287,14 @@ const PersonalRecordsPage = () => {
   const fetchRecords = async () => {
     setIsLoading(true)
     try {
-      const response = await fetch('/api/personal-records', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
+      const response = await fetch(
+        /*'/api/personal-records'*/ 'https://proyecto13backend.onrender.com/api',
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
         }
-      })
+      )
 
       if (!response.ok) {
         throw new Error('Error al cargar las marcas personales')
