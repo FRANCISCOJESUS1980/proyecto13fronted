@@ -8,7 +8,7 @@ import {
   Check,
   XCircle
 } from 'lucide-react'
-import './AdminConsentimientos.css'
+import './Adminconsentimientos.css'
 import Header from '../../../components/Header/Header'
 import Button from '../../../components/Button/Button'
 import {
