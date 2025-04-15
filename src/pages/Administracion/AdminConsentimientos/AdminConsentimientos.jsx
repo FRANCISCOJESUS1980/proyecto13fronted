@@ -1,7 +1,16 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import './Adminconsentimientos.css'
+import {
+  ArrowLeft,
+  Search,
+  X,
+  AlertTriangle,
+  Check,
+  XCircle
+} from 'lucide-react'
+import './AdminConsentimientos.css'
 import Header from '../../../components/Header/Header'
+import Button from '../../../components/Button/Button'
 import {
   obtenerTodosConsentimientos,
   eliminarConsentimiento,
@@ -19,6 +28,7 @@ const AdminConsentimientos = () => {
   const [deleteLoading, setDeleteLoading] = useState(null)
   const [showConfirmDialog, setShowConfirmDialog] = useState(false)
   const [consentimientoToDelete, setConsentimientoToDelete] = useState(null)
+  const [fadeIn, setFadeIn] = useState(false)
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -51,11 +61,13 @@ const AdminConsentimientos = () => {
 
         setConsentimientos(consentimientosArray || [])
         setUsuarios(usuariosArray || [])
-        setLoading(false)
       } catch (error) {
         console.error('Error al obtener datos:', error)
         setError(error.message || 'Error en la conexión con el servidor.')
+      } finally {
         setLoading(false)
+
+        setTimeout(() => setFadeIn(true), 100)
       }
     }
 
@@ -135,7 +147,7 @@ const AdminConsentimientos = () => {
       setConsentimientoToDelete(null)
     } catch (error) {
       console.error('Error al eliminar consentimiento:', error)
-      alert(
+      setError(
         'Error al eliminar el consentimiento: ' +
           (error.message || 'Error desconocido')
       )
@@ -145,119 +157,230 @@ const AdminConsentimientos = () => {
   }
 
   return (
-    <div className='admin-consentimientos-container'>
+    <div
+      className={`cf-consentimientos-container ${
+        fadeIn ? 'cf-consentimientos-fade-in' : ''
+      }`}
+    >
       <Header />
-      <div className='admin-consentimientos-content'>
-        <h1>Gestión de Consentimientos</h1>
+      <div className='cf-consentimientos-content'>
+        <div className='cf-consentimientos-header'>
+          <Button
+            variant='secondary'
+            onClick={() => navigate('/administracion')}
+          >
+            Volver a Administración
+          </Button>
+          <h1 className='cf-consentimientos-title'>
+            Gestión de Consentimientos
+          </h1>
+        </div>
 
-        <div className='search-container'>
-          <input
-            type='text'
-            placeholder='Buscar por nombre o email...'
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className='search-input'
-          />
+        {error && (
+          <div className='cf-consentimientos-error'>
+            <div className='cf-consentimientos-error-icon'></div>
+            <p>{error}</p>
+          </div>
+        )}
+
+        <div className='cf-consentimientos-search-container'>
+          <div className='cf-consentimientos-search-box'>
+            <Search size={18} className='cf-consentimientos-search-icon' />
+            <input
+              type='text'
+              placeholder='Buscar por nombre o email...'
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className='cf-consentimientos-search-input'
+            />
+            {searchTerm && (
+              <button
+                className='cf-consentimientos-search-clear'
+                onClick={() => setSearchTerm('')}
+              >
+                <X size={16} />
+              </button>
+            )}
+          </div>
         </div>
 
         {loading ? (
-          <div className='loading'>Cargando consentimientos...</div>
-        ) : error ? (
-          <div className='error-message'>{error}</div>
+          <div className='cf-consentimientos-loading'>
+            <div className='cf-consentimientos-spinner'></div>
+            <p className='cf-consentimientos-loading-text'>
+              Cargando consentimientos...
+            </p>
+          </div>
         ) : (
           <>
-            <div className='consentimientos-stats'>
-              <p>Total de consentimientos: {filteredConsentimientos.length}</p>
-              <p>
-                Autorizan imagen:{' '}
-                {filteredConsentimientos.filter((c) => c.autorizaImagen).length}
-              </p>
-              <p>
-                No autorizan imagen:{' '}
-                {
-                  filteredConsentimientos.filter(
-                    (c) => c.autorizaImagen === false
-                  ).length
-                }
-              </p>
+            <div className='cf-consentimientos-stats'>
+              <div className='cf-consentimientos-stat-card'>
+                <div className='cf-consentimientos-stat-icon cf-consentimientos-stat-icon-total'></div>
+                <div className='cf-consentimientos-stat-content'>
+                  <span className='cf-consentimientos-stat-value'>
+                    {filteredConsentimientos.length}
+                  </span>
+                  <span className='cf-consentimientos-stat-label'>
+                    Total consentimientos
+                  </span>
+                </div>
+              </div>
+
+              <div className='cf-consentimientos-stat-card'>
+                <div className='cf-consentimientos-stat-icon cf-consentimientos-stat-icon-autoriza'></div>
+                <div className='cf-consentimientos-stat-content'>
+                  <span className='cf-consentimientos-stat-value'>
+                    {
+                      filteredConsentimientos.filter((c) => c.autorizaImagen)
+                        .length
+                    }
+                  </span>
+                  <span className='cf-consentimientos-stat-label'>
+                    Autorizan imagen
+                  </span>
+                </div>
+              </div>
+
+              <div className='cf-consentimientos-stat-card'>
+                <div className='cf-consentimientos-stat-icon cf-consentimientos-stat-icon-no-autoriza'></div>
+                <div className='cf-consentimientos-stat-content'>
+                  <span className='cf-consentimientos-stat-value'>
+                    {
+                      filteredConsentimientos.filter(
+                        (c) => c.autorizaImagen === false
+                      ).length
+                    }
+                  </span>
+                  <span className='cf-consentimientos-stat-label'>
+                    No autorizan imagen
+                  </span>
+                </div>
+              </div>
             </div>
 
-            <div className='consentimientos-table-container'>
-              <table className='consentimientos-table'>
-                <thead>
-                  <tr>
-                    <th>Nombre</th>
-                    <th>Email</th>
-                    <th>Autoriza Imagen</th>
-                    <th>Fecha de Aceptación</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredConsentimientos.length > 0 ? (
-                    filteredConsentimientos.map((item) => (
+            <div className='cf-consentimientos-table-container'>
+              {filteredConsentimientos.length > 0 ? (
+                <table className='cf-consentimientos-table'>
+                  <thead>
+                    <tr>
+                      <th>Nombre</th>
+                      <th>Email</th>
+                      <th>Autoriza Imagen</th>
+                      <th>Fecha de Aceptación</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredConsentimientos.map((item) => (
                       <tr key={item._id}>
-                        <td>{item.nombreUsuario}</td>
-                        <td>{item.email}</td>
-                        <td
-                          className={
-                            item.autorizaImagen ? 'autoriza' : 'no-autoriza'
-                          }
-                        >
-                          {item.autorizaImagen ? 'SÍ' : 'NO'}
+                        <td className='cf-consentimientos-nombre-cell'>
+                          {item.nombreUsuario}
                         </td>
-                        <td>{formatDate(item.fechaAceptacion)}</td>
-                        <td>
+                        <td className='cf-consentimientos-email-cell'>
+                          {item.email}
+                        </td>
+                        <td className='cf-consentimientos-autoriza-cell'>
+                          <span
+                            className={`cf-consentimientos-autoriza-badge ${
+                              item.autorizaImagen
+                                ? 'cf-consentimientos-autoriza'
+                                : 'cf-consentimientos-no-autoriza'
+                            }`}
+                          >
+                            {item.autorizaImagen ? (
+                              <>
+                                <Check size={14} />
+                                <span>SÍ</span>
+                              </>
+                            ) : (
+                              <>
+                                <XCircle size={14} />
+                                <span>NO</span>
+                              </>
+                            )}
+                          </span>
+                        </td>
+                        <td className='cf-consentimientos-fecha-cell'>
+                          {formatDate(item.fechaAceptacion)}
+                        </td>
+                        <td className='cf-consentimientos-acciones-cell'>
                           <button
-                            className='delete-button'
+                            className='cf-consentimientos-delete-btn'
                             onClick={() => handleDeleteClick(item)}
                             disabled={deleteLoading === item._id}
                           >
-                            {deleteLoading === item._id
-                              ? 'Eliminando...'
-                              : 'Eliminar'}
+                            {deleteLoading === item._id ? (
+                              <div className='cf-consentimientos-btn-spinner'></div>
+                            ) : (
+                              <>
+                                <div className='cf-consentimientos-delete-icon'></div>
+                                <span>Eliminar</span>
+                              </>
+                            )}
                           </button>
                         </td>
                       </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan='5' className='no-results'>
-                        No se encontraron consentimientos
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <div className='cf-consentimientos-no-results'>
+                  <div className='cf-consentimientos-no-results-icon'></div>
+                  <h3 className='cf-consentimientos-no-results-title'>
+                    No se encontraron consentimientos
+                  </h3>
+                  <p className='cf-consentimientos-no-results-text'>
+                    No hay consentimientos que coincidan con tu búsqueda.
+                  </p>
+                </div>
+              )}
             </div>
           </>
         )}
       </div>
 
       {showConfirmDialog && (
-        <div className='confirm-dialog-overlay'>
-          <div className='confirm-dialog'>
-            <h3>Confirmar eliminación</h3>
-            <p>
-              ¿Estás seguro de que deseas eliminar el consentimiento de{' '}
-              <strong>{consentimientoToDelete?.nombreUsuario}</strong>?
-            </p>
-            <p>Esta acción no se puede deshacer.</p>
-
-            <div className='confirm-dialog-buttons'>
+        <div className='cf-consentimientos-dialog-overlay'>
+          <div className='cf-consentimientos-dialog'>
+            <div className='cf-consentimientos-dialog-header'>
+              <AlertTriangle
+                size={24}
+                className='cf-consentimientos-dialog-icon'
+              />
+              <h3 className='cf-consentimientos-dialog-title'>
+                Confirmar eliminación
+              </h3>
+            </div>
+            <div className='cf-consentimientos-dialog-content'>
+              <p>
+                ¿Estás seguro de que deseas eliminar el consentimiento de{' '}
+                <strong>{consentimientoToDelete?.nombreUsuario}</strong>?
+              </p>
+              <p className='cf-consentimientos-dialog-warning'>
+                Esta acción no se puede deshacer.
+              </p>
+            </div>
+            <div className='cf-consentimientos-dialog-actions'>
               <button
-                className='cancel-button'
+                className='cf-consentimientos-dialog-cancel'
                 onClick={handleCancelDelete}
                 disabled={deleteLoading}
               >
                 Cancelar
               </button>
               <button
-                className='confirm-button'
+                className='cf-consentimientos-dialog-confirm'
                 onClick={handleConfirmDelete}
                 disabled={deleteLoading}
               >
-                {deleteLoading ? 'Eliminando...' : 'Eliminar'}
+                {deleteLoading ? (
+                  <>
+                    <div className='cf-consentimientos-btn-spinner'></div>
+                    <span>Eliminando...</span>
+                  </>
+                ) : (
+                  'Eliminar'
+                )}
               </button>
             </div>
           </div>

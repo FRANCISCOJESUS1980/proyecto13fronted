@@ -23,13 +23,23 @@ const Chat = () => {
   const [userRole, setUserRole] = useState('')
   const [editingMessageId, setEditingMessageId] = useState(null)
   const [editText, setEditText] = useState('')
+  const [animationComplete, setAnimationComplete] = useState(false)
   const messagesEndRef = useRef(null)
+  const chatBoxRef = useRef(null)
 
   const scrollToBottom = () => {
     setTimeout(() => {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
     }, 100)
   }
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAnimationComplete(true)
+    }, 300)
+
+    return () => clearTimeout(timer)
+  }, [])
 
   useEffect(() => {
     const nombre = localStorage.getItem('nombre')
@@ -196,116 +206,167 @@ const Chat = () => {
   }
 
   return (
-    <div className='chat-container'>
+    <div
+      className={`cf-chat-container ${
+        animationComplete ? 'cf-chat-fade-in' : ''
+      }`}
+    >
       <Header />
-      <div className='chat-header-actions'>
-        <Button
-          variant='secondary'
-          onClick={() => navigate('/dashboard')}
-          leftIcon={<span>←</span>}
-        >
-          Volver al Dashboard
-        </Button>
-
-        {userRole === 'admin' && (
-          <Button variant='secondary' onClick={handleDeleteAllMessages}>
-            Eliminar Todos los Mensajes
+      <div className='cf-chat-main-content'>
+        <div className='cf-chat-header-actions'>
+          <Button
+            variant='secondary'
+            onClick={() => navigate('/dashboard')}
+            leftIcon={<span className='cf-chat-back-icon'></span>}
+            className='cf-chat-back-button'
+          >
+            Volver al Dashboard
           </Button>
-        )}
-      </div>
 
-      <div className='chat-content'>
-        <h2 className='chat-title'>Chat en Vivo</h2>
-        <div className='chat-box'>
-          {isLoading ? (
-            <div className='loading-messages'>Cargando mensajes...</div>
-          ) : messages.length === 0 ? (
-            <div className='no-messages'>No hay mensajes aún</div>
-          ) : (
-            messages.map((msg, index) => {
-              const { date, time } = formatDate(msg.createdAt)
-              const displayName = msg.userName || 'Usuario'
-              const isEditing = editingMessageId === msg._id
-              const isOwnMessage = msg.userId === currentUserId
+          {userRole === 'admin' && (
+            <Button
+              variant='secondary'
+              onClick={handleDeleteAllMessages}
+              className='cf-chat-delete-all-button'
+            >
+              <span className='cf-chat-delete-all-icon'></span>
+              Eliminar Todos los Mensajes
+            </Button>
+          )}
+        </div>
 
-              return (
-                <div
-                  key={msg._id || index}
-                  className={`message-wrapper ${
-                    isOwnMessage ? 'own-message' : ''
-                  }`}
-                >
-                  <div className='message'>
-                    <div className='message-header'>
-                      <span className='message-username'>{displayName}</span>
-                      <span className='message-date'>{date}</span>
-                    </div>
+        <div className='cf-chat-content'>
+          <div className='cf-chat-title-container'>
+            <div className='cf-chat-icon'></div>
+            <h2 className='cf-chat-title'>Chat en Vivo</h2>
+          </div>
 
-                    {isEditing ? (
-                      <div className='message-edit'>
-                        <textarea
-                          value={editText}
-                          onChange={(e) => setEditText(e.target.value)}
-                          className='edit-textarea'
-                        />
-                        <div className='edit-buttons'>
-                          <button onClick={saveEdit} className='edit-save-btn'>
-                            Guardar
-                          </button>
-                          <button
-                            onClick={cancelEditing}
-                            className='edit-cancel-btn'
-                          >
-                            Cancelar
-                          </button>
+          <div className='cf-chat-box' ref={chatBoxRef}>
+            {isLoading ? (
+              <div className='cf-chat-loading'>
+                <div className='cf-chat-spinner'></div>
+                <p>Cargando mensajes...</p>
+              </div>
+            ) : messages.length === 0 ? (
+              <div className='cf-chat-no-messages'>
+                <div className='cf-chat-empty-icon'></div>
+                <p>No hay mensajes aún</p>
+                <p>¡Sé el primero en enviar un mensaje!</p>
+              </div>
+            ) : (
+              <div className='cf-chat-messages-container'>
+                {messages.map((msg, index) => {
+                  const { date, time } = formatDate(msg.createdAt)
+                  const displayName = msg.userName || 'Usuario'
+                  const isEditing = editingMessageId === msg._id
+                  const isOwnMessage = msg.userId === currentUserId
+                  const isAdmin = msg.userRole === 'admin'
+
+                  return (
+                    <div
+                      key={msg._id || index}
+                      className={`cf-chat-message-wrapper ${
+                        isOwnMessage ? 'cf-chat-own-message' : ''
+                      } ${isAdmin ? 'cf-chat-admin-message' : ''}`}
+                    >
+                      <div className='cf-chat-message'>
+                        <div className='cf-chat-message-header'>
+                          <span className='cf-chat-message-username'>
+                            {isAdmin && (
+                              <span className='cf-chat-admin-badge'>Admin</span>
+                            )}
+                            {displayName}
+                          </span>
+                          <span className='cf-chat-message-date'>{date}</span>
                         </div>
-                      </div>
-                    ) : (
-                      <>
-                        <div className='message-body'>{msg.text}</div>
-                        <div className='message-footer'>
-                          <span className='message-time'>{time}</span>
 
-                          {canModifyMessage(msg) && (
-                            <div className='message-actions'>
+                        {isEditing ? (
+                          <div className='cf-chat-message-edit'>
+                            <textarea
+                              value={editText}
+                              onChange={(e) => setEditText(e.target.value)}
+                              className='cf-chat-edit-textarea'
+                              autoFocus
+                            />
+                            <div className='cf-chat-edit-buttons'>
                               <button
-                                onClick={() => startEditing(msg)}
-                                className='message-action-btn edit-btn'
-                                title='Editar mensaje'
+                                onClick={saveEdit}
+                                className='cf-chat-edit-save-btn'
                               >
-                                ✏️
+                                <span className='cf-chat-save-icon'></span>
+                                Guardar
                               </button>
                               <button
-                                onClick={() => handleDeleteMessage(msg._id)}
-                                className='message-action-btn delete-btn'
-                                title='Eliminar mensaje'
+                                onClick={cancelEditing}
+                                className='cf-chat-edit-cancel-btn'
                               >
-                                🗑️
+                                <span className='cf-chat-cancel-icon'></span>
+                                Cancelar
                               </button>
                             </div>
-                          )}
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
-              )
-            })
-          )}
-          <div ref={messagesEndRef} />
+                          </div>
+                        ) : (
+                          <>
+                            <div className='cf-chat-message-body'>
+                              {msg.text}
+                            </div>
+                            <div className='cf-chat-message-footer'>
+                              <span className='cf-chat-message-time'>
+                                {time}
+                              </span>
+
+                              {canModifyMessage(msg) && (
+                                <div className='cf-chat-message-actions'>
+                                  <button
+                                    onClick={() => startEditing(msg)}
+                                    className='cf-chat-message-action-btn cf-chat-edit-btn'
+                                    title='Editar mensaje'
+                                  >
+                                    <span className='cf-chat-edit-icon'></span>
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteMessage(msg._id)}
+                                    className='cf-chat-message-action-btn cf-chat-delete-btn'
+                                    title='Eliminar mensaje'
+                                  >
+                                    <span className='cf-chat-delete-icon'></span>
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
+                <div ref={messagesEndRef} />
+              </div>
+            )}
+          </div>
+
+          <form onSubmit={sendMessage} className='cf-chat-input-container'>
+            <div className='cf-chat-input-wrapper'>
+              <input
+                className='cf-chat-input'
+                type='text'
+                placeholder='Escribe un mensaje...'
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+              />
+              <Button
+                type='submit'
+                variant='primary'
+                size='md'
+                className='cf-chat-send-button'
+                disabled={!message.trim()}
+              >
+                <span className='cf-chat-send-icon'></span>
+                <span className='cf-chat-send-text'>Enviar</span>
+              </Button>
+            </div>
+          </form>
         </div>
-        <form onSubmit={sendMessage} className='chat-input-container'>
-          <input
-            className='chat-input'
-            type='text'
-            placeholder='Escribe un mensaje...'
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-          />
-          <Button type='submit' variant='primary' size='md'>
-            Enviar
-          </Button>
-        </form>
       </div>
     </div>
   )

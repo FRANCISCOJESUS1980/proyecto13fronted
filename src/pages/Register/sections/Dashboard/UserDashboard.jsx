@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import './Dashboard.css'
+import './UserDashboard.css'
 import Header from '../../../../components/Header/Header'
 import { obtenerPerfilUsuario } from '../../../../services/Api/index'
 import { obtenerMensajesNoLeidos } from '../../../../services/Api/mensajesPrivados'
@@ -11,6 +11,15 @@ const UserDashboard = () => {
   const [userId, setUserId] = useState(null)
   const [loading, setLoading] = useState(true)
   const [unreadMessages, setUnreadMessages] = useState(0)
+  const [animationComplete, setAnimationComplete] = useState(false)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAnimationComplete(true)
+    }, 300)
+
+    return () => clearTimeout(timer)
+  }, [])
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -98,74 +107,143 @@ const UserDashboard = () => {
 
   const sectionData = [
     {
-      icon: '🏥',
+      icon: 'medical',
       title: 'Información Médica',
       description: 'Gestiona tu información médica y de salud',
-      path: '/dashboard/medico'
+      path: '/dashboard/medico',
+      color: 'blue'
     },
     {
-      icon: '📏',
+      icon: 'physical',
       title: 'Aspecto Físico',
       description: 'Registra tus medidas y progreso físico',
-      path: '/dashboard/aspecto'
+      path: '/dashboard/aspecto',
+      color: 'green'
     },
     {
-      icon: '💬',
+      icon: 'chat',
       title: 'Chat en Vivo',
       description: 'Conversa con otros miembros del box',
-      path: '/dashboard/chat'
+      path: '/dashboard/chat',
+      color: 'purple'
     },
     {
-      icon: '✉️',
+      icon: 'message',
       title: 'Mensajes Privados',
       description: 'Comunicación directa con administración',
       path: '/dashboard/mensajes',
-      badge: unreadMessages > 0 ? unreadMessages : null
+      badge: unreadMessages > 0 ? unreadMessages : null,
+      color: 'pink'
     },
     {
-      icon: '🏋️‍♂️',
+      icon: 'record',
       title: 'Marcas Personales',
       description: 'Registra tus récords y logros',
-      path: '/dashboard/marcas'
+      path: '/dashboard/marcas',
+      color: 'amber'
     },
     {
-      icon: '⚙️',
+      icon: 'profile',
       title: 'Editar Perfil',
       description: 'Modifica tu información personal',
-      path: `/dashboard/editar-perfil/${userId}`
+      path: `/dashboard/editar-perfil/${userId}`,
+      color: 'orange'
     }
   ]
 
-  return (
-    <div className='dashboard-container'>
-      <Header />
-      <div className='dashboard-header'>
-        <h1>Bienvenido a AderCrossFit, {userName}</h1>
-        <button className='logout-btn' onClick={handleLogout}>
-          Cerrar Sesión
-        </button>
-      </div>
+  const renderSectionIcon = (iconType) => {
+    switch (iconType) {
+      case 'medical':
+        return (
+          <span className='cf-dash-section-icon cf-dash-medical-icon'></span>
+        )
+      case 'physical':
+        return (
+          <span className='cf-dash-section-icon cf-dash-physical-icon'></span>
+        )
+      case 'chat':
+        return <span className='cf-dash-section-icon cf-dash-chat-icon'></span>
+      case 'message':
+        return (
+          <span className='cf-dash-section-icon cf-dash-message-icon'></span>
+        )
+      case 'record':
+        return (
+          <span className='cf-dash-section-icon cf-dash-record-icon'></span>
+        )
+      case 'profile':
+        return (
+          <span className='cf-dash-section-icon cf-dash-profile-icon'></span>
+        )
+      default:
+        return (
+          <span className='cf-dash-section-icon cf-dash-default-icon'></span>
+        )
+    }
+  }
 
-      {loading ? (
-        <div className='loading-indicator'>Cargando tu información</div>
-      ) : (
-        <div className='dashboard-sections'>
-          {sectionData.map((section, index) => (
-            <div
-              key={index}
-              className='section-card'
-              onClick={() => navigate(section.path)}
-            >
-              <span className='section-icon'>{section.icon}</span>
-              {section.badge && (
-                <span className='notification-badge'>{section.badge}</span>
-              )}
-              <h2>{section.title}</h2>
-              <p>{section.description}</p>
-            </div>
-          ))}
+  return (
+    <div
+      className={`cf-dash-container ${
+        animationComplete ? 'cf-dash-fade-in' : ''
+      }`}
+    >
+      <Header />
+      <div className='cf-dash-content'>
+        <div className='cf-dash-header'>
+          <div className='cf-dash-welcome'>
+            <div className='cf-dash-welcome-icon'></div>
+            <h1 className='cf-dash-title'>
+              Bienvenido a AderCrossFit,{' '}
+              <span className='cf-dash-username'>{userName}</span>
+            </h1>
+          </div>
+          <button className='cf-dash-logout-btn' onClick={handleLogout}>
+            <span className='cf-dash-logout-icon'></span>
+            <span className='cf-dash-logout-text'>Cerrar Sesión</span>
+          </button>
         </div>
-      )}
+
+        {loading ? (
+          <div className='cf-dash-loading'>
+            <div className='cf-dash-spinner'></div>
+            <p className='cf-dash-loading-text'>Cargando tu información...</p>
+          </div>
+        ) : (
+          <div className='cf-dash-sections'>
+            {sectionData.map((section, index) => (
+              <div
+                key={index}
+                className={`cf-dash-card cf-dash-card-${section.color}`}
+                onClick={() => navigate(section.path)}
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <div className='cf-dash-card-content'>
+                  <div
+                    className={`cf-dash-card-icon-container cf-dash-icon-${section.color}`}
+                  >
+                    {renderSectionIcon(section.icon)}
+                  </div>
+                  <div className='cf-dash-card-info'>
+                    <h2 className='cf-dash-card-title'>{section.title}</h2>
+                    <p className='cf-dash-card-description'>
+                      {section.description}
+                    </p>
+                  </div>
+                  {section.badge && (
+                    <div className='cf-dash-notification-badge'>
+                      <span>{section.badge}</span>
+                    </div>
+                  )}
+                  <div
+                    className={`cf-dash-card-arrow cf-dash-arrow-${section.color}`}
+                  ></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

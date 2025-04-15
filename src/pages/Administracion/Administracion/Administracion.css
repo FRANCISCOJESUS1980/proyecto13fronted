@@ -1,34 +1,603 @@
-.admin-container {
-  width: 100%;
-
-  background-color: #343a40;
-
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  min-height: 100svh;
+.cf-admin-container {
+  min-height: 100vh;
+  background-color: #121212;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
-h1 {
-  text-align: center;
-  color: red;
-  margin-bottom: 20px;
+.cf-admin-fade-in {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-h2 {
-  color: black;
-  padding-bottom: 5px;
-  margin-bottom: 15px;
-  justify-content: center;
+.cf-admin-content {
+  flex: 1;
+  max-width: 1200px;
+  width: 90%;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.cf-admin-header {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.cf-admin-welcome {
   display: flex;
+  align-items: center;
+  gap: 1rem;
 }
-.section-card {
-  margin: 20px;
+
+.cf-admin-welcome-icon {
+  width: 40px;
+  height: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%233B82F6' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: relative;
 }
-.section-card:hover {
-  background-color: #8a8a8a;
+
+.cf-admin-welcome-icon::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: rgba(59, 130, 246, 0.2);
+  border-radius: 50%;
+  filter: blur(8px);
+  width: 40px;
+  height: 40px;
 }
-.pAdministracion {
-  color: red;
+
+.cf-admin-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+
+.cf-admin-highlight {
+  color: #3b82f6;
+  font-weight: 700;
+}
+
+.cf-admin-role-badge {
   display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 8px;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  position: relative;
+}
+
+.cf-admin-role-badge::before {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: #3b82f6;
+  border-radius: 50%;
+  left: 0.75rem;
+  margin-right: 0.5rem;
+}
+
+.cf-admin-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
+  gap: 1.5rem;
+  min-height: 300px;
+  background-color: rgba(30, 30, 30, 0.5);
+  border-radius: 12px;
+  padding: 2rem;
+  border: 1px solid rgba(100, 100, 100, 0.3);
+}
+
+.cf-admin-spinner {
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  border-top: 4px solid #3b82f6;
+  width: 50px;
+  height: 50px;
+  animation: cf-admin-spin 1s linear infinite;
+}
+
+@keyframes cf-admin-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.cf-admin-loading-text {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+.cf-admin-sections {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.cf-admin-card {
+  background-color: rgba(30, 30, 30, 0.5);
+  border-radius: 12px;
+  border: 1px solid rgba(100, 100, 100, 0.3);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  animation: cf-admin-card-appear 0.5s ease-out forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@keyframes cf-admin-card-appear {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cf-admin-card-blue {
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.cf-admin-card-blue:hover {
+  transform: translateY(-5px);
+  border-color: rgba(59, 130, 246, 0.8);
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
+}
+
+.cf-admin-card-blue:hover .cf-admin-card-arrow {
+  transform: translateX(5px);
+  opacity: 1;
+}
+
+.cf-admin-card-green {
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.cf-admin-card-green:hover {
+  transform: translateY(-5px);
+  border-color: rgba(16, 185, 129, 0.8);
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.15);
+}
+
+.cf-admin-card-green:hover .cf-admin-card-arrow {
+  transform: translateX(5px);
+  opacity: 1;
+}
+
+.cf-admin-card-purple {
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+.cf-admin-card-purple:hover {
+  transform: translateY(-5px);
+  border-color: rgba(139, 92, 246, 0.8);
+  box-shadow: 0 10px 25px rgba(139, 92, 246, 0.15);
+}
+
+.cf-admin-card-purple:hover .cf-admin-card-arrow {
+  transform: translateX(5px);
+  opacity: 1;
+}
+
+.cf-admin-card-pink {
+  border-color: rgba(236, 72, 153, 0.3);
+}
+
+.cf-admin-card-pink:hover {
+  transform: translateY(-5px);
+  border-color: rgba(236, 72, 153, 0.8);
+  box-shadow: 0 10px 25px rgba(236, 72, 153, 0.15);
+}
+
+.cf-admin-card-pink:hover .cf-admin-card-arrow {
+  transform: translateX(5px);
+  opacity: 1;
+}
+
+.cf-admin-card-amber {
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.cf-admin-card-amber:hover {
+  transform: translateY(-5px);
+  border-color: rgba(245, 158, 11, 0.8);
+  box-shadow: 0 10px 25px rgba(245, 158, 11, 0.15);
+}
+
+.cf-admin-card-amber:hover .cf-admin-card-arrow {
+  transform: translateX(5px);
+  opacity: 1;
+}
+
+.cf-admin-card-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: relative;
+  height: 100%;
+}
+
+.cf-admin-card-icon-container {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.cf-admin-icon-blue {
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+.cf-admin-icon-blue::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(59, 130, 246, 0.2), transparent);
+  border-radius: 12px;
+}
+
+.cf-admin-icon-green {
+  background-color: rgba(16, 185, 129, 0.1);
+}
+
+.cf-admin-icon-green::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(16, 185, 129, 0.2), transparent);
+  border-radius: 12px;
+}
+
+.cf-admin-icon-purple {
+  background-color: rgba(139, 92, 246, 0.1);
+}
+
+.cf-admin-icon-purple::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(139, 92, 246, 0.2), transparent);
+  border-radius: 12px;
+}
+
+.cf-admin-icon-pink {
+  background-color: rgba(236, 72, 153, 0.1);
+}
+
+.cf-admin-icon-pink::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(236, 72, 153, 0.2), transparent);
+  border-radius: 12px;
+}
+
+.cf-admin-icon-amber {
+  background-color: rgba(245, 158, 11, 0.1);
+}
+
+.cf-admin-icon-amber::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(245, 158, 11, 0.2), transparent);
+  border-radius: 12px;
+}
+
+.cf-admin-section-icon {
+  width: 32px;
+  height: 32px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+  z-index: 1;
+}
+
+.cf-admin-calendar-icon {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%233B82F6' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z'/%3E%3C/svg%3E");
+}
+
+.cf-admin-shopping-icon {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2310B981' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z'/%3E%3C/svg%3E");
+}
+
+.cf-admin-users-icon {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%238B5CF6' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z'/%3E%3C/svg%3E");
+}
+
+.cf-admin-heart-icon {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23EC4899' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z'/%3E%3C/svg%3E");
+}
+
+.cf-admin-document-icon {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23F59E0B' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12l-3-3m0 0l-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z'/%3E%3C/svg%3E");
+}
+
+.cf-admin-card-info {
+  flex: 1;
+}
+
+.cf-admin-card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 0.5rem 0;
+}
+
+.cf-admin-card-description {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.875rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.cf-admin-card-arrow {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 20px;
+  height: 20px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
+.cf-admin-card-blue .cf-admin-card-arrow {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%233B82F6' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3'/%3E%3C/svg%3E");
+}
+
+.cf-admin-card-green .cf-admin-card-arrow {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2310B981' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3'/%3E%3C/svg%3E");
+}
+
+.cf-admin-card-purple .cf-admin-card-arrow {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%238B5CF6' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3'/%3E%3C/svg%3E");
+}
+
+.cf-admin-card-pink .cf-admin-card-arrow {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23EC4899' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3'/%3E%3C/svg%3E");
+}
+
+.cf-admin-card-amber .cf-admin-card-arrow {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23F59E0B' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3'/%3E%3C/svg%3E");
+}
+
+.cf-admin-section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 1.5rem 0;
+  position: relative;
+  padding-left: 1rem;
+  display: inline-block;
+}
+
+.cf-admin-section-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 24px;
+  background-color: #3b82f6;
+  border-radius: 2px;
+}
+
+.cf-admin-stats-container {
+  margin-top: 2rem;
+}
+
+.cf-admin-stats-card {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background-color: rgba(30, 30, 30, 0.5);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  transition: all 0.3s ease;
+  animation: cf-admin-fade-in 0.5s ease-out forwards;
+}
+
+.cf-admin-stats-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(59, 130, 246, 0.8);
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
+}
+
+.cf-admin-stats-icon {
+  width: 50px;
+  height: 50px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%233B82F6' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.479m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+}
+
+.cf-admin-stats-icon::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: rgba(59, 130, 246, 0.2);
+  border-radius: 50%;
+  filter: blur(8px);
+  width: 50px;
+  height: 50px;
+}
+
+.cf-admin-stats-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cf-admin-stats-label {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+}
+
+.cf-admin-stats-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.cf-admin-error-message {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  color: #fff;
+  animation: cf-admin-fade-in 0.5s ease-out forwards;
+}
+
+.cf-admin-error-icon {
+  width: 24px;
+  height: 24px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23ef4444' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  flex-shrink: 0;
+}
+
+@keyframes cf-admin-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .cf-admin-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cf-admin-role-badge {
+    width: 94%;
+    justify-content: center;
+  }
+
+  .cf-admin-sections {
+    grid-template-columns: 1fr;
+  }
+
+  .cf-admin-title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .cf-admin-content {
+    padding: 1rem;
+  }
+
+  .cf-admin-card-content {
+    padding: 1.25rem;
+  }
+
+  .cf-admin-role-badge {
+    width: 89%;
+    justify-content: center;
+  }
+  .cf-admin-card-icon-container {
+    width: 50px;
+    height: 50px;
+  }
+
+  .cf-admin-section-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .cf-admin-welcome {
+    gap: 0.75rem;
+  }
+
+  .cf-admin-welcome-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .cf-admin-welcome-icon::after {
+    width: 32px;
+    height: 32px;
+  }
+
+  .cf-admin-card-title {
+    font-size: 1.125rem;
+  }
+
+  .cf-admin-card-description {
+    font-size: 0.8125rem;
+  }
+
+  .cf-admin-stats-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .cf-admin-stats-value {
+    font-size: 1.75rem;
+  }
 }

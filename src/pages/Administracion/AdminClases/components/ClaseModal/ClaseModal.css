@@ -1,0 +1,429 @@
+.cf-clase-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.cf-clase-modal {
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  animation: cf-clase-modal-appear 0.3s ease-out forwards;
+}
+
+@keyframes cf-clase-modal-appear {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cf-clase-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cf-clase-modal-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+
+.cf-clase-btn-icon {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.cf-clase-btn-icon:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.cf-clase-modal-form {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.cf-clase-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cf-clase-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.cf-clase-form-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.cf-clase-form-input,
+.cf-clase-form-select,
+.cf-clase-form-textarea {
+  background-color: rgba(30, 30, 30, 0.8);
+  border: 1px solid rgba(100, 100, 100, 0.3);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  color: #fff;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.cf-clase-form-textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.cf-clase-form-input:focus,
+.cf-clase-form-select:focus,
+.cf-clase-form-textarea:focus {
+  outline: none;
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+}
+
+.cf-clase-form-file {
+  background-color: rgba(30, 30, 30, 0.8);
+  border: 1px solid rgba(100, 100, 100, 0.3);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  color: #fff;
+  font-size: 0.875rem;
+  width: 100%;
+}
+
+.cf-clase-form-file::-webkit-file-upload-button {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  margin-right: 1rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cf-clase-form-file::-webkit-file-upload-button:hover {
+  background-color: rgba(59, 130, 246, 0.3);
+}
+
+.cf-clase-modo-creacion {
+  background-color: rgba(30, 30, 30, 0.5);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid rgba(100, 100, 100, 0.2);
+}
+
+.cf-clase-radio-group {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.cf-clase-radio-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.cf-clase-radio-label p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.cf-clase-radio-input {
+  accent-color: #3b82f6;
+  width: 16px;
+  height: 16px;
+}
+
+.cf-clase-horarios-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.cf-clase-btn-add-horario {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cf-clase-btn-add-horario:hover {
+  background-color: rgba(59, 130, 246, 0.25);
+}
+
+.cf-clase-btn-add-horario:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cf-clase-horarios-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cf-clase-horario-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: rgba(30, 30, 30, 0.5);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid rgba(100, 100, 100, 0.2);
+}
+
+.cf-clase-horario-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  flex: 1;
+}
+
+.cf-clase-horario-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cf-clase-btn-remove-horario {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.cf-clase-btn-remove-horario:hover {
+  background-color: rgba(239, 68, 68, 0.25);
+}
+
+.cf-clase-avatar-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.cf-clase-avatar-preview {
+  width: 200px;
+  height: 200px;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  border: 1px solid rgba(100, 100, 100, 0.3);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: rgba(30, 30, 30, 0.8);
+}
+
+.cf-clase-avatar-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.cf-clase-avatar-overlay span {
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background-color: rgba(59, 130, 246, 0.7);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+}
+
+.cf-clase-avatar-preview:hover .cf-clase-avatar-overlay {
+  opacity: 1;
+}
+
+.cf-clase-avatar-input {
+  display: none;
+}
+
+.cf-clase-avatar-label {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.cf-clase-avatar-label:hover {
+  background-color: rgba(59, 130, 246, 0.3);
+}
+
+.cf-clase-imagen-preview {
+  display: none;
+}
+
+.cf-clase-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cf-clase-btn-secondary {
+  background-color: rgba(100, 100, 100, 0.2);
+  color: #fff;
+  border: 1px solid rgba(100, 100, 100, 0.3);
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cf-clase-btn-secondary:hover {
+  background-color: rgba(100, 100, 100, 0.3);
+}
+
+.cf-clase-btn-primary {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cf-clase-btn-primary:hover {
+  background-color: rgba(59, 130, 246, 0.3);
+}
+
+.cf-clase-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .cf-clase-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .cf-clase-radio-group {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .cf-clase-horario-inputs {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .cf-clase-modal {
+    max-height: 95vh;
+  }
+
+  .cf-clase-modal-header {
+    padding: 1rem;
+  }
+
+  .cf-clase-modal-form {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .cf-clase-horarios-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .cf-clase-btn-add-horario {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .cf-clase-modal-footer {
+    flex-direction: column;
+  }
+
+  .cf-clase-btn-secondary,
+  .cf-clase-btn-primary {
+    width: 100%;
+    text-align: center;
+  }
+}

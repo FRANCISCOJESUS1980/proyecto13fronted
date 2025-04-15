@@ -1,0 +1,91 @@
+.cf-mensaje-estado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  animation: cf-mensaje-estado-slide-in 0.3s ease-out forwards;
+}
+
+.cf-mensaje-estado-exito {
+  background-color: rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.cf-mensaje-estado-error {
+  background-color: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.cf-mensaje-estado-info {
+  background-color: rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.cf-mensaje-estado-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cf-mensaje-estado-icon {
+  flex-shrink: 0;
+}
+
+.cf-mensaje-estado-exito .cf-mensaje-estado-icon {
+  color: #10b981;
+}
+
+.cf-mensaje-estado-error .cf-mensaje-estado-icon {
+  color: #ef4444;
+}
+
+.cf-mensaje-estado-info .cf-mensaje-estado-icon {
+  color: #3b82f6;
+}
+
+.cf-mensaje-estado-text {
+  color: #fff;
+  font-size: 0.9375rem;
+  margin: 0;
+}
+
+.cf-mensaje-estado-close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.cf-mensaje-estado-close:hover {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+@keyframes cf-mensaje-estado-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 480px) {
+  .cf-mensaje-estado {
+    padding: 0.75rem 1rem;
+  }
+
+  .cf-mensaje-estado-text {
+    font-size: 0.875rem;
+  }
+}

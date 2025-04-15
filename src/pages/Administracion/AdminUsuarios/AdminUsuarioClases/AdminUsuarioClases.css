@@ -1,55 +1,162 @@
-.admin-usuario-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.admin-usuario-header {
+.cf-admin-usuario-clases-container {
+  min-height: 100vh;
+  background-color: #121212;
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  margin-bottom: 20px;
 }
 
-.usuario-info {
+.cf-admin-usuario-clases-content {
+  flex: 1;
+  max-width: 1200px;
+  width: 90%;
+  margin: 0 auto;
+  padding: 1.5rem;
+  animation: cf-admin-usuario-clases-fade-in 0.5s ease-out forwards;
+}
+
+@keyframes cf-admin-usuario-clases-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cf-admin-usuario-clases-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.cf-admin-usuario-clases-info {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cf-admin-usuario-clases-avatar-container {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(59, 130, 246, 0.3);
+  background-color: rgba(59, 130, 246, 0.1);
+  flex-shrink: 0;
+}
+
+.cf-admin-usuario-clases-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cf-admin-usuario-clases-avatar-placeholder {
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 15px;
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
 }
 
-.usuario-avatar-small {
+.cf-admin-usuario-clases-details {
+  flex: 1;
+}
+
+.cf-admin-usuario-clases-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 0.5rem 0;
+}
+
+.cf-admin-usuario-clases-stats {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.cf-admin-usuario-clases-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.cf-admin-usuario-clases-stat-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #3b82f6;
+}
+
+.cf-admin-usuario-clases-stat-label {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.cf-admin-usuario-clases-notifications {
+  margin-bottom: 1.5rem;
+}
+
+.cf-admin-usuario-clases-calendar-section {
+  margin-bottom: 2rem;
+  background-color: rgba(30, 30, 30, 0.5);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid rgba(100, 100, 100, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.cf-admin-usuario-clases-calendar-header {
+  margin-bottom: 1rem;
+}
+
+.cf-admin-usuario-clases-calendar-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+
+.cf-admin-usuario-clases-timeline-section {
+  background-color: rgba(30, 30, 30, 0.5);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid rgba(100, 100, 100, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.cf-admin-usuario-clases-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  min-height: 300px;
+  background-color: rgba(30, 30, 30, 0.5);
+  border-radius: 12px;
+  padding: 2rem;
+  border: 1px solid rgba(100, 100, 100, 0.3);
+  margin-bottom: 2rem;
+}
+
+.cf-admin-usuario-clases-spinner {
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  border-top: 4px solid #3b82f6;
   width: 50px;
   height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #f0f0f0;
+  animation: cf-admin-usuario-clases-spin 1s linear infinite;
 }
 
-.usuario-info h1 {
-  margin: 0;
-  font-size: 24px;
-}
-
-.loading-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 300px;
-}
-
-.loading-spinner {
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  border-radius: 50%;
-  border-top: 4px solid #3182ce;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-  margin-bottom: 15px;
-}
-
-@keyframes spin {
+@keyframes cf-admin-usuario-clases-spin {
   0% {
     transform: rotate(0deg);
   }
@@ -58,11 +165,62 @@
   }
 }
 
-.error-message {
-  background-color: #fed7d7;
-  color: #c53030;
-  padding: 15px;
+.cf-admin-usuario-clases-loading-text {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+.cf-admin-usuario-clases-error {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.3);
   border-radius: 8px;
-  margin: 20px 0;
-  text-align: center;
+  padding: 1rem 1.5rem;
+  color: #fff;
+  margin-bottom: 1.5rem;
+}
+
+.cf-admin-usuario-clases-error-icon {
+  width: 24px;
+  height: 24px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23ef4444' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  flex-shrink: 0;
+}
+
+@media (max-width: 992px) {
+  .cf-admin-usuario-clases-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .cf-admin-usuario-clases-content {
+    padding: 1rem;
+  }
+
+  .cf-admin-usuario-clases-title {
+    font-size: 1.5rem;
+  }
+
+  .cf-admin-usuario-clases-calendar-section,
+  .cf-admin-usuario-clases-timeline-section {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .cf-admin-usuario-clases-title {
+    font-size: 1.25rem;
+  }
+
+  .cf-admin-usuario-clases-calendar-title {
+    font-size: 1.125rem;
+  }
 }

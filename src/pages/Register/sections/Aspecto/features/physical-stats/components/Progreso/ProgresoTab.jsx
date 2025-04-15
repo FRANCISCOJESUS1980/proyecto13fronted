@@ -34,6 +34,7 @@ const ProgresoTab = () => {
   const [trendsData, setTrendsData] = useState(null)
   const [loadingTrends, setLoadingTrends] = useState(false)
   const [error, setError] = useState(null)
+  const [animationComplete, setAnimationComplete] = useState(false)
 
   const medidasOptions = [
     { value: 'peso', label: 'Peso (kg)' },
@@ -45,6 +46,14 @@ const ProgresoTab = () => {
     { value: 'biceps', label: 'Bíceps (cm)' },
     { value: 'muslos', label: 'Muslos (cm)' }
   ]
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAnimationComplete(true)
+    }, 500)
+
+    return () => clearTimeout(timer)
+  }, [])
 
   useEffect(() => {
     const loadTrends = async () => {
@@ -90,11 +99,14 @@ const ProgresoTab = () => {
             medidasOptions.find((opt) => opt.value === selectedMedida)?.label ||
             selectedMedida,
           data: values,
-          borderColor: '#3498db',
-          backgroundColor: 'rgba(52, 152, 219, 0.2)',
+          borderColor: '#FF5A1F',
+          backgroundColor: 'rgba(255, 90, 31, 0.2)',
           tension: 0.4,
           pointRadius: 5,
-          pointHoverRadius: 7
+          pointHoverRadius: 7,
+          pointBackgroundColor: '#FF5A1F',
+          pointBorderColor: 'rgba(255, 255, 255, 0.8)',
+          pointBorderWidth: 2
         }
       ]
     }
@@ -120,7 +132,14 @@ const ProgresoTab = () => {
         },
         title: {
           display: true,
-          text: 'Fecha'
+          text: 'Fecha',
+          color: 'rgba(255, 255, 255, 0.7)'
+        },
+        grid: {
+          color: 'rgba(255, 255, 255, 0.1)'
+        },
+        ticks: {
+          color: 'rgba(255, 255, 255, 0.7)'
         }
       },
       y: {
@@ -129,15 +148,33 @@ const ProgresoTab = () => {
           display: true,
           text:
             medidasOptions.find((opt) => opt.value === selectedMedida)?.label ||
-            selectedMedida
+            selectedMedida,
+          color: 'rgba(255, 255, 255, 0.7)'
+        },
+        grid: {
+          color: 'rgba(255, 255, 255, 0.1)'
+        },
+        ticks: {
+          color: 'rgba(255, 255, 255, 0.7)'
         }
       }
     },
     plugins: {
       legend: {
-        position: 'top'
+        position: 'top',
+        labels: {
+          color: 'rgba(255, 255, 255, 0.9)',
+          font: {
+            weight: 'bold'
+          }
+        }
       },
       tooltip: {
+        backgroundColor: 'rgba(30, 30, 30, 0.8)',
+        titleColor: '#FF5A1F',
+        bodyColor: 'rgba(255, 255, 255, 0.9)',
+        borderColor: 'rgba(255, 90, 31, 0.3)',
+        borderWidth: 1,
         callbacks: {
           title: (context) => {
             if (
@@ -168,74 +205,137 @@ const ProgresoTab = () => {
     return Number(value).toFixed(decimals)
   }
 
+  const getTrendIcon = (trend) => {
+    switch (trend) {
+      case 'aumento':
+        return (
+          <span className='cf-progreso-trend-icon cf-progreso-trend-up'></span>
+        )
+      case 'disminución':
+        return (
+          <span className='cf-progreso-trend-icon cf-progreso-trend-down'></span>
+        )
+      default:
+        return (
+          <span className='cf-progreso-trend-icon cf-progreso-trend-stable'></span>
+        )
+    }
+  }
+
+  const getTrendClass = (trend) => {
+    switch (trend) {
+      case 'aumento':
+        return 'cf-progreso-trend-up-text'
+      case 'disminución':
+        return 'cf-progreso-trend-down-text'
+      default:
+        return 'cf-progreso-trend-stable-text'
+    }
+  }
+
   return (
-    <div className='progreso-container'>
-      <div className='progreso-card'>
-        <div className='progreso-header'>
-          <h3>Progreso de Medidas</h3>
-          <div className='select-container'>
-            <label htmlFor='medida-select'>Seleccionar medida</label>
-            <select
-              id='medida-select'
-              value={selectedMedida}
-              onChange={(e) => setSelectedMedida(e.target.value)}
-              className='select-input'
-            >
-              {medidasOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+    <div
+      className={`cf-progreso-container ${
+        animationComplete ? 'cf-progreso-fade-in' : ''
+      }`}
+    >
+      <div className='cf-progreso-header'>
+        <div className='cf-progreso-title-container'>
+          <div className='cf-progreso-icon'></div>
+          <h2 className='cf-progreso-title'>Seguimiento de Progreso</h2>
+        </div>
+        <div className='cf-progreso-subtitle'>
+          Visualiza tu evolución a lo largo del tiempo
+        </div>
+      </div>
+
+      <div className='cf-progreso-card'>
+        <div className='cf-progreso-card-header'>
+          <h3 className='cf-progreso-card-title'>
+            <span className='cf-progreso-chart-icon'></span>
+            Gráfico de Progreso
+          </h3>
+          <div className='cf-progreso-select-container'>
+            <label htmlFor='medida-select'>Seleccionar medida:</label>
+            <div className='cf-progreso-select-wrapper'>
+              <select
+                id='medida-select'
+                value={selectedMedida}
+                onChange={(e) => setSelectedMedida(e.target.value)}
+                className='cf-progreso-select'
+              >
+                {medidasOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              <span className='cf-progreso-select-arrow'></span>
+            </div>
           </div>
         </div>
 
-        {loading || loadingTrends ? (
-          <div className='loading-container'>
-            <div className='loading-spinner'>Cargando datos...</div>
-          </div>
-        ) : error ? (
-          <div className='error-container'>
-            <p>Error: {error}</p>
-          </div>
-        ) : historialMedidas.length < 2 ? (
-          <div className='no-data'>
-            <p>
-              Se necesitan al menos dos mediciones para mostrar el progreso.
-            </p>
-            <p>Registra tus medidas regularmente para ver tu evolución.</p>
-          </div>
-        ) : (
-          <div className='chart-container'>
-            {chartData && (
-              <Line data={chartData} options={chartOptions} height={300} />
-            )}
-          </div>
-        )}
+        <div className='cf-progreso-card-body'>
+          {loading || loadingTrends ? (
+            <div className='cf-progreso-loading'>
+              <div className='cf-progreso-spinner'></div>
+              <p>Cargando datos...</p>
+            </div>
+          ) : error ? (
+            <div className='cf-progreso-error'>
+              <span className='cf-progreso-error-icon'></span>
+              <p>Error: {error}</p>
+            </div>
+          ) : historialMedidas.length < 2 ? (
+            <div className='cf-progreso-no-data'>
+              <span className='cf-progreso-no-data-icon'></span>
+              <p>
+                Se necesitan al menos dos mediciones para mostrar el progreso.
+              </p>
+              <p>Registra tus medidas regularmente para ver tu evolución.</p>
+            </div>
+          ) : (
+            <div className='cf-progreso-chart-container'>
+              {chartData && (
+                <Line data={chartData} options={chartOptions} height={300} />
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {trendsData && !error && !loadingTrends && (
-        <div className='tendencias-card'>
-          <h3>Análisis de Tendencias</h3>
-          <div className='tendencias-grid'>
-            <div className='tendencia-item'>
-              <span className='tendencia-label'>Tendencia:</span>
-              <span
-                className={`tendencia-value ${
-                  trendsData.tendencia || 'neutral'
-                }`}
+        <div className='cf-progreso-tendencias-card'>
+          <h3 className='cf-progreso-tendencias-title'>
+            <span className='cf-progreso-analysis-icon'></span>
+            Análisis de Tendencias
+          </h3>
+          <div className='cf-progreso-tendencias-grid'>
+            <div className='cf-progreso-tendencia-item'>
+              <div className='cf-progreso-tendencia-label'>
+                <span className='cf-progreso-tendencia-icon cf-progreso-direction-icon'></span>
+                Tendencia:
+              </div>
+              <div
+                className={`cf-progreso-tendencia-value ${getTrendClass(
+                  trendsData.tendencia
+                )}`}
               >
+                {getTrendIcon(trendsData.tendencia)}
                 {trendsData.tendencia === 'aumento'
-                  ? '↗️ Aumento'
+                  ? 'Aumento'
                   : trendsData.tendencia === 'disminución'
-                  ? '↘️ Disminución'
-                  : '➡️ Estable'}
-              </span>
+                  ? 'Disminución'
+                  : 'Estable'}
+              </div>
             </div>
 
-            <div className='tendencia-item'>
-              <span className='tendencia-label'>Cambio total:</span>
-              <span className='tendencia-value'>
+            <div className='cf-progreso-tendencia-item'>
+              <div className='cf-progreso-tendencia-label'>
+                <span className='cf-progreso-tendencia-icon cf-progreso-change-icon'></span>
+                Cambio total:
+              </div>
+              <div className='cf-progreso-tendencia-value'>
                 {trendsData.diferencia > 0 ? '+' : ''}
                 {safeToFixed(trendsData.diferencia)}
                 {selectedMedida === 'peso'
@@ -243,20 +343,26 @@ const ProgresoTab = () => {
                   : selectedMedida === 'grasa' || selectedMedida === 'musculo'
                   ? ' %'
                   : ' cm'}
-              </span>
+              </div>
             </div>
 
-            <div className='tendencia-item'>
-              <span className='tendencia-label'>Tasa de cambio:</span>
-              <span className='tendencia-value'>
+            <div className='cf-progreso-tendencia-item'>
+              <div className='cf-progreso-tendencia-label'>
+                <span className='cf-progreso-tendencia-icon cf-progreso-rate-icon'></span>
+                Tasa de cambio:
+              </div>
+              <div className='cf-progreso-tendencia-value'>
                 {trendsData.tasaCambio > 0 ? '+' : ''}
                 {safeToFixed(trendsData.tasaCambio)} {trendsData.unidad || ''}
-              </span>
+              </div>
             </div>
 
-            <div className='tendencia-item'>
-              <span className='tendencia-label'>Período analizado:</span>
-              <span className='tendencia-value'>
+            <div className='cf-progreso-tendencia-item'>
+              <div className='cf-progreso-tendencia-label'>
+                <span className='cf-progreso-tendencia-icon cf-progreso-calendar-icon'></span>
+                Período analizado:
+              </div>
+              <div className='cf-progreso-tendencia-value'>
                 {trendsData.valores && trendsData.valores.length > 0
                   ? `${new Date(
                       trendsData.valores[0].fecha
@@ -265,7 +371,7 @@ const ProgresoTab = () => {
                        trendsData.valores[trendsData.valores.length - 1].fecha
                      ).toLocaleDateString()}`
                   : 'N/A'}
-              </span>
+              </div>
             </div>
           </div>
         </div>

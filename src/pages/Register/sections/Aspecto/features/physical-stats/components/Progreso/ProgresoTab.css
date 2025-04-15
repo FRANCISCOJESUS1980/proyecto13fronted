@@ -1,107 +1,384 @@
-.progreso-container {
+.cf-progreso-container {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.cf-progreso-fade-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.cf-progreso-header {
+  margin-bottom: 1.5rem;
   display: flex;
   flex-direction: column;
-}
-
-.progreso-card,
-.tendencias-card {
-  padding: 30px;
-  margin: 30px;
-  background-color: #f9f9f9;
-}
-
-.progreso-header {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
 }
 
-.progreso-header h3 {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 600;
+.cf-progreso-title-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
-.chart-container {
-  height: 400px;
+.cf-progreso-icon {
+  width: 32px;
+  height: 32px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23FF5A1F' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
   position: relative;
 }
 
-.no-data {
+.cf-progreso-icon::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: rgba(255, 90, 31, 0.2);
+  border-radius: 50%;
+  filter: blur(8px);
+  width: 32px;
+  height: 32px;
+}
+
+.cf-progreso-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+
+.cf-progreso-subtitle {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.875rem;
+  margin-left: 2.5rem;
+}
+
+.cf-progreso-card {
+  background-color: rgba(30, 30, 30, 0.5);
+  border-radius: 12px;
+  border: 1px solid rgba(100, 100, 100, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+.cf-progreso-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem;
+  background-color: rgba(40, 40, 40, 0.5);
+  border-bottom: 1px solid rgba(100, 100, 100, 0.3);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.cf-progreso-card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+
+.cf-progreso-chart-icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23FF5A1F' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.cf-progreso-select-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cf-progreso-select-container label {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.875rem;
+}
+
+.cf-progreso-select-wrapper {
+  position: relative;
+  min-width: 180px;
+}
+
+.cf-progreso-select {
+  width: 100%;
+  appearance: none;
+  background-color: rgba(50, 50, 50, 0.5);
+  border: 1px solid rgba(100, 100, 100, 0.5);
+  border-radius: 6px;
+  padding: 0.625rem 2rem 0.625rem 0.75rem;
+  color: white;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cf-progreso-select:focus {
+  outline: none;
+  border-color: #ff5a1f;
+  box-shadow: 0 0 0 2px rgba(255, 90, 31, 0.3);
+}
+
+.cf-progreso-select-arrow {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23999999' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.cf-progreso-card-body {
+  padding: 1.5rem;
+  min-height: 350px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cf-progreso-chart-container {
+  width: 100%;
+  height: 350px;
+  position: relative;
+}
+
+.cf-progreso-loading {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  height: 200px;
+  align-items: center;
+  gap: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.cf-progreso-spinner {
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 3px solid #ff5a1f;
+  width: 30px;
+  height: 30px;
+  animation: cf-progreso-spin 1s linear infinite;
+}
+
+@keyframes cf-progreso-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.cf-progreso-error {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  color: #ef4444;
   text-align: center;
-  color: #7f8c8d;
-  background-color: #f9f9f9;
-  border-radius: 6px;
-  padding: 20px;
 }
 
-.tendencias-card h3 {
-  margin-top: 0;
-  margin-bottom: 20px;
-  font-size: 20px;
-  font-weight: 600;
+.cf-progreso-error-icon {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23ef4444' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
-.tendencias-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
-}
-
-.tendencia-item {
+.cf-progreso-no-data {
   display: flex;
   flex-direction: column;
-  background-color: #f9f9f9;
-  padding: 15px;
-  border-radius: 6px;
-}
-
-.tendencia-label {
-  font-size: 14px;
-  color: #7f8c8d;
-  margin-bottom: 5px;
-}
-
-.tendencia-value {
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
-}
-
-.tendencia-value.aumento {
-  color: #e74c3c;
-}
-
-.tendencia-value.disminución {
-  color: #2ecc71;
-}
-
-.loading-container {
-  display: flex;
   justify-content: center;
   align-items: center;
-  height: 300px;
+  gap: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  padding: 0 1rem;
+}
+
+.cf-progreso-no-data-icon {
+  display: inline-block;
+  width: 48px;
+  height: 48px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23999999' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.6;
+}
+
+.cf-progreso-tendencias-card {
+  background-color: rgba(30, 30, 30, 0.5);
+  border-radius: 12px;
+  padding: 1.25rem;
+  border: 1px solid rgba(100, 100, 100, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.cf-progreso-tendencias-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 1.25rem 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(100, 100, 100, 0.3);
+  justify-content: center;
+}
+
+.cf-progreso-analysis-icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23FF5A1F' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.cf-progreso-tendencias-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.25rem;
+}
+
+.cf-progreso-tendencia-item {
+  background-color: rgba(40, 40, 40, 0.5);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid rgba(100, 100, 100, 0.2);
+  transition: all 0.3s ease;
+}
+
+.cf-progreso-tendencia-item:hover {
+  border-color: rgba(255, 90, 31, 0.3);
+  box-shadow: 0 0 0 1px rgba(255, 90, 31, 0.1);
+}
+
+.cf-progreso-tendencia-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.cf-progreso-tendencia-icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.cf-progreso-direction-icon {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23999999' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4'/%3E%3C/svg%3E");
+}
+
+.cf-progreso-change-icon {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23999999' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0012 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52l2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 01-2.031.352 5.988 5.988 0 01-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0l2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 01-2.031.352 5.989 5.989 0 01-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971z'/%3E%3C/svg%3E");
+}
+
+.cf-progreso-rate-icon {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23999999' stroke-width='2'%3E%3Cpath stroke-linecap='round'  viewBox='0 0 24 24' stroke='%23999999' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3'/%3E%3C/svg%3E");
+}
+
+.cf-progreso-calendar-icon {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23999999' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5'/%3E%3C/svg%3E");
+}
+
+.cf-progreso-tendencia-value {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cf-progreso-trend-icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.cf-progreso-trend-up {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2310b981' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M7 11l5-5m0 0l5 5m-5-5v12'/%3E%3C/svg%3E");
+}
+
+.cf-progreso-trend-down {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23ef4444' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M17 13l-5 5m0 0l-5-5m5 5V6'/%3E%3C/svg%3E");
+}
+
+.cf-progreso-trend-stable {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23f59e0b' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M20 12H4'/%3E%3C/svg%3E");
+}
+
+.cf-progreso-trend-up-text {
+  color: #10b981;
+}
+
+.cf-progreso-trend-down-text {
+  color: #ef4444;
+}
+
+.cf-progreso-trend-stable-text {
+  color: #f59e0b;
 }
 
 @media (max-width: 768px) {
-  .progreso-header {
+  .cf-progreso-card-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
   }
 
-  .tendencias-grid {
+  .cf-progreso-select-container {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .cf-progreso-select-wrapper {
+    width: 100%;
+  }
+
+  .cf-progreso-tendencias-grid {
     grid-template-columns: 1fr;
   }
 
-  .progreso-card,
-  .tendencias-card {
-    padding: 20px;
+  .cf-progreso-title-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .cf-progreso-subtitle {
+    margin-left: 0;
+  }
+
+  .cf-progreso-chart-container {
+    height: 300px;
   }
 }

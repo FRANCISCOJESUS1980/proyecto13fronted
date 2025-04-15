@@ -1,77 +1,279 @@
-.admin-productos {
-  padding: 20px;
+.cf-admin-productos-container {
+  min-height: 100vh;
+  background-color: #121212;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.cf-admin-productos-fade-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.cf-admin-productos-content {
+  flex: 1;
   max-width: 1200px;
+  width: 90%;
   margin: 0 auto;
+  padding: 1.5rem;
 }
 
-.headerproductos {
+.cf-admin-productos-header {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
-  gap: 20px;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
-.headerproductos h1 {
+.cf-admin-productos-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #fff;
   margin: 0;
-  font-size: 24px;
+  position: relative;
 }
 
-.productos-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
-  margin-bottom: 20px;
+.cf-admin-productos-title::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 40px;
+  height: 3px;
+  background-color: #3b82f6;
+  border-radius: 2px;
 }
 
-.loading {
+.cf-admin-productos-new-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: rgba(59, 130, 246, 0.2) !important;
+  color: #3b82f6 !important;
+  border: 1px solid rgba(59, 130, 246, 0.3) !important;
+  border-radius: 8px !important;
+  padding: 0.75rem 1.25rem !important;
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cf-admin-productos-new-btn:hover {
+  background-color: rgba(59, 130, 246, 0.3) !important;
+  transform: translateY(-2px);
+}
+
+.cf-admin-productos-filters-container {
+  margin-bottom: 2rem;
+  animation: cf-admin-productos-fade-in 0.5s ease-out forwards;
+}
+
+.cf-admin-productos-error {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  color: #fff;
+  margin-bottom: 1.5rem;
+  animation: cf-admin-productos-fade-in 0.5s ease-out forwards;
+}
+
+.cf-admin-productos-error-icon {
+  width: 24px;
+  height: 24px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23ef4444' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  flex-shrink: 0;
+}
+
+.cf-admin-productos-success {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  color: #fff;
+  margin-bottom: 1.5rem;
+  animation: cf-admin-productos-fade-in 0.5s ease-out forwards;
+}
+
+.cf-admin-productos-success-icon {
+  width: 24px;
+  height: 24px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2310b981' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  flex-shrink: 0;
+}
+
+.cf-admin-productos-loading {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 50px 0;
+  gap: 1.5rem;
+  min-height: 300px;
+  background-color: rgba(30, 30, 30, 0.5);
+  border-radius: 12px;
+  padding: 2rem;
+  border: 1px solid rgba(100, 100, 100, 0.3);
 }
 
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid rgba(0, 123, 255, 0.3);
+.cf-admin-productos-spinner {
+  border: 4px solid rgba(255, 255, 255, 0.1);
   border-radius: 50%;
-  border-top-color: #007bff;
-  animation: spin 1s linear infinite;
-  margin-bottom: 15px;
+  border-top: 4px solid #3b82f6;
+  width: 50px;
+  height: 50px;
+  animation: cf-admin-productos-spin 1s linear infinite;
 }
 
-@keyframes spin {
-  to {
+@keyframes cf-admin-productos-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
     transform: rotate(360deg);
   }
 }
 
-.no-products {
-  grid-column: 1 / -1;
+.cf-admin-productos-loading-text {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+.cf-admin-productos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.cf-admin-productos-card-wrapper {
+  animation: cf-admin-productos-card-appear 0.5s ease-out forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@keyframes cf-admin-productos-card-appear {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cf-admin-productos-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 300px;
+  background-color: rgba(30, 30, 30, 0.5);
+  border-radius: 12px;
+  padding: 3rem 2rem;
+  border: 1px solid rgba(100, 100, 100, 0.3);
   text-align: center;
-  padding: 50px 0;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  color: #6c757d;
+  grid-column: 1 / -1;
+}
+
+.cf-admin-productos-empty-icon {
+  width: 64px;
+  height: 64px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%233b82f6' stroke-width='1'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  margin-bottom: 0.5rem;
+  opacity: 0.7;
+}
+
+.cf-admin-productos-empty-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+
+.cf-admin-productos-empty-text {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.cf-admin-productos-empty-action {
+  color: #3b82f6;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin: 0.5rem 0 0 0;
+}
+
+.cf-admin-productos-pagination-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  animation: cf-admin-productos-fade-in 0.5s ease-out forwards;
+}
+
+@keyframes cf-admin-productos-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 768px) {
-  .headerproductos {
+  .cf-admin-productos-header {
     flex-direction: column;
-
-    gap: 15px;
+    align-items: center;
   }
 
-  .productos-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  .cf-admin-productos-new-btn {
+    width: 90%;
+    justify-content: center;
+  }
+
+  .cf-admin-productos-title {
+    margin: 1rem 0;
+  }
+
+  .cf-admin-productos-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   }
 }
 
 @media (max-width: 480px) {
-  .productos-grid {
+  .cf-admin-productos-content {
+    padding: 1rem;
+  }
+
+  .cf-admin-productos-title {
+    text-align: center;
+  }
+  .cf-admin-productos-grid {
     grid-template-columns: 1fr;
+  }
+
+  .cf-admin-productos-empty {
+    padding: 2rem 1rem;
   }
 }

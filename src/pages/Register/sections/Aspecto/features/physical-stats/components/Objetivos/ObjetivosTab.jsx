@@ -13,6 +13,7 @@ const ObjetivosTab = ({ onMessage }) => {
     valorObjetivo: '',
     fechaObjetivo: ''
   })
+  const [animationComplete, setAnimationComplete] = useState(false)
 
   const [confirmModal, setConfirmModal] = useState({
     isOpen: false,
@@ -20,6 +21,14 @@ const ObjetivosTab = ({ onMessage }) => {
     title: '',
     message: ''
   })
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAnimationComplete(true)
+    }, 500)
+
+    return () => clearTimeout(timer)
+  }, [])
 
   useEffect(() => {
     console.log('ObjetivosTab: Cargando objetivos...')
@@ -168,17 +177,50 @@ const ObjetivosTab = ({ onMessage }) => {
     }
   }
 
+  const getTipoIcon = (tipo) => {
+    switch (tipo) {
+      case 'peso':
+        return (
+          <span className='cf-objetivos-tipo-icon cf-objetivos-peso-icon'></span>
+        )
+      case 'grasa':
+        return (
+          <span className='cf-objetivos-tipo-icon cf-objetivos-grasa-icon'></span>
+        )
+      case 'musculo':
+        return (
+          <span className='cf-objetivos-tipo-icon cf-objetivos-musculo-icon'></span>
+        )
+      case 'medida':
+        return (
+          <span className='cf-objetivos-tipo-icon cf-objetivos-medida-icon'></span>
+        )
+      default:
+        return (
+          <span className='cf-objetivos-tipo-icon cf-objetivos-default-icon'></span>
+        )
+    }
+  }
+
   const renderProgressBar = (progreso) => {
+    const progressClass =
+      progreso >= 100
+        ? 'cf-objetivos-progress-complete'
+        : progreso >= 75
+        ? 'cf-objetivos-progress-almost'
+        : 'cf-objetivos-progress-ongoing'
+
     return (
-      <div className='progress-bar-container'>
+      <div className='cf-objetivos-progress-bar-container'>
         <div
-          className='progress-bar-fill'
+          className={`cf-objetivos-progress-bar-fill ${progressClass}`}
           style={{
-            width: `${progreso}%`,
-            backgroundColor: progreso >= 100 ? '#2ecc71' : '#3498db'
+            width: `${Math.min(100, progreso)}%`
           }}
         ></div>
-        <span className='progress-text'>{Math.round(progreso)}%</span>
+        <span className='cf-objetivos-progress-text'>
+          {Math.round(progreso)}%
+        </span>
       </div>
     )
   }
@@ -191,75 +233,122 @@ const ObjetivosTab = ({ onMessage }) => {
   }
 
   return (
-    <div className='objetivos-container'>
-      <div className='objetivos-header'>
-        <h3>Mis Objetivos</h3>
+    <div
+      className={`cf-objetivos-container ${
+        animationComplete ? 'cf-objetivos-fade-in' : ''
+      }`}
+    >
+      <div className='cf-objetivos-header'>
+        <div className='cf-objetivos-title-container'>
+          <div className='cf-objetivos-icon'></div>
+          <h2 className='cf-objetivos-title'>Mis Objetivos</h2>
+        </div>
+        <div className='cf-objetivos-subtitle'>
+          Establece y haz seguimiento de tus metas de fitness
+        </div>
         <button
-          className={`add-goal-btn ${showForm ? 'cancel' : ''}`}
+          className={`cf-objetivos-add-btn ${
+            showForm ? 'cf-objetivos-cancel' : ''
+          }`}
           onClick={() => setShowForm(!showForm)}
         >
+          <span
+            className={`cf-objetivos-btn-icon ${
+              showForm ? 'cf-objetivos-cancel-icon' : 'cf-objetivos-add-icon'
+            }`}
+          ></span>
           {showForm ? 'Cancelar' : 'Añadir Nuevo Objetivo'}
         </button>
       </div>
 
       {showForm && (
-        <div className='objetivo-form-card'>
-          <form onSubmit={handleSubmit} className='objetivo-form'>
-            <div className='form-row'>
-              <div className='form-group'>
-                <label htmlFor='medida'>Medida</label>
-                <select
-                  id='medida'
-                  name='medida'
-                  value={formData.medida}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value='peso'>Peso</option>
-                  <option value='grasa'>% Grasa</option>
-                  <option value='musculo'>% Músculo</option>
-                  <option value='pecho'>Pecho</option>
-                  <option value='cintura'>Cintura</option>
-                  <option value='cadera'>Cadera</option>
-                  <option value='biceps'>Bíceps</option>
-                  <option value='muslos'>Muslos</option>
-                </select>
+        <div className='cf-objetivos-form-card'>
+          <div className='cf-objetivos-form-header'>
+            <span className='cf-objetivos-form-icon'></span>
+            <h3 className='cf-objetivos-form-title'>Crear Nuevo Objetivo</h3>
+          </div>
+          <form onSubmit={handleSubmit} className='cf-objetivos-form'>
+            <div className='cf-objetivos-form-row'>
+              <div className='cf-objetivos-form-group'>
+                <label htmlFor='medida'>
+                  <span className='cf-objetivos-label-icon cf-objetivos-medida-label-icon'></span>
+                  Medida
+                </label>
+                <div className='cf-objetivos-select-wrapper'>
+                  <select
+                    id='medida'
+                    name='medida'
+                    value={formData.medida}
+                    onChange={handleChange}
+                    required
+                    className='cf-objetivos-select'
+                  >
+                    <option value='peso'>Peso</option>
+                    <option value='grasa'>% Grasa</option>
+                    <option value='musculo'>% Músculo</option>
+                    <option value='pecho'>Pecho</option>
+                    <option value='cintura'>Cintura</option>
+                    <option value='cadera'>Cadera</option>
+                    <option value='biceps'>Bíceps</option>
+                    <option value='muslos'>Muslos</option>
+                  </select>
+                  <span className='cf-objetivos-select-arrow'></span>
+                </div>
               </div>
 
-              <div className='form-group'>
-                <label htmlFor='tipo'>Tipo de Objetivo</label>
-                <select
-                  id='tipo'
-                  name='tipo'
-                  value={formData.tipo}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value='peso'>Cambio de Peso</option>
-                  <option value='grasa'>Reducción de Grasa</option>
-                  <option value='musculo'>Aumento Muscular</option>
-                  <option value='medida'>Cambio de Medida</option>
-                </select>
+              <div className='cf-objetivos-form-group'>
+                <label htmlFor='tipo'>
+                  <span className='cf-objetivos-label-icon cf-objetivos-tipo-label-icon'></span>
+                  Tipo de Objetivo
+                </label>
+                <div className='cf-objetivos-select-wrapper'>
+                  <select
+                    id='tipo'
+                    name='tipo'
+                    value={formData.tipo}
+                    onChange={handleChange}
+                    required
+                    className='cf-objetivos-select'
+                  >
+                    <option value='peso'>Cambio de Peso</option>
+                    <option value='grasa'>Reducción de Grasa</option>
+                    <option value='musculo'>Aumento Muscular</option>
+                    <option value='medida'>Cambio de Medida</option>
+                  </select>
+                  <span className='cf-objetivos-select-arrow'></span>
+                </div>
               </div>
             </div>
 
-            <div className='form-row'>
-              <div className='form-group'>
-                <label htmlFor='valorObjetivo'>Valor Objetivo</label>
-                <input
-                  type='number'
-                  id='valorObjetivo'
-                  name='valorObjetivo'
-                  value={formData.valorObjetivo}
-                  onChange={handleChange}
-                  placeholder={`Ej: 70 ${getUnidad(formData.medida)}`}
-                  required
-                  step='0.1'
-                />
+            <div className='cf-objetivos-form-row'>
+              <div className='cf-objetivos-form-group'>
+                <label htmlFor='valorObjetivo'>
+                  <span className='cf-objetivos-label-icon cf-objetivos-valor-label-icon'></span>
+                  Valor Objetivo
+                </label>
+                <div className='cf-objetivos-input-wrapper'>
+                  <input
+                    type='number'
+                    id='valorObjetivo'
+                    name='valorObjetivo'
+                    value={formData.valorObjetivo}
+                    onChange={handleChange}
+                    placeholder={`Ej: 70 ${getUnidad(formData.medida)}`}
+                    required
+                    step='0.1'
+                    className='cf-objetivos-input'
+                  />
+                  <span className='cf-objetivos-input-unit'>
+                    {getUnidad(formData.medida)}
+                  </span>
+                </div>
               </div>
 
-              <div className='form-group'>
-                <label htmlFor='fechaObjetivo'>Fecha Objetivo</label>
+              <div className='cf-objetivos-form-group'>
+                <label htmlFor='fechaObjetivo'>
+                  <span className='cf-objetivos-label-icon cf-objetivos-fecha-label-icon'></span>
+                  Fecha Objetivo
+                </label>
                 <input
                   type='date'
                   id='fechaObjetivo'
@@ -268,103 +357,121 @@ const ObjetivosTab = ({ onMessage }) => {
                   onChange={handleChange}
                   required
                   min={new Date().toISOString().split('T')[0]}
+                  className='cf-objetivos-input cf-objetivos-date-input'
                 />
               </div>
             </div>
 
-            <button type='submit' className='save-goal-btn' disabled={loading}>
-              {loading ? 'Guardando...' : 'Guardar Objetivo'}
-            </button>
+            <div className='cf-objetivos-form-actions'>
+              <button
+                type='submit'
+                className='cf-objetivos-save-btn'
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <span className='cf-objetivos-spinner'></span>
+                    <span>Guardando...</span>
+                  </>
+                ) : (
+                  <>
+                    <span className='cf-objetivos-save-icon'></span>
+                    <span>Guardar Objetivo</span>
+                  </>
+                )}
+              </button>
+            </div>
           </form>
         </div>
       )}
 
       {loading ? (
-        <div className='loading-container'>Cargando objetivos...</div>
+        <div className='cf-objetivos-loading'>
+          <div className='cf-objetivos-spinner'></div>
+          <p>Cargando objetivos...</p>
+        </div>
       ) : objetivos.length === 0 ? (
-        <div className='no-objetivos-card'>
-          <div className='no-data'>
-            <p>No tienes objetivos establecidos.</p>
-            <p>
-              Crea tu primer objetivo para comenzar a hacer seguimiento de tu
-              progreso.
-            </p>
-          </div>
+        <div className='cf-objetivos-empty'>
+          <div className='cf-objetivos-empty-icon'></div>
+          <p>No tienes objetivos establecidos.</p>
+          <p>
+            Crea tu primer objetivo para comenzar a hacer seguimiento de tu
+            progreso.
+          </p>
         </div>
       ) : (
-        <div className='objetivos-grid'>
+        <div className='cf-objetivos-grid'>
           {objetivos.map((objetivo, index) => (
             <div
               key={objetivo._id || index}
-              className={`objetivo-card ${
-                objetivo.completado ? 'completed' : ''
+              className={`cf-objetivos-card ${
+                objetivo.completado ? 'cf-objetivos-card-completed' : ''
               }`}
             >
-              <div className='objetivo-header'>
-                <h4>{getMedidaNombre(objetivo.medida)}</h4>
-                <div className='objetivo-actions'>
+              <div className='cf-objetivos-card-header'>
+                <div className='cf-objetivos-card-title'>
+                  {getTipoIcon(objetivo.tipo)}
+                  <h4>{getMedidaNombre(objetivo.medida)}</h4>
+                </div>
+                <div className='cf-objetivos-card-actions'>
                   <span
-                    className={`objetivo-status ${
-                      objetivo.completado ? 'completed' : ''
+                    className={`cf-objetivos-status ${
+                      objetivo.completado
+                        ? 'cf-objetivos-status-completed'
+                        : 'cf-objetivos-status-progress'
                     }`}
                   >
                     {objetivo.completado ? 'Completado' : 'En progreso'}
                   </span>
                   <button
-                    className='delete-btn'
+                    className='cf-objetivos-delete-btn'
                     onClick={() => handleDeleteClick(objetivo._id)}
                     title='Eliminar objetivo'
                   >
-                    <svg
-                      xmlns='http://www.w3.org/2000/svg'
-                      width='16'
-                      height='16'
-                      viewBox='0 0 24 24'
-                      fill='none'
-                      stroke='currentColor'
-                      strokeWidth='2'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                    >
-                      <path d='M3 6h18'></path>
-                      <path d='M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6'></path>
-                      <path d='M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2'></path>
-                      <line x1='10' y1='11' x2='10' y2='17'></line>
-                      <line x1='14' y1='11' x2='14' y2='17'></line>
-                    </svg>
+                    <span className='cf-objetivos-delete-icon'></span>
                   </button>
                 </div>
               </div>
 
-              <div className='objetivo-details'>
-                <div className='objetivo-values'>
-                  <span className='valor-inicial'>
+              <div className='cf-objetivos-card-body'>
+                <div className='cf-objetivos-values'>
+                  <span className='cf-objetivos-valor-inicial'>
                     {objetivo.valorInicial} {getUnidad(objetivo.medida)}
                   </span>
-                  <span className='arrow'>→</span>
-                  <span className='valor-objetivo'>
+                  <span className='cf-objetivos-arrow'></span>
+                  <span className='cf-objetivos-valor-objetivo'>
                     {objetivo.valorObjetivo} {getUnidad(objetivo.medida)}
                   </span>
                 </div>
 
-                <div className='objetivo-progress'>
+                <div className='cf-objetivos-progress'>
                   {renderProgressBar(objetivo.progreso)}
                 </div>
 
-                <div className='objetivo-meta'>
-                  <div className='objetivo-fecha'>
-                    <span className='meta-label'>Fecha límite:</span>
-                    <span className='meta-value'>
-                      {new Date(objetivo.fechaObjetivo).toLocaleDateString()}
-                    </span>
+                <div className='cf-objetivos-meta'>
+                  <div className='cf-objetivos-meta-item'>
+                    <span className='cf-objetivos-meta-icon cf-objetivos-calendar-icon'></span>
+                    <div className='cf-objetivos-meta-content'>
+                      <span className='cf-objetivos-meta-label'>
+                        Fecha límite:
+                      </span>
+                      <span className='cf-objetivos-meta-value'>
+                        {new Date(objetivo.fechaObjetivo).toLocaleDateString()}
+                      </span>
+                    </div>
                   </div>
 
                   {!objetivo.completado && (
-                    <div className='objetivo-dias'>
-                      <span className='meta-label'>Días restantes:</span>
-                      <span className='meta-value'>
-                        {calcularDiasRestantes(objetivo.fechaObjetivo)}
-                      </span>
+                    <div className='cf-objetivos-meta-item'>
+                      <span className='cf-objetivos-meta-icon cf-objetivos-clock-icon'></span>
+                      <div className='cf-objetivos-meta-content'>
+                        <span className='cf-objetivos-meta-label'>
+                          Días restantes:
+                        </span>
+                        <span className='cf-objetivos-meta-value cf-objetivos-days'>
+                          {calcularDiasRestantes(objetivo.fechaObjetivo)}
+                        </span>
+                      </div>
                     </div>
                   )}
                 </div>

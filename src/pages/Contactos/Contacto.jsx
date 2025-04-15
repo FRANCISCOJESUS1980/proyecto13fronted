@@ -1,15 +1,25 @@
-import React, { useState } from 'react'
+import { useState, useEffect } from 'react'
+import {
+  MapPin,
+  Phone,
+  Mail,
+  ChevronDown,
+  ChevronUp,
+  MessageSquare,
+  Send
+} from 'lucide-react'
 import Header from '../../components/Header/Header'
 import handleSubmitHelper from '../../utils/HandleSubmit'
 import './Contacto.css'
 
 const Contacto = () => {
   const [mensajeEnviado, setMensajeEnviado] = useState(false)
-  /*
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    setMensajeEnviado(true)
-  }*/
+  const [faqActivo, setFaqActivo] = useState(null)
+  const [fadeIn, setFadeIn] = useState(false)
+
+  useEffect(() => {
+    setTimeout(() => setFadeIn(true), 100)
+  }, [])
 
   const handleSubmit = (e) => {
     handleSubmitHelper(e, 'contacto', { setMensajeEnviado })
@@ -19,7 +29,6 @@ const Contacto = () => {
     setMensajeEnviado(false)
   }
 
-  const [faqActivo, setFaqActivo] = useState(null)
   const toggleFAQ = (index) => {
     setFaqActivo(faqActivo === index ? null : index)
   }
@@ -71,113 +80,224 @@ const Contacto = () => {
     }
   ]
 
+  const getAnimationDelay = (index) => {
+    return `${index * 0.1}s`
+  }
+
   return (
-    <>
-      <div className='contacto-container'>
-        <Header />
-        <h1 className='contacto-titulo'>📞 ¡Contáctanos Hoy!</h1>
+    <div
+      className={`cf-contacto-container ${fadeIn ? 'cf-contacto-fade-in' : ''}`}
+    >
+      <Header />
+      <div className='cf-contacto-content'>
+        <div className='cf-contacto-header'>
+          <h1 className='cf-contacto-title'>Contáctanos Hoy</h1>
+          <p className='cf-contacto-subtitle'>
+            Estamos aquí para responder tus preguntas y ayudarte a comenzar
+          </p>
+        </div>
 
-        <div className='contacto-secciones'>
-          <div className='contacto-info'>
-            <h2>📍 Nuestra Ubicación</h2>
-            <p>
-              🏠 Calle Narciso Monturiol 11, San jose de la Rinconada, España
-            </p>
-            <p>📞 Teléfono: +34 647 40 69 38</p>
-            <p>📧 Email: contacto@crosfitgym.com</p>
+        <div className='cf-contacto-secciones'>
+          <div className='cf-contacto-info'>
+            <div className='cf-contacto-info-card'>
+              <h2 className='cf-contacto-info-title'>
+                Información de Contacto
+              </h2>
+              <div className='cf-contacto-info-items'>
+                <div className='cf-contacto-info-item'>
+                  <div className='cf-contacto-info-icon'>
+                    <MapPin size={20} />
+                  </div>
+                  <div className='cf-contacto-info-text'>
+                    <span className='cf-contacto-info-label'>Dirección</span>
+                    <span className='cf-contacto-info-value'>
+                      Calle Narciso Monturiol 11, San José de la Rinconada,
+                      España
+                    </span>
+                  </div>
+                </div>
 
-            <div className='contacto-mapa'>
+                <div className='cf-contacto-info-item'>
+                  <div className='cf-contacto-info-icon'>
+                    <Phone size={20} />
+                  </div>
+                  <div className='cf-contacto-info-text'>
+                    <span className='cf-contacto-info-label'>Teléfono</span>
+                    <span className='cf-contacto-info-value'>
+                      +34 647 40 69 38
+                    </span>
+                  </div>
+                </div>
+
+                <div className='cf-contacto-info-item'>
+                  <div className='cf-contacto-info-icon'>
+                    <Mail size={20} />
+                  </div>
+                  <div className='cf-contacto-info-text'>
+                    <span className='cf-contacto-info-label'>Email</span>
+                    <span className='cf-contacto-info-value'>
+                      contacto@crosfitgym.com
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className='cf-contacto-mapa-container'>
               <iframe
                 title='Ubicación Gimnasio'
                 src='https://www.google.com/maps/embed?...'
+                className='cf-contacto-mapa'
                 allowFullScreen
                 loading='lazy'
               ></iframe>
             </div>
           </div>
 
-          <div className='contacto-formulario'>
+          <div className='cf-contacto-formulario-container'>
             {!mensajeEnviado ? (
-              <>
-                <h2>📩 Envíanos un Mensaje</h2>
-                <form onSubmit={handleSubmit}>
-                  <div className='form-group'>
-                    <label htmlFor='nombre'>Nombre</label>
+              <div className='cf-contacto-formulario'>
+                <div className='cf-contacto-formulario-header'>
+                  <div className='cf-contacto-formulario-icon'>
+                    <MessageSquare size={24} />
+                  </div>
+                  <h2 className='cf-contacto-formulario-title'>
+                    Envíanos un Mensaje
+                  </h2>
+                </div>
+
+                <form onSubmit={handleSubmit} className='cf-contacto-form'>
+                  <div className='cf-contacto-form-group'>
+                    <label htmlFor='nombre' className='cf-contacto-form-label'>
+                      Nombre
+                    </label>
                     <input
                       type='text'
                       id='nombre'
                       placeholder='Tu nombre'
                       required
+                      className='cf-contacto-form-input'
                     />
                   </div>
 
-                  <div className='form-group'>
-                    <label htmlFor='email'>Email</label>
+                  <div className='cf-contacto-form-group'>
+                    <label htmlFor='email' className='cf-contacto-form-label'>
+                      Email
+                    </label>
                     <input
                       type='email'
                       id='email'
                       placeholder='Tu correo electrónico'
                       required
+                      className='cf-contacto-form-input'
                     />
                   </div>
 
-                  <div className='form-group'>
-                    <label htmlFor='mensaje'>Mensaje</label>
+                  <div className='cf-contacto-form-group'>
+                    <label htmlFor='mensaje' className='cf-contacto-form-label'>
+                      Mensaje
+                    </label>
                     <textarea
                       id='mensaje'
                       rows='4'
                       placeholder='Escribe tu mensaje'
                       required
+                      className='cf-contacto-form-textarea'
                     ></textarea>
                   </div>
 
-                  <button type='submit' className='boton-enviar'>
-                    Enviar mensaje
+                  <button type='submit' className='cf-contacto-form-submit'>
+                    <Send size={18} />
+                    <span>Enviar mensaje</span>
                   </button>
                 </form>
-              </>
+              </div>
             ) : (
-              <div className='mensaje-exito'>
-                🎉 ¡Gracias por tu mensaje! Te contactaremos pronto. 😊
+              <div className='cf-contacto-mensaje-exito'>
+                <div className='cf-contacto-mensaje-exito-icon'></div>
+                <h3 className='cf-contacto-mensaje-exito-title'>
+                  ¡Gracias por tu mensaje!
+                </h3>
+                <p className='cf-contacto-mensaje-exito-text'>
+                  Te contactaremos pronto.
+                </p>
                 <button
                   onClick={handleNuevoMensaje}
-                  className='boton-nuevo-mensaje'
+                  className='cf-contacto-mensaje-exito-btn'
                 >
-                  Mandar otro mensaje
+                  Enviar otro mensaje
                 </button>
               </div>
             )}
           </div>
         </div>
 
-        <div className='faq-container'>
-          <h2>❓ Preguntas Frecuentes</h2>
-          {preguntasFrecuentes.map((faq, index) => (
-            <div key={index} className='faq-item'>
-              <button className='faq-pregunta' onClick={() => toggleFAQ(index)}>
-                {faq.pregunta} {faqActivo === index ? '🔼' : '🔽'}
-              </button>
-              {faqActivo === index && (
-                <p className='faq-respuesta'>{faq.respuesta}</p>
-              )}
-            </div>
-          ))}
+        <div className='cf-contacto-faq-container'>
+          <h2 className='cf-contacto-section-title'>Preguntas Frecuentes</h2>
+          <div className='cf-contacto-faq-list'>
+            {preguntasFrecuentes.map((faq, index) => (
+              <div
+                key={index}
+                className={`cf-contacto-faq-item ${
+                  faqActivo === index ? 'cf-contacto-faq-active' : ''
+                }`}
+                style={{ animationDelay: getAnimationDelay(index) }}
+              >
+                <button
+                  className='cf-contacto-faq-pregunta'
+                  onClick={() => toggleFAQ(index)}
+                >
+                  <span>{faq.pregunta}</span>
+                  {faqActivo === index ? (
+                    <ChevronUp size={20} />
+                  ) : (
+                    <ChevronDown size={20} />
+                  )}
+                </button>
+                <div className='cf-contacto-faq-respuesta-container'>
+                  <p className='cf-contacto-faq-respuesta'>{faq.respuesta}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className='testimonios-container'>
-          <h2>💪 Testimonios de Nuestros Clientes</h2>
-          <div className='testimonios-grid'>
+        <div className='cf-contacto-testimonios-container'>
+          <h2 className='cf-contacto-section-title'>
+            Testimonios de Nuestros Clientes
+          </h2>
+          <div className='cf-contacto-testimonios-grid'>
             {testimonios.map((testimonio, index) => (
-              <div key={index} className='testimonio-card'>
-                <img src={testimonio.imagen} alt={testimonio.nombre} />
-                <p className='testimonio-texto'>"{testimonio.comentario}"</p>
-                <h4 className='testimonio-nombre'>- {testimonio.nombre}</h4>
+              <div
+                key={index}
+                className='cf-contacto-testimonio-card'
+                style={{ animationDelay: getAnimationDelay(index) }}
+              >
+                <div className='cf-contacto-testimonio-imagen-container'>
+                  <img
+                    src={testimonio.imagen || '/placeholder.svg'}
+                    alt={testimonio.nombre}
+                    className='cf-contacto-testimonio-imagen'
+                    onError={(e) => {
+                      e.target.onerror = null
+                      e.target.src = '/placeholder.svg'
+                    }}
+                  />
+                </div>
+                <div className='cf-contacto-testimonio-content'>
+                  <p className='cf-contacto-testimonio-texto'>
+                    "{testimonio.comentario}"
+                  </p>
+                  <h4 className='cf-contacto-testimonio-nombre'>
+                    - {testimonio.nombre}
+                  </h4>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }
 

@@ -17,32 +17,44 @@ const ProductoFilters = ({
   onSearch
 }) => {
   return (
-    <div className='filters'>
-      <div className='search-box'>
+    <div className='cf-producto-filters-container'>
+      <div className='cf-producto-filters-search'>
         <input
-          className='inputproductos'
+          className='cf-producto-filters-input'
           type='text'
           placeholder='Buscar productos...'
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
           onKeyPress={(e) => e.key === 'Enter' && onSearch()}
         />
-        <Search size={20} className='search-icon' onClick={onSearch} />
+        <button
+          className='cf-producto-filters-search-btn'
+          onClick={onSearch}
+          aria-label='Buscar'
+        >
+          <Search size={18} className='cf-producto-filters-search-icon' />
+        </button>
       </div>
 
-      <div className='category-filter'>
-        <Filter size={20} />
-        <select
-          value={categoriaFiltro}
-          onChange={(e) => onCategoriaChange(e.target.value)}
-        >
-          <option value=''>Todas las categorías</option>
-          {CATEGORIAS.map((cat) => (
-            <option key={cat} value={cat}>
-              {cat.charAt(0).toUpperCase() + cat.slice(1)}
-            </option>
-          ))}
-        </select>
+      <div className='cf-producto-filters-category'>
+        <div className='cf-producto-filters-category-icon'>
+          <Filter size={18} />
+        </div>
+        <div className='cf-producto-filters-select-container'>
+          <select
+            className='cf-producto-filters-select'
+            value={categoriaFiltro}
+            onChange={(e) => onCategoriaChange(e.target.value)}
+          >
+            <option value=''>Todas las categorías</option>
+            {CATEGORIAS.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat.charAt(0).toUpperCase() + cat.slice(1)}
+              </option>
+            ))}
+          </select>
+          <div className='cf-producto-filters-select-arrow'></div>
+        </div>
       </div>
     </div>
   )

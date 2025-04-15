@@ -1,0 +1,150 @@
+.cf-calendario-container {
+  position: relative;
+  width: 100%;
+}
+
+.cf-calendario-controls {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.cf-calendario-nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #3b82f6;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cf-calendario-nav-btn:hover {
+  background-color: rgba(59, 130, 246, 0.2);
+  transform: translateY(-2px);
+}
+
+.cf-calendario-dias {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding: 0.5rem 0.25rem;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.cf-calendario-dias::-webkit-scrollbar {
+  display: none;
+}
+
+.cf-calendario-dia {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 70px;
+  height: 90px;
+  border-radius: 12px;
+  background-color: rgba(30, 30, 30, 0.8);
+  border: 1px solid rgba(100, 100, 100, 0.3);
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.cf-calendario-dia:hover:not(:disabled) {
+  background-color: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.5);
+  transform: translateY(-3px);
+}
+
+.cf-calendario-dia-selected {
+  background-color: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.8);
+  box-shadow: 0 8px 16px rgba(59, 130, 246, 0.15);
+}
+
+.cf-calendario-dia-today {
+  border-color: rgba(16, 185, 129, 0.5);
+}
+
+.cf-calendario-dia-past {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cf-calendario-dia-today-indicator {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #10b981;
+}
+
+.cf-calendario-dia-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: capitalize;
+  margin-bottom: 0.25rem;
+}
+
+.cf-calendario-dia-number {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.cf-calendario-dia-month {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: capitalize;
+  margin-top: 0.25rem;
+}
+
+.cf-calendario-dia-selected .cf-calendario-dia-name,
+.cf-calendario-dia-selected .cf-calendario-dia-number,
+.cf-calendario-dia-selected .cf-calendario-dia-month {
+  color: #3b82f6;
+}
+
+@media (max-width: 768px) {
+  .cf-calendario-dia {
+    min-width: 60px;
+    height: 80px;
+  }
+
+  .cf-calendario-dia-number {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .cf-calendario-dia {
+    min-width: 50px;
+    height: 70px;
+    padding: 0.5rem;
+  }
+
+  .cf-calendario-dia-name {
+    font-size: 0.75rem;
+  }
+
+  .cf-calendario-dia-number {
+    font-size: 1.125rem;
+  }
+
+  .cf-calendario-dia-month {
+    font-size: 0.625rem;
+  }
+}

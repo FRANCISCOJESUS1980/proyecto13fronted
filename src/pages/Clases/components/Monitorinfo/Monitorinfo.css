@@ -1,0 +1,63 @@
+.cf-monitor-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background-color: rgba(30, 30, 30, 0.5);
+  border-radius: 8px;
+  border: 1px solid rgba(100, 100, 100, 0.2);
+}
+
+.cf-monitor-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(59, 130, 246, 0.3);
+  background-color: rgba(59, 130, 246, 0.1);
+  flex-shrink: 0;
+}
+
+.cf-monitor-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cf-monitor-avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+}
+
+.cf-monitor-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.cf-monitor-label {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.cf-monitor-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+@media (max-width: 480px) {
+  .cf-monitor-info {
+    padding: 0.5rem;
+  }
+
+  .cf-monitor-avatar {
+    width: 32px;
+    height: 32px;
+  }
+}

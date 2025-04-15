@@ -38,6 +38,15 @@ const PersonalRecordForm = ({
   })
   const [errors, setErrors] = useState({})
   const [customExercise, setCustomExercise] = useState(false)
+  const [animationComplete, setAnimationComplete] = useState(false)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAnimationComplete(true)
+    }, 100)
+
+    return () => clearTimeout(timer)
+  }, [])
 
   useEffect(() => {
     if (record) {
@@ -123,76 +132,140 @@ const PersonalRecordForm = ({
     }
   }
 
-  return (
-    <div className='record-form-overlay'>
-      <div className='record-form-container'>
-        <form onSubmit={handleSubmit} className='record-form'>
-          <h3>
-            {isEditing ? 'Editar Marca Personal' : 'Nueva Marca Personal'}
-          </h3>
+  const getCategoryIcon = (categoria) => {
+    switch (categoria) {
+      case 'Levantamiento Olímpico':
+        return <span className='cf-pr-category-icon cf-pr-olympic-icon'></span>
+      case 'Levantamiento de Potencia':
+        return (
+          <span className='cf-pr-category-icon cf-pr-powerlifting-icon'></span>
+        )
+      case 'Gimnástico':
+        return (
+          <span className='cf-pr-category-icon cf-pr-gymnastic-icon'></span>
+        )
+      case 'Cardio':
+        return <span className='cf-pr-category-icon cf-pr-cardio-icon'></span>
+      default:
+        return <span className='cf-pr-category-icon cf-pr-other-icon'></span>
+    }
+  }
 
-          <div className='form-group'>
-            <label htmlFor='ejercicio-select'>Ejercicio</label>
-            {!customExercise ? (
-              <select
-                id='ejercicio-select'
-                value={formData.ejercicio}
-                onChange={handleExerciseChange}
-                className={errors.ejercicio ? 'error' : ''}
-              >
-                <option value=''>Selecciona un ejercicio</option>
-                {EJERCICIOS_COMUNES.map((ejercicio) => (
-                  <option key={ejercicio} value={ejercicio}>
-                    {ejercicio}
-                  </option>
-                ))}
-                <option value='custom'>Otro (personalizado)</option>
-              </select>
-            ) : (
-              <input
-                type='text'
-                id='ejercicio'
-                name='ejercicio'
-                value={formData.ejercicio}
-                onChange={handleChange}
-                placeholder='Escribe el nombre del ejercicio'
-                className={errors.ejercicio ? 'error' : ''}
-              />
-            )}
-            {customExercise && (
-              <button
-                type='button'
-                className='select-from-list-btn'
-                onClick={() => setCustomExercise(false)}
-              >
-                Seleccionar de la lista
-              </button>
-            )}
+  return (
+    <div className={`cf-pr-overlay ${animationComplete ? 'cf-pr-active' : ''}`}>
+      <div
+        className={`cf-pr-container ${
+          animationComplete ? 'cf-pr-slide-in' : ''
+        }`}
+      >
+        <div className='cf-pr-header'>
+          <div className='cf-pr-title-container'>
+            <div className='cf-pr-form-icon'></div>
+            <h3 className='cf-pr-title'>
+              {isEditing ? 'Editar Marca Personal' : 'Nueva Marca Personal'}
+            </h3>
+          </div>
+          <button
+            type='button'
+            className='cf-pr-close-btn'
+            onClick={onCancel}
+            aria-label='Cerrar formulario'
+          >
+            <span className='cf-pr-close-icon'></span>
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className='cf-pr-form'>
+          <div className='cf-pr-form-group'>
+            <label htmlFor='ejercicio-select' className='cf-pr-label'>
+              <span className='cf-pr-label-icon cf-pr-exercise-icon'></span>
+              Ejercicio
+            </label>
+            <div className='cf-pr-input-container'>
+              {!customExercise ? (
+                <div className='cf-pr-select-wrapper'>
+                  <select
+                    id='ejercicio-select'
+                    value={formData.ejercicio}
+                    onChange={handleExerciseChange}
+                    className={`cf-pr-select ${
+                      errors.ejercicio ? 'cf-pr-error' : ''
+                    }`}
+                  >
+                    <option value=''>Selecciona un ejercicio</option>
+                    {EJERCICIOS_COMUNES.map((ejercicio) => (
+                      <option key={ejercicio} value={ejercicio}>
+                        {ejercicio}
+                      </option>
+                    ))}
+                    <option value='custom'>Otro (personalizado)</option>
+                  </select>
+                  <span className='cf-pr-select-arrow'></span>
+                </div>
+              ) : (
+                <input
+                  type='text'
+                  id='ejercicio'
+                  name='ejercicio'
+                  value={formData.ejercicio}
+                  onChange={handleChange}
+                  placeholder='Escribe el nombre del ejercicio'
+                  className={`cf-pr-input ${
+                    errors.ejercicio ? 'cf-pr-error' : ''
+                  }`}
+                />
+              )}
+              {customExercise && (
+                <button
+                  type='button'
+                  className='cf-pr-select-list-btn'
+                  onClick={() => setCustomExercise(false)}
+                >
+                  <span className='cf-pr-list-icon'></span>
+                  Seleccionar de la lista
+                </button>
+              )}
+            </div>
             {errors.ejercicio && (
-              <span className='error-message'>{errors.ejercicio}</span>
+              <span className='cf-pr-error-message'>
+                <span className='cf-pr-error-icon'></span>
+                {errors.ejercicio}
+              </span>
             )}
           </div>
 
-          <div className='form-row'>
-            <div className='form-group'>
-              <label htmlFor='peso'>Peso (kg)</label>
-              <input
-                type='number'
-                id='peso'
-                name='peso'
-                value={formData.peso}
-                onChange={handleChange}
-                min='0'
-                step='0.5'
-                className={errors.peso ? 'error' : ''}
-              />
+          <div className='cf-pr-form-row'>
+            <div className='cf-pr-form-group'>
+              <label htmlFor='peso' className='cf-pr-label'>
+                <span className='cf-pr-label-icon cf-pr-weight-icon'></span>
+                Peso (kg)
+              </label>
+              <div className='cf-pr-input-wrapper'>
+                <input
+                  type='number'
+                  id='peso'
+                  name='peso'
+                  value={formData.peso}
+                  onChange={handleChange}
+                  min='0'
+                  step='0.5'
+                  className={`cf-pr-input ${errors.peso ? 'cf-pr-error' : ''}`}
+                />
+                <span className='cf-pr-input-unit'>kg</span>
+              </div>
               {errors.peso && (
-                <span className='error-message'>{errors.peso}</span>
+                <span className='cf-pr-error-message'>
+                  <span className='cf-pr-error-icon'></span>
+                  {errors.peso}
+                </span>
               )}
             </div>
 
-            <div className='form-group'>
-              <label htmlFor='repeticiones'>Repeticiones</label>
+            <div className='cf-pr-form-group'>
+              <label htmlFor='repeticiones' className='cf-pr-label'>
+                <span className='cf-pr-label-icon cf-pr-reps-icon'></span>
+                Repeticiones
+              </label>
               <input
                 type='number'
                 id='repeticiones'
@@ -200,32 +273,51 @@ const PersonalRecordForm = ({
                 value={formData.repeticiones}
                 onChange={handleChange}
                 min='1'
-                className={errors.repeticiones ? 'error' : ''}
+                className={`cf-pr-input ${
+                  errors.repeticiones ? 'cf-pr-error' : ''
+                }`}
               />
               {errors.repeticiones && (
-                <span className='error-message'>{errors.repeticiones}</span>
+                <span className='cf-pr-error-message'>
+                  <span className='cf-pr-error-icon'></span>
+                  {errors.repeticiones}
+                </span>
               )}
             </div>
           </div>
 
-          <div className='form-group'>
-            <label htmlFor='categoria'>Categoría</label>
-            <select
-              id='categoria'
-              name='categoria'
-              value={formData.categoria}
-              onChange={handleChange}
-            >
-              {CATEGORIAS.map((categoria) => (
-                <option key={categoria} value={categoria}>
-                  {categoria}
-                </option>
-              ))}
-            </select>
+          <div className='cf-pr-form-group'>
+            <label htmlFor='categoria' className='cf-pr-label'>
+              <span className='cf-pr-label-icon cf-pr-category-label-icon'></span>
+              Categoría
+            </label>
+            <div className='cf-pr-select-wrapper'>
+              <select
+                id='categoria'
+                name='categoria'
+                value={formData.categoria}
+                onChange={handleChange}
+                className='cf-pr-select'
+              >
+                {CATEGORIAS.map((categoria) => (
+                  <option key={categoria} value={categoria}>
+                    {categoria}
+                  </option>
+                ))}
+              </select>
+              <span className='cf-pr-select-arrow'></span>
+            </div>
+            <div className='cf-pr-category-preview'>
+              {getCategoryIcon(formData.categoria)}
+              <span className='cf-pr-category-name'>{formData.categoria}</span>
+            </div>
           </div>
 
-          <div className='form-group'>
-            <label htmlFor='fecha'>Fecha</label>
+          <div className='cf-pr-form-group'>
+            <label htmlFor='fecha' className='cf-pr-label'>
+              <span className='cf-pr-label-icon cf-pr-date-icon'></span>
+              Fecha
+            </label>
             <input
               type='date'
               id='fecha'
@@ -233,18 +325,33 @@ const PersonalRecordForm = ({
               value={formData.fecha}
               onChange={handleChange}
               max={new Date().toISOString().split('T')[0]}
-              className={errors.fecha ? 'error' : ''}
+              className={`cf-pr-input cf-pr-date-input ${
+                errors.fecha ? 'cf-pr-error' : ''
+              }`}
             />
             {errors.fecha && (
-              <span className='error-message'>{errors.fecha}</span>
+              <span className='cf-pr-error-message'>
+                <span className='cf-pr-error-icon'></span>
+                {errors.fecha}
+              </span>
             )}
           </div>
 
-          <div className='form-actions'>
-            <button type='button' onClick={onCancel} className='cancel-btn'>
+          <div className='cf-pr-form-actions'>
+            <button
+              type='button'
+              onClick={onCancel}
+              className='cf-pr-cancel-btn'
+            >
+              <span className='cf-pr-cancel-icon'></span>
               Cancelar
             </button>
-            <button type='submit' className='submit-btn'>
+            <button type='submit' className='cf-pr-submit-btn'>
+              <span
+                className={`cf-pr-submit-icon ${
+                  isEditing ? 'cf-pr-edit-icon' : 'cf-pr-save-icon'
+                }`}
+              ></span>
               {isEditing ? 'Actualizar' : 'Guardar'}
             </button>
           </div>

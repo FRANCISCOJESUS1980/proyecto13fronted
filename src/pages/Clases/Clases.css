@@ -1,4 +1,4 @@
-:root {
+/*:root {
   --primary: #ff5722;
   --primary-dark: #e64a19;
   --primary-light: #ffccbc;
@@ -243,6 +243,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
+  color: white;
 }
 
 .clase-nombre {
@@ -250,12 +251,14 @@
   font-weight: 600;
   margin: 0;
   color: var(--dark);
+  color: white;
 }
 
 .clase-detalles {
   display: flex;
   gap: 10px;
   align-items: center;
+  color: white;
 }
 
 .clase-duracion {
@@ -391,16 +394,7 @@
   display: flex;
   justify-content: flex-end;
 }
-/*
-.btn-spinner {
-  width: 14px;
-  height: 14px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top: 2px solid white;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-right: 8px;
-}*/
+
 
 .no-clases {
   text-align: center;
@@ -658,4 +652,261 @@ img {
 .right {
   position: absolute;
   right: 20px;
+}*/
+
+.cf-clases-container {
+  min-height: 100vh;
+  background-color: #121212;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.cf-clases-fade-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.cf-clases-content {
+  flex: 1;
+  max-width: 1200px;
+  width: 90%;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.cf-clases-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 2rem;
+  width: 93%;
+}
+
+.cf-clases-header-title {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.cf-clases-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 0.5rem 0;
+  position: relative;
+  display: inline-block;
+}
+
+.cf-clases-title::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+  border-radius: 2px;
+}
+
+.cf-clases-subtitle {
+  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 1rem 0 0 0;
+}
+
+.cf-clases-stats {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.cf-clases-stat-card {
+  background-color: rgba(30, 30, 30, 0.6);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 12px;
+  padding: 1rem;
+  min-width: 150px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.3s ease;
+}
+
+.cf-clases-stat-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(59, 130, 246, 0.8);
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
+}
+
+.cf-clases-stat-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background-color: rgba(59, 130, 246, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3b82f6;
+  flex-shrink: 0;
+}
+
+.cf-clases-stat-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.cf-clases-stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.cf-clases-stat-label {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.cf-clases-notifications {
+  margin-bottom: 1.5rem;
+}
+
+.cf-clases-calendar-section {
+  margin-bottom: 2rem;
+  background-color: rgba(30, 30, 30, 0.5);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid rgba(100, 100, 100, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.cf-clases-calendar-header {
+  margin-bottom: 1rem;
+}
+
+.cf-clases-calendar-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+
+.cf-clases-timeline-section {
+  background-color: rgba(30, 30, 30, 0.5);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid rgba(100, 100, 100, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  animation: cf-clases-fade-in 0.5s ease-out forwards;
+}
+
+.cf-clases-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  min-height: 300px;
+  background-color: rgba(30, 30, 30, 0.5);
+  border-radius: 12px;
+  padding: 2rem;
+  border: 1px solid rgba(100, 100, 100, 0.3);
+  margin-bottom: 2rem;
+}
+
+.cf-clases-spinner {
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  border-top: 4px solid #3b82f6;
+  width: 50px;
+  height: 50px;
+  animation: cf-clases-spin 1s linear infinite;
+}
+
+@keyframes cf-clases-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.cf-clases-loading-text {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+@keyframes cf-clases-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 992px) {
+  .cf-clases-header {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .cf-clases-stats {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .cf-clases-stat-card {
+    flex: 1;
+    min-width: 120px;
+  }
+}
+
+@media (max-width: 768px) {
+  .cf-clases-content {
+    padding: 1rem;
+  }
+
+  .cf-clases-title {
+    font-size: 1.75rem;
+  }
+
+  .cf-clases-subtitle {
+    font-size: 1rem;
+  }
+
+  .cf-clases-calendar-section,
+  .cf-clases-timeline-section {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .cf-clases-stats {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .cf-clases-stat-card {
+    width: 100%;
+  }
+
+  .cf-clases-title {
+    font-size: 1.5rem;
+  }
+
+  .cf-clases-calendar-title {
+    font-size: 1.125rem;
+  }
 }

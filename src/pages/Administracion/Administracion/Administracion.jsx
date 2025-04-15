@@ -9,6 +9,8 @@ const Administracion = () => {
   const [usuarios, setUsuarios] = useState([])
   const [error, setError] = useState(null)
   const [userRole, setUserRole] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [fadeIn, setFadeIn] = useState(false)
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -27,73 +29,138 @@ const Administracion = () => {
 
     const fetchUsuarios = async () => {
       try {
+        setLoading(true)
         const data = await obtenerTodosUsuarios(token)
         setUsuarios(data || [])
       } catch (error) {
         console.error('Error al obtener usuarios:', error)
         setError(error.message || 'Error en la conexión con el servidor.')
         setUsuarios([])
+      } finally {
+        setLoading(false)
+
+        setTimeout(() => setFadeIn(true), 100)
       }
     }
 
     fetchUsuarios()
   }, [navigate])
 
+  const sectionData = [
+    {
+      title: 'Crear Clases',
+      description: 'Agrega nuevas clases para los usuarios.',
+      path: '/administracion/clases',
+      icon: 'calendar',
+      color: 'blue'
+    },
+    {
+      title: 'Crear Productos',
+      description: 'Agrega nuevos productos a la tienda.',
+      path: '/administracion/productos',
+      icon: 'shopping',
+      color: 'green'
+    },
+    {
+      title: 'Ver Usuarios',
+      description: 'Lista de todos los usuarios registrados.',
+      path: '/administracion/usuarios',
+      icon: 'users',
+      color: 'purple'
+    },
+    {
+      title: 'Información Médica',
+      description: 'Revisa y gestiona los datos médicos de todos los usuarios.',
+      path: '/admin/medical-info',
+      icon: 'heart',
+      color: 'pink'
+    },
+    {
+      title: 'Consentimientos',
+      description:
+        'Revisa los consentimientos y autorizaciones de imagen de los usuarios.',
+      path: '/administracion/consentimientos',
+      icon: 'document',
+      color: 'amber'
+    }
+  ]
+
+  const getAnimationDelay = (index) => {
+    return `${index * 0.1}s`
+  }
+
   return (
-    <div className='admin-container'>
+    <div className={`cf-admin-container ${fadeIn ? 'cf-admin-fade-in' : ''}`}>
       <Header />
-      <h1>Panel de Administración</h1>
-      <div className='admin-sections'>
-        <div
-          className='section-card'
-          onClick={() => navigate('/administracion/clases')}
-        >
-          <h2>📅 Crear Clases</h2>
-          <p>Agrega nuevas clases para los usuarios.</p>
+      <div className='cf-admin-content'>
+        <div className='cf-admin-header'>
+          <div className='cf-admin-welcome'>
+            <div className='cf-admin-welcome-icon'></div>
+            <h1 className='cf-admin-title'>
+              Panel de{' '}
+              <span className='cf-admin-highlight'>Administración</span>
+            </h1>
+          </div>
+          <div className='cf-admin-role-badge'>
+            {userRole === 'creador' ? 'Creador' : 'Administrador'}
+          </div>
         </div>
 
-        <div
-          className='section-card'
-          onClick={() => navigate('/administracion/productos')}
-        >
-          <h2>🛒 Crear Productos</h2>
-          <p>Agrega nuevos productos a la tienda.</p>
-        </div>
+        {loading ? (
+          <div className='cf-admin-loading'>
+            <div className='cf-admin-spinner'></div>
+            <p className='cf-admin-loading-text'>Cargando información...</p>
+          </div>
+        ) : (
+          <>
+            <div className='cf-admin-sections'>
+              {sectionData.map((section, index) => (
+                <div
+                  key={index}
+                  className={`cf-admin-card cf-admin-card-${section.color}`}
+                  onClick={() => navigate(section.path)}
+                  style={{ animationDelay: getAnimationDelay(index) }}
+                >
+                  <div className='cf-admin-card-content'>
+                    <div
+                      className={`cf-admin-card-icon-container cf-admin-icon-${section.color}`}
+                    >
+                      <div
+                        className={`cf-admin-section-icon cf-admin-${section.icon}-icon`}
+                      ></div>
+                    </div>
+                    <div className='cf-admin-card-info'>
+                      <h2 className='cf-admin-card-title'>{section.title}</h2>
+                      <p className='cf-admin-card-description'>
+                        {section.description}
+                      </p>
+                    </div>
+                    <div className='cf-admin-card-arrow'></div>
+                  </div>
+                </div>
+              ))}
+            </div>
 
-        <div
-          className='section-card'
-          onClick={() => navigate('/administracion/usuarios')}
-        >
-          <h2>👥 Ver Usuarios</h2>
-          <p>Lista de todos los usuarios registrados.</p>
-        </div>
-
-        <div
-          className='section-card'
-          onClick={() => navigate('/admin/medical-info')}
-        >
-          <h2>❤️ Información Médica</h2>
-          <p>Revisa y gestiona los datos médicos de todos los usuarios.</p>
-        </div>
-
-        <div
-          className='section-card'
-          onClick={() => navigate('/administracion/consentimientos')}
-        >
-          <h2>📝 Consentimientos</h2>
-          <p>
-            Revisa los consentimientos y autorizaciones de imagen de los
-            usuarios.
-          </p>
-        </div>
+            <div className='cf-admin-stats-container'>
+              <h2 className='cf-admin-section-title'>Usuarios Registrados</h2>
+              {error ? (
+                <div className='cf-admin-error-message'>
+                  <div className='cf-admin-error-icon'></div>
+                  <p>{error}</p>
+                </div>
+              ) : (
+                <div className='cf-admin-stats-card'>
+                  <div className='cf-admin-stats-icon'></div>
+                  <div className='cf-admin-stats-content'>
+                    <p className='cf-admin-stats-label'>Total de usuarios</p>
+                    <p className='cf-admin-stats-value'>{usuarios.length}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </>
+        )}
       </div>
-
-      <h2>Usuarios Registrados</h2>
-      {error ? (
-        <p className='error-message'>{error}</p>
-      ) : (
-        <p className='pAdministracion'>Total de usuarios: {usuarios.length}</p>
-      )}
     </div>
   )
 }
