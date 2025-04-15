@@ -1,6 +1,6 @@
 import { User } from 'lucide-react'
 import { getImageUrl } from '../../utils/imageUtils'
-import './MonitorInfo.css'
+import './Monitorinfo.css'
 
 const MonitorInfo = ({ monitor }) => {
   if (!monitor) return null
