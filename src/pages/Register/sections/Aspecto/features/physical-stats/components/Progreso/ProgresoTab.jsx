@@ -14,7 +14,7 @@ import {
 import 'chartjs-adapter-date-fns'
 import { es } from 'date-fns/locale'
 import usePhysicalStats from '../../hooks/usePhysicalStats'
-import { fetchTrendsApi } from '../../api/physicalStatsApi'
+import { fetchTrendsApi } from '../../../../../../../../services/Api/physicalStatsApi'
 import './ProgresoTab.css'
 
 ChartJS.register(

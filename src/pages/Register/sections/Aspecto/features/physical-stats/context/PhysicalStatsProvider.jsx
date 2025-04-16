@@ -8,7 +8,7 @@ import {
   saveStatsApi,
   createObjetivoApi,
   deleteObjetivoApi
-} from '../api/physicalStatsApi'
+} from '../../../../../../../services/Api/physicalStatsApi'
 
 const PhysicalStatsProvider = ({ children }) => {
   const initialState = {
