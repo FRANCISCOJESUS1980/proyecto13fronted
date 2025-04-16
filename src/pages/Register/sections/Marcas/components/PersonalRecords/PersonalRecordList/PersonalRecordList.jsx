@@ -22,6 +22,18 @@ const PersonalRecordsList = ({ records, onDelete, onEdit }) => {
     onDelete(id)
   }
 
+  const handleViewDetails = (record) => {
+    const recordCopy = {
+      _id: record._id,
+      ejercicio: record.ejercicio,
+      categoria: record.categoria,
+      peso: record.peso,
+      repeticiones: record.repeticiones || '1',
+      fecha: record.fecha
+    }
+    setViewDetails(recordCopy)
+  }
+
   if (records.length === 0) {
     return (
       <div className='no-records'>
@@ -65,7 +77,7 @@ const PersonalRecordsList = ({ records, onDelete, onEdit }) => {
             <div className='record-actions'>
               <button
                 className='view-btn'
-                onClick={() => setViewDetails(record)}
+                onClick={() => handleViewDetails(record)}
                 title='Ver detalles'
               >
                 👁️
@@ -116,65 +128,113 @@ const PersonalRecordsList = ({ records, onDelete, onEdit }) => {
       )}
 
       {viewDetails && (
-        <div className='details-modal-overlay'>
-          <div className='details-modal'>
-            <h4>Detalles de la Marca Personal</h4>
-
-            <div className='details-content'>
-              <div className='details-row'>
-                <div className='details-label'>Ejercicio:</div>
-                <div className='details-value'>{viewDetails.ejercicio}</div>
-              </div>
-
-              <div className='details-row'>
-                <div className='details-label'>Categoría:</div>
-                <div className='details-value'>
-                  <span
-                    className={`record-category ${getCategoryClass(
-                      viewDetails.categoria
-                    )}`}
+        <div className='cf-marcas-modal-overlay'>
+          <div className='cf-marcas-modal'>
+            <div className='cf-pr-overlay cf-pr-active'>
+              <div className='cf-pr-container cf-pr-slide-in'>
+                <div className='cf-pr-header'>
+                  <div className='cf-pr-title-container'>
+                    <div className='cf-pr-form-icon'></div>
+                    <h3 className='cf-pr-title'>
+                      Detalles de la Marca Personal
+                    </h3>
+                  </div>
+                  <button
+                    type='button'
+                    className='cf-pr-close-btn'
+                    onClick={() => setViewDetails(null)}
+                    aria-label='Cerrar detalles'
                   >
-                    {viewDetails.categoria}
-                  </span>
+                    <span className='cf-pr-close-icon'></span>
+                  </button>
+                </div>
+
+                <div className='cf-pr-form'>
+                  <div className='cf-pr-form-group'>
+                    <label className='cf-pr-label'>
+                      <span className='cf-pr-label-icon cf-pr-exercise-icon'></span>
+                      Ejercicio
+                    </label>
+                    <div className='cf-pr-input-container'>
+                      <div className='cf-pr-details-value'>
+                        {viewDetails.ejercicio}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className='cf-pr-form-group'>
+                    <label className='cf-pr-label'>
+                      <span className='cf-pr-label-icon cf-pr-category-label-icon'></span>
+                      Categoría
+                    </label>
+                    <div className='cf-pr-category-preview'>
+                      <span
+                        className={`record-category ${getCategoryClass(
+                          viewDetails.categoria
+                        )}`}
+                      >
+                        {viewDetails.categoria}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className='cf-pr-form-row'>
+                    <div className='cf-pr-form-group'>
+                      <label className='cf-pr-label'>
+                        <span className='cf-pr-label-icon cf-pr-weight-icon'></span>
+                        Peso (kg)
+                      </label>
+                      <div className='cf-pr-input-wrapper'>
+                        <div className='cf-pr-details-value'>
+                          {viewDetails.peso} kg
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className='cf-pr-form-group'>
+                      <label className='cf-pr-label'>
+                        <span className='cf-pr-label-icon cf-pr-reps-icon'></span>
+                        Repeticiones
+                      </label>
+                      <div className='cf-pr-details-value'>
+                        {viewDetails.repeticiones || '1'}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className='cf-pr-form-group'>
+                    <label className='cf-pr-label'>
+                      <span className='cf-pr-label-icon cf-pr-date-icon'></span>
+                      Fecha
+                    </label>
+                    <div className='cf-pr-details-value'>
+                      {new Date(viewDetails.fecha).toLocaleDateString()}
+                    </div>
+                  </div>
+
+                  <div className='cf-pr-form-actions'>
+                    <button
+                      type='button'
+                      onClick={() => setViewDetails(null)}
+                      className='cf-pr-cancel-btn'
+                    >
+                      <span className='cf-pr-cancel-icon'></span>
+                      Cerrar
+                    </button>
+                    <button
+                      type='button'
+                      className='cf-pr-submit-btn'
+                      onClick={() => {
+                        onEdit(viewDetails)
+                        setViewDetails(null)
+                      }}
+                    >
+                      <span className='cf-pr-edit-icon'></span>
+                      Editar
+                    </button>
+                  </div>
                 </div>
               </div>
-
-              <div className='details-row'>
-                <div className='details-label'>Peso:</div>
-                <div className='details-value'>{viewDetails.peso} kg</div>
-              </div>
-
-              <div className='details-row'>
-                <div className='details-label'>Repeticiones:</div>
-                <div className='details-value'>
-                  {viewDetails.repeticiones || '1'}
-                </div>
-              </div>
-
-              <div className='details-row'>
-                <div className='details-label'>Fecha:</div>
-                <div className='details-value'>
-                  {new Date(viewDetails.fecha).toLocaleDateString()}
-                </div>
-              </div>
-            </div>
-
-            <div className='details-actions'>
-              <button
-                className='edit-btn-large'
-                onClick={() => {
-                  onEdit(viewDetails)
-                  setViewDetails(null)
-                }}
-              >
-                Editar
-              </button>
-              <button
-                className='close-btn'
-                onClick={() => setViewDetails(null)}
-              >
-                Cerrar
-              </button>
             </div>
           </div>
         </div>
