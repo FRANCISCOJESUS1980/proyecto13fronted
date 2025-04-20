@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Header from '../../components/Header/Header'
 import './Videos.css'
 
@@ -76,37 +76,72 @@ const Videos = () => {
     }
   ])
 
-  return (
-    <div className='videos-container'>
-      <Header />
-      <h1 className='videos-title'>Videos de Movimientos de CrossFit</h1>
-      <p className='videos-description'>
-        Aprende la técnica correcta de los principales movimientos de CrossFit
-        con nuestros videos explicativos. Dominar estos movimientos te ayudará a
-        mejorar tu rendimiento y prevenir lesiones.
-      </p>
+  const videoRefs = useRef([])
 
-      <div className='videos-grid'>
-        {videos.map((video) => (
-          <div key={video.id} className='video-card'>
-            <div className='video-frame'>
-              <iframe
-                width='100%'
-                height='100%'
-                src={video.url}
-                title={video.title}
-                frameBorder='0'
-                allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-                allowFullScreen
-              ></iframe>
+  useEffect(() => {
+    const options = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.1
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('cf-video-card-visible')
+        }
+      })
+    }, options)
+
+    videoRefs.current.forEach((el) => {
+      if (el) observer.observe(el)
+    })
+
+    return () => {
+      videoRefs.current.forEach((el) => {
+        if (el) observer.unobserve(el)
+      })
+    }
+  }, [])
+
+  return (
+    <div className='cf-videos-container'>
+      <Header />
+      <main className='cf-videos-main'>
+        <h1 className='cf-videos-title'>Videos de Movimientos de CrossFit</h1>
+        <p className='cf-videos-description'>
+          Aprende la técnica correcta de los principales movimientos de CrossFit
+          con nuestros videos explicativos. Dominar estos movimientos te ayudará
+          a mejorar tu rendimiento y prevenir lesiones.
+        </p>
+
+        <div className='cf-videos-grid'>
+          {videos.map((video, index) => (
+            <div
+              key={video.id}
+              className='cf-video-card'
+              ref={(el) => (videoRefs.current[index] = el)}
+            >
+              <div className='cf-video-frame'>
+                <iframe
+                  width='100%'
+                  height='100%'
+                  src={`${video.url}?rel=0`}
+                  title={video.title}
+                  frameBorder='0'
+                  loading='lazy'
+                  allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+                  allowFullScreen
+                ></iframe>
+              </div>
+              <div className='cf-video-info'>
+                <h3 className='cf-video-title'>{video.title}</h3>
+                <p className='cf-video-description'>{video.description}</p>
+              </div>
             </div>
-            <div className='video-info'>
-              <h3 className='video-title'>{video.title}</h3>
-              <p className='video-description'>{video.description}</p>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      </main>
     </div>
   )
 }

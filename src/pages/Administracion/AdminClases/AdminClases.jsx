@@ -80,7 +80,6 @@ const AdminClases = () => {
       const [horas, minutos] = horario.split(':')
       const horaInicio = `${horas}:${minutos}`
 
-      // Calcular hora de fin
       const horaInicioDate = new Date()
       horaInicioDate.setHours(
         Number.parseInt(horas),

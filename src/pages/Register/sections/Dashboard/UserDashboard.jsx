@@ -148,6 +148,28 @@ const UserDashboard = () => {
       description: 'Modifica tu información personal',
       path: `/dashboard/editar-perfil/${userId}`,
       color: 'orange'
+    },
+    // Nuevas tarjetas añadidas
+    {
+      icon: 'video',
+      title: 'Videos',
+      description: 'Accede a videos de entrenamiento y tutoriales',
+      path: '/videos',
+      color: 'red'
+    },
+    {
+      icon: 'class',
+      title: 'Clases',
+      description: 'Consulta horarios y reserva tus clases',
+      path: '/clases',
+      color: 'teal'
+    },
+    {
+      icon: 'product',
+      title: 'Productos',
+      description: 'Explora nuestra tienda de productos',
+      path: '/productos',
+      color: 'indigo'
     }
   ]
 
@@ -174,6 +196,15 @@ const UserDashboard = () => {
       case 'profile':
         return (
           <span className='cf-dash-section-icon cf-dash-profile-icon'></span>
+        )
+      // Nuevos iconos añadidos
+      case 'video':
+        return <span className='cf-dash-section-icon cf-dash-video-icon'></span>
+      case 'class':
+        return <span className='cf-dash-section-icon cf-dash-class-icon'></span>
+      case 'product':
+        return (
+          <span className='cf-dash-section-icon cf-dash-product-icon'></span>
         )
       default:
         return (

@@ -153,7 +153,6 @@
   margin-top: 0.25rem;
 }
 
-/* Select */
 .cf-producto-form-select-container {
   position: relative;
 }
@@ -240,7 +239,6 @@
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
 }
 
-/* Carga de imágenes */
 .cf-producto-form-image-upload {
   display: flex;
   flex-direction: column;
@@ -308,7 +306,6 @@
   object-fit: contain;
 }
 
-/* Footer */
 .cf-producto-form-footer {
   display: flex;
   justify-content: flex-end;

@@ -1,210 +1,266 @@
-.home {
+.cf-home {
   width: 100%;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background-color: #000;
+  position: relative;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  overflow-x: hidden;
 }
 
-.main-content {
+.cf-video-container {
   position: relative;
   width: 100%;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.video-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  height: calc(100vh - 270px);
   overflow: hidden;
   z-index: 1;
 }
 
-.background-video {
-  width: 100vw;
-  height: 100vh;
+.cf-background-video {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  filter: brightness(0.7);
 }
 
-.overlay {
-  text-align: center;
-  color: white;
-  position: absolute;
+.cf-main-content {
+  position: relative;
+  width: 100%;
+  min-height: calc(100vh - 270px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   z-index: 2;
-  padding: 0 20px;
-  top: 500px;
 }
 
-.overlay h1 {
-  font-size: 4rem;
-  margin-bottom: 20px;
-  font-weight: bold;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+.cf-motivation-text {
+  position: absolute;
+  top: 20%;
+  text-align: center;
+  z-index: 3;
 }
 
-.overlay p {
-  font-size: 1.8rem;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+.cf-motivation-text h2 {
+  font-size: 3rem;
+  font-weight: 800;
+  text-shadow: 0 0 20px #ff0000;
+  letter-spacing: 2px;
+  margin: 0;
 }
 
-.crossfit-animations {
-  padding: 4rem 0;
+.cf-overlay {
+  position: absolute;
+  bottom: 20%;
+  text-align: center;
+  padding: var(--space-4);
+  max-width: 90%;
+  width: 600px;
+  z-index: 3;
+}
+
+.cf-overlay h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: var(--space-2);
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.cf-overlay p {
+  font-size: 1.2rem;
+  color: white;
+  margin: 0;
+}
+
+.cf-crossfit-animations {
   display: flex;
   justify-content: space-around;
-  gap: 2rem;
-  background: none;
-  z-index: 2;
-  position: absolute;
-  bottom: 20px;
-  width: 100%;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: var(--space-8) var(--space-4);
+  background-color: var(--color-surface);
+  position: relative;
+  z-index: 3;
 }
 
-.animation-container {
+.cf-animation-container {
+  width: 150px;
+  height: 150px;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 200px;
-  perspective: 1000px;
+  margin: var(--space-4);
 }
 
-.barbell {
+.cf-barbell {
   position: relative;
-  width: 200px;
+  width: 120px;
   height: 20px;
 }
 
-.bar {
+.cf-bar {
   position: absolute;
-  width: 100%;
+  top: 8px;
+  left: 10px;
+  width: 100px;
   height: 4px;
-  background: #fff;
-  top: 50%;
-  transform: translateY(-50%);
+  background-color: #333;
 }
 
-.plate {
+.cf-plate {
   position: absolute;
-  width: 40px;
-  height: 40px;
-  background: #ff4444;
+  width: 20px;
+  height: 20px;
+  background-color: #ff0000;
   border-radius: 50%;
-  top: 50%;
-  transform: translateY(-50%);
 }
 
-.plate.left {
+.cf-left {
   left: 0;
 }
 
-.plate.right {
+.cf-right {
   right: 0;
 }
 
-.kettlebell {
+.cf-kettlebell {
   position: relative;
   width: 60px;
   height: 80px;
 }
 
-.kettlebell .handle {
+.cf-handle {
   position: absolute;
-  width: 40px;
+  top: 0;
+  left: 15px;
+  width: 30px;
   height: 20px;
-  background: #fff;
-  border-radius: 10px;
-  left: 50%;
-  transform: translateX(-50%);
+  border: 4px solid #333;
+  border-bottom: none;
+  border-radius: 15px 15px 0 0;
 }
 
-.kettlebell .body {
+.cf-body {
   position: absolute;
+  top: 20px;
   width: 60px;
   height: 60px;
-  background: #ff4444;
+  background-color: #ff0000;
   border-radius: 50%;
-  top: 20px;
 }
 
-.athlete {
+.cf-athlete {
+  position: relative;
+  width: 40px;
+  height: 100px;
+}
+
+.cf-head {
+  position: absolute;
+  top: 0;
+  left: 10px;
+  width: 20px;
+  height: 20px;
+  background-color: #333;
+  border-radius: 50%;
+}
+
+.cf-body {
+  position: absolute;
+  top: 25px;
+  width: 40px;
+  height: 40px;
+  background-color: #ff0000;
+  border-radius: 5px;
+}
+
+.cf-legs {
+  position: absolute;
+  bottom: 0;
+  left: 5px;
+  width: 30px;
+  height: 30px;
+  background-color: #333;
+  border-radius: 5px;
+}
+
+.cf-icon-container {
+  width: 100px;
+  height: 100px;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
 }
 
-.athlete .head {
-  width: 30px;
-  height: 30px;
-  background: #fff;
-  border-radius: 50%;
-}
-
-.athlete .body {
-  width: 40px;
-  height: 60px;
-  background: #ff4444;
-  margin: 5px 0;
-}
-
-.athlete .legs {
+.cf-animated-box {
   width: 60px;
-  height: 20px;
-  background: #fff;
-  border-radius: 10px;
-}
-
-.motivation-text {
-  text-align: center;
-  color: #fff;
-  padding: 4rem;
-  z-index: 2;
-  position: absolute;
-  top: 0;
-}
-
-.motivation-text h2 {
-  font-size: 2.5rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-}
-
-.animated-box {
-  width: 40px;
-  height: 40px;
-  background-color: #ff4444;
-  border-radius: 10px;
-  animation: rotateBox 4s linear infinite;
-}
-
-@keyframes rotateBox {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  height: 60px;
+  background-color: #ff0000;
+  border-radius: var(--border-radius-sm);
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
 }
 
 @media (max-width: 768px) {
-  .overlay h1 {
+  .cf-motivation-text h2 {
     font-size: 2.5rem;
   }
 
-  .overlay p {
-    font-size: 1.2rem;
+  .cf-overlay h1 {
+    font-size: 2rem;
   }
 
-  .motivation-text h2 {
-    font-size: 1.8rem;
+  .cf-overlay p {
+    font-size: 1rem;
   }
 
-  .crossfit-animations {
-    grid-template-columns: 1fr;
+  .cf-animation-container {
+    width: 120px;
+    height: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cf-motivation-text h2 {
+    font-size: 2rem;
+  }
+
+  .cf-overlay h1 {
+    font-size: 1.5rem;
+  }
+
+  .cf-overlay {
+    bottom: 15%;
+  }
+
+  .cf-crossfit-animations {
+    padding: var(--space-4) var(--space-2);
+  }
+
+  .cf-animation-container {
+    width: 100px;
+    height: 100px;
+    margin: var(--space-2);
+  }
+}
+
+@media (min-width: 1004px) {
+  .cf-video-container {
+    height: calc(100vh - 220px);
+  }
+
+  .cf-main-content {
+    min-height: calc(100vh - 220px);
+  }
+
+  .cf-motivation-text h2 {
+    font-size: 3.5rem;
+  }
+
+  .cf-overlay h1 {
+    font-size: 3rem;
+  }
+
+  .cf-overlay p {
+    font-size: 1.5rem;
   }
 }

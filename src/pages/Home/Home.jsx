@@ -5,12 +5,12 @@ import crossfitVideo from '../../assets/videos/videocrossfit.mp4'
 
 const Home = () => {
   return (
-    <div className='home'>
+    <div className='cf-home'>
       <Header />
-      <main className='main-content'>
-        <div className='video-container'>
+      <main className='cf-main-content'>
+        <div className='cf-video-container'>
           <video
-            className='background-video'
+            className='cf-background-video'
             src={crossfitVideo}
             autoPlay
             loop
@@ -18,7 +18,7 @@ const Home = () => {
           />
         </div>
         <motion.div
-          className='motivation-text'
+          className='cf-motivation-text'
           animate={{
             scale: [1, 1.1, 1],
             textShadow: [
@@ -27,7 +27,11 @@ const Home = () => {
               '0 0 10px #ff0000'
             ]
           }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          transition={{
+            duration: 2,
+            repeat: Number.POSITIVE_INFINITY,
+            ease: 'easeInOut'
+          }}
         >
           <h2>SUPERA TUS LÍMITES</h2>
         </motion.div>
@@ -36,55 +40,71 @@ const Home = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className='overlay'
+          className='cf-overlay'
         >
           <h1>CROSSFIT: ROMPE TUS BARRERAS</h1>
           <p>Descubre la mejor comunidad de entrenamiento.</p>
         </motion.div>
       </main>
 
-      <section className='crossfit-animations'>
-        <div className='animation-container'>
+      <section className='cf-crossfit-animations'>
+        <div className='cf-animation-container'>
           <motion.div
-            className='barbell'
+            className='cf-barbell'
             animate={{ y: [0, -20, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            transition={{
+              duration: 2,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: 'easeInOut'
+            }}
           >
-            <div className='bar'></div>
-            <div className='plate left'></div>
-            <div className='plate right'></div>
+            <div className='cf-bar'></div>
+            <div className='cf-plate cf-left'></div>
+            <div className='cf-plate cf-right'></div>
           </motion.div>
         </div>
 
-        <div className='animation-container'>
+        <div className='cf-animation-container'>
           <motion.div
-            className='kettlebell'
+            className='cf-kettlebell'
             animate={{ rotate: [-45, 45, -45], y: [0, -50, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+            transition={{
+              duration: 1.5,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: 'easeInOut'
+            }}
           >
-            <div className='handle'></div>
-            <div className='body'></div>
+            <div className='cf-handle'></div>
+            <div className='cf-body'></div>
           </motion.div>
         </div>
 
-        <div className='animation-container'>
+        <div className='cf-animation-container'>
           <motion.div
-            className='athlete'
+            className='cf-athlete'
             animate={{ y: [0, -30, 0], scaleY: [1, 0.9, 1] }}
-            transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut' }}
+            transition={{
+              duration: 1,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: 'easeInOut'
+            }}
           >
-            <div className='head'></div>
-            <div className='body'></div>
-            <div className='legs'></div>
+            <div className='cf-head'></div>
+            <div className='cf-body'></div>
+            <div className='cf-legs'></div>
           </motion.div>
         </div>
 
-        <div className='icon-container'>
+        <div className='cf-icon-container'>
           <motion.div
             animate={{ rotate: 360 }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+            transition={{
+              duration: 4,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: 'linear'
+            }}
           >
-            <div className='animated-box'></div>
+            <div className='cf-animated-box'></div>
           </motion.div>
         </div>
       </section>
