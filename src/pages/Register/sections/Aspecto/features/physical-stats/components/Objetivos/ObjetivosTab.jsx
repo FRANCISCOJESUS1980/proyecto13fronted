@@ -142,64 +142,52 @@ const ObjetivosTab = ({ onMessage }) => {
     })
   }
 
+  const unidadesMedida = {
+    peso: 'kg',
+    grasa: '%',
+    musculo: '%',
+    default: 'cm'
+  }
+
   const getUnidad = (medida) => {
-    switch (medida) {
-      case 'peso':
-        return 'kg'
-      case 'grasa':
-      case 'musculo':
-        return '%'
-      default:
-        return 'cm'
-    }
+    return unidadesMedida[medida] || unidadesMedida.default
+  }
+
+  const nombresMedida = {
+    peso: 'Peso',
+    grasa: '% Grasa',
+    musculo: '% Músculo',
+    pecho: 'Pecho',
+    cintura: 'Cintura',
+    cadera: 'Cadera',
+    biceps: 'Bíceps',
+    muslos: 'Muslos'
   }
 
   const getMedidaNombre = (medida) => {
-    switch (medida) {
-      case 'peso':
-        return 'Peso'
-      case 'grasa':
-        return '% Grasa'
-      case 'musculo':
-        return '% Músculo'
-      case 'pecho':
-        return 'Pecho'
-      case 'cintura':
-        return 'Cintura'
-      case 'cadera':
-        return 'Cadera'
-      case 'biceps':
-        return 'Bíceps'
-      case 'muslos':
-        return 'Muslos'
-      default:
-        return medida
-    }
+    return nombresMedida[medida] || medida
+  }
+
+  const iconosTipo = {
+    peso: (
+      <span className='cf-objetivos-tipo-icon cf-objetivos-peso-icon'></span>
+    ),
+    grasa: (
+      <span className='cf-objetivos-tipo-icon cf-objetivos-grasa-icon'></span>
+    ),
+    musculo: (
+      <span className='cf-objetivos-tipo-icon cf-objetivos-musculo-icon'></span>
+    ),
+    medida: (
+      <span className='cf-objetivos-tipo-icon cf-objetivos-medida-icon'></span>
+    ),
+    default: (
+      <span className='cf-objetivos-tipo-icon cf-objetivos-default-icon'></span>
+    )
   }
 
   const getTipoIcon = (tipo) => {
-    switch (tipo) {
-      case 'peso':
-        return (
-          <span className='cf-objetivos-tipo-icon cf-objetivos-peso-icon'></span>
-        )
-      case 'grasa':
-        return (
-          <span className='cf-objetivos-tipo-icon cf-objetivos-grasa-icon'></span>
-        )
-      case 'musculo':
-        return (
-          <span className='cf-objetivos-tipo-icon cf-objetivos-musculo-icon'></span>
-        )
-      case 'medida':
-        return (
-          <span className='cf-objetivos-tipo-icon cf-objetivos-medida-icon'></span>
-        )
-      default:
-        return (
-          <span className='cf-objetivos-tipo-icon cf-objetivos-default-icon'></span>
-        )
-    }
+    return iconosTipo[tipo] || iconosTipo.default
   }
 
   const renderProgressBar = (progreso) => {

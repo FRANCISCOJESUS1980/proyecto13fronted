@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useEffect, useState, useCallback, memo, useRef } from 'react'
 import Button from '../Button/Button'
+import CartIcon from '../../pages/Productos/components/Carticon/Carticon'
 import './Header.css'
 import logo from '../../assets/imagenes/logoalex.jpg'
 
@@ -163,6 +164,11 @@ const Header = () => {
           <NavLink to='/contacto'>Contacto</NavLink>
           <NavLink to='/precios'>Precios</NavLink>
           <NavLink to='/entrenamientos'>Entrenamientos</NavLink>
+          <NavLink to='/productos'>Productos</NavLink>
+
+          <div className='cf-cart-wrapper'>
+            <CartIcon />
+          </div>
         </nav>
       </div>
     </header>

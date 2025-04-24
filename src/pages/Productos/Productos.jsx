@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 import Header from '../../components/Header/Header'
 import { obtenerProductos, buscarProductos } from '../../services/Api/index'
+import { useCart } from '../Productos/context/CartContext'
 import './Productos.css'
 
 const CATEGORIAS = [
@@ -28,6 +29,7 @@ const Productos = () => {
   const [totalPages, setTotalPages] = useState(1)
   const [ordenar, setOrdenar] = useState('destacado')
   const [fadeIn, setFadeIn] = useState(false)
+  const { addToCart } = useCart()
 
   useEffect(() => {
     cargarProductos()
@@ -76,6 +78,27 @@ const Productos = () => {
     if (page < 1 || page > totalPages) return
     setCurrentPage(page)
     window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleAddToCart = (producto) => {
+    addToCart(producto)
+
+    // Mostrar una notificación o feedback visual
+    const notification = document.createElement('div')
+    notification.className = 'cf-productos-notification'
+    notification.textContent = `${producto.nombre} añadido al carrito`
+    document.body.appendChild(notification)
+
+    setTimeout(() => {
+      notification.classList.add('cf-productos-notification-show')
+    }, 100)
+
+    setTimeout(() => {
+      notification.classList.remove('cf-productos-notification-show')
+      setTimeout(() => {
+        document.body.removeChild(notification)
+      }, 300)
+    }, 2000)
   }
 
   const getAnimationDelay = (index) => {
@@ -194,7 +217,10 @@ const Productos = () => {
                           ${producto.precio.toFixed(2)}
                         </span>
                         {producto.stock > 0 ? (
-                          <button className='cf-productos-btn-agregar'>
+                          <button
+                            className='cf-productos-btn-agregar'
+                            onClick={() => handleAddToCart(producto)}
+                          >
                             <ShoppingCart size={16} />
                             <span>Agregar</span>
                           </button>

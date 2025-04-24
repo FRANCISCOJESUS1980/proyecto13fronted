@@ -1,0 +1,50 @@
+.cf-cart-icon-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-left: 20px;
+  color: white;
+  text-decoration: none;
+  background-color: rgb(235, 62, 62);
+  width: 70px;
+  height: 40px;
+  border-radius: 8px;
+}
+
+.cf-cart-icon {
+  transition: color 0.2s ease;
+}
+
+.cf-cart-icon-container:hover {
+  background-color: var(--color-blue);
+}
+
+.cf-cart-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  color: var(--color-background);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: bold;
+  animation: cf-cart-badge-pulse 1s ease-out;
+}
+
+@keyframes cf-cart-badge-pulse {
+  0% {
+    transform: scale(0.8);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
