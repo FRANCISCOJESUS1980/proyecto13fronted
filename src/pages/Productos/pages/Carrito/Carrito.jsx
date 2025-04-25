@@ -81,11 +81,11 @@ const Carrito = () => {
   }
 
   return (
-    <div className='cf-carrito-container'>
+    <div className='carrito-container'>
       <Header />
-      <div className='cf-carrito-content'>
-        <div className='cf-carrito-header'>
-          <h1 className='cf-carrito-title'>Tu Carrito</h1>
+      <div className='carrito-content'>
+        <div className='carrito-header'>
+          <h1 className='carrito-title'>Tu Carrito</h1>
           <Button
             onClick={() => navigate('/productos')}
             variant='secondary'
@@ -97,52 +97,52 @@ const Carrito = () => {
         </div>
 
         {cartItems.length === 0 ? (
-          <div className='cf-carrito-empty'>
-            <div className='cf-carrito-empty-icon'></div>
-            <h3 className='cf-carrito-empty-title'>Tu carrito está vacío</h3>
-            <p className='cf-carrito-empty-text'>
+          <div className='carrito-empty'>
+            <div className='carrito-empty-icon'></div>
+            <h3 className='carrito-empty-title'>Tu carrito está vacío</h3>
+            <p className='carrito-empty-text'>
               Parece que aún no has añadido productos a tu carrito.
             </p>
-            <Link to='/productos' className='cf-carrito-empty-btn'>
+            <Link to='/productos' className='carrito-empty-btn'>
               Ver productos
             </Link>
           </div>
         ) : (
-          <div className='cf-carrito-layout'>
-            <div className='cf-carrito-items-container'>
-              <div className='cf-carrito-items-header'>
-                <span className='cf-carrito-header-producto'>Producto</span>
-                <span className='cf-carrito-header-precio'>Precio</span>
-                <span className='cf-carrito-header-cantidad'>Cantidad</span>
-                <span className='cf-carrito-header-total'>Total</span>
-                <span className='cf-carrito-header-acciones'></span>
+          <div className='carrito-layout'>
+            <div className='carrito-items-container'>
+              <div className='carrito-items-header'>
+                <span className='carrito-header-producto'>Producto</span>
+                <span className='carrito-header-precio'>Precio</span>
+                <span className='carrito-header-cantidad'>Cantidad</span>
+                <span className='carrito-header-total'>Total</span>
+                <span className='carrito-header-acciones'></span>
               </div>
 
               {cartItems.map((item) => (
-                <div key={item._id} className='cf-carrito-item'>
-                  <div className='cf-carrito-item-producto'>
+                <div key={item._id} className='carrito-item'>
+                  <div className='carrito-item-producto'>
                     <img
                       src={item.imagen || '/placeholder.svg'}
                       alt={item.nombre}
-                      className='cf-carrito-item-imagen'
+                      className='carrito-item-imagen'
                       onError={(e) => {
                         e.target.onerror = null
                         e.target.src = '/placeholder.svg'
                       }}
                     />
-                    <div className='cf-carrito-item-detalles'>
-                      <h3 className='cf-carrito-item-nombre'>{item.nombre}</h3>
-                      <p className='cf-carrito-item-marca'>{item.marca}</p>
+                    <div className='carrito-item-detalles'>
+                      <h3 className='carrito-item-nombre'>{item.nombre}</h3>
+                      <p className='carrito-item-marca'>{item.marca}</p>
                     </div>
                   </div>
 
-                  <div className='cf-carrito-item-precio'>
+                  <div className='carrito-item-precio'>
                     ${item.precio.toFixed(2)}
                   </div>
 
-                  <div className='cf-carrito-item-cantidad'>
+                  <div className='carrito-item-cantidad'>
                     <button
-                      className='cf-carrito-cantidad-btn'
+                      className='carrito-cantidad-btn'
                       onClick={() =>
                         updateQuantity(item._id, item.quantity - 1)
                       }
@@ -150,11 +150,11 @@ const Carrito = () => {
                     >
                       <Minus size={16} />
                     </button>
-                    <span className='cf-carrito-cantidad-valor'>
+                    <span className='carrito-cantidad-valor'>
                       {item.quantity}
                     </span>
                     <button
-                      className='cf-carrito-cantidad-btn'
+                      className='carrito-cantidad-btn'
                       onClick={() =>
                         updateQuantity(item._id, item.quantity + 1)
                       }
@@ -164,13 +164,13 @@ const Carrito = () => {
                     </button>
                   </div>
 
-                  <div className='cf-carrito-item-total'>
+                  <div className='carrito-item-total'>
                     ${(item.precio * item.quantity).toFixed(2)}
                   </div>
 
-                  <div className='cf-carrito-item-acciones'>
+                  <div className='carrito-item-acciones'>
                     <button
-                      className='cf-carrito-eliminar-btn'
+                      className='carrito-eliminar-btn'
                       onClick={() => removeFromCart(item._id)}
                       aria-label='Eliminar producto'
                     >
@@ -180,26 +180,26 @@ const Carrito = () => {
                 </div>
               ))}
 
-              <div className='cf-carrito-actions'>
+              <div className='carrito-actions'>
                 <Button onClick={clearCart} variant='secondary' size='md'>
                   Vaciar carrito
                 </Button>
               </div>
             </div>
 
-            <div className='cf-carrito-resumen'>
-              <h2 className='cf-carrito-resumen-titulo'>Resumen de compra</h2>
+            <div className='carrito-resumen'>
+              <h2 className='carrito-resumen-titulo'>Resumen de compra</h2>
 
-              <div className='cf-carrito-resumen-detalles'>
-                <div className='cf-carrito-resumen-fila'>
+              <div className='carrito-resumen-detalles'>
+                <div className='carrito-resumen-fila'>
                   <span>Subtotal</span>
                   <span>${getCartTotal().toFixed(2)}</span>
                 </div>
-                <div className='cf-carrito-resumen-fila'>
+                <div className='carrito-resumen-fila'>
                   <span>Envío</span>
                   <span>Gratis</span>
                 </div>
-                <div className='cf-carrito-resumen-total'>
+                <div className='carrito-resumen-total'>
                   <span>Total</span>
                   <span>${getCartTotal().toFixed(2)}</span>
                 </div>
@@ -208,7 +208,7 @@ const Carrito = () => {
               <Button
                 onClick={handleCheckout}
                 disabled={cartItems.length === 0}
-                variant='secondary'
+                variant='primary'
                 size='lg'
                 leftIcon={<CreditCard size={18} />}
               >
@@ -219,31 +219,31 @@ const Carrito = () => {
         )}
 
         {showPaymentForm && (
-          <div className='cf-payment-overlay'>
-            <div className='cf-payment-modal'>
+          <div className='payment-overlay'>
+            <div className='payment-modal'>
               <button
-                className='cf-payment-close'
+                className='payment-close'
                 onClick={() => setShowPaymentForm(false)}
                 aria-label='Cerrar'
               >
                 <X size={24} />
               </button>
 
-              <h2 className='cf-payment-title'>
+              <h2 className='payment-title'>
                 {success ? '¡Pago exitoso!' : 'Información de pago'}
               </h2>
 
               {success ? (
-                <div className='cf-payment-success'>
-                  <div className='cf-payment-success-icon'>✓</div>
+                <div className='payment-success'>
+                  <div className='payment-success-icon'>✓</div>
                   <p>Tu pago ha sido procesado correctamente.</p>
                   <p>Recibirás un correo con los detalles de tu compra.</p>
                 </div>
               ) : (
-                <form onSubmit={handlePayment} className='cf-payment-form'>
-                  {error && <div className='cf-payment-error'>{error}</div>}
+                <form onSubmit={handlePayment} className='payment-form'>
+                  {error && <div className='payment-error'>{error}</div>}
 
-                  <div className='cf-payment-group'>
+                  <div className='payment-group'>
                     <label htmlFor='cardName'>Nombre en la tarjeta</label>
                     <input
                       type='text'
@@ -256,7 +256,7 @@ const Carrito = () => {
                     />
                   </div>
 
-                  <div className='cf-payment-group'>
+                  <div className='payment-group'>
                     <label htmlFor='cardNumber'>Número de tarjeta</label>
                     <input
                       type='text'
@@ -270,8 +270,8 @@ const Carrito = () => {
                     />
                   </div>
 
-                  <div className='cf-payment-row'>
-                    <div className='cf-payment-group'>
+                  <div className='payment-row'>
+                    <div className='payment-group'>
                       <label htmlFor='expMonth'>Mes</label>
                       <select
                         id='expMonth'
@@ -294,7 +294,7 @@ const Carrito = () => {
                       </select>
                     </div>
 
-                    <div className='cf-payment-group'>
+                    <div className='payment-group'>
                       <label htmlFor='expYear'>Año</label>
                       <select
                         id='expYear'
@@ -315,7 +315,7 @@ const Carrito = () => {
                       </select>
                     </div>
 
-                    <div className='cf-payment-group'>
+                    <div className='payment-group'>
                       <label htmlFor='cvc'>CVC</label>
                       <input
                         type='text'
@@ -330,14 +330,14 @@ const Carrito = () => {
                     </div>
                   </div>
 
-                  <div className='cf-payment-total'>
+                  <div className='payment-total'>
                     <span>Total a pagar:</span>
                     <span>${getCartTotal().toFixed(2)}</span>
                   </div>
 
                   <button
                     type='submit'
-                    className='cf-payment-submit-btn'
+                    className='payment-submit-btn'
                     disabled={loading}
                   >
                     {loading ? 'Procesando...' : 'Pagar ahora'}
