@@ -1,7 +1,7 @@
 import { ShoppingCart } from 'lucide-react'
 import { useCart } from '../../context/CartContext'
 import { Link } from 'react-router-dom'
-import './CartIcon.css'
+import './Carticon.css'
 
 const CartIcon = () => {
   const { getCartItemsCount } = useCart()
