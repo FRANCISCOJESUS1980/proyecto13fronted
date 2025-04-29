@@ -374,6 +374,7 @@
 
 .cf-social-facebook-button {
   background-color: var(--color-blue);
+  width: 30%;
 }
 
 .cf-social-feed-grid {

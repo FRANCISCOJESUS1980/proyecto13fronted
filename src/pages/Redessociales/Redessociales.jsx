@@ -18,7 +18,7 @@ import {
   MessageCircle,
   ThumbsUp
 } from 'lucide-react'
-import './RedesSociales.css'
+import './Redessociales.css'
 
 const RedesSociales = () => {
   const navigate = useNavigate()

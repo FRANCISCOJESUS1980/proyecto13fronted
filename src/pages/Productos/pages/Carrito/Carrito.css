@@ -14,7 +14,8 @@
 
 .carrito-header {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
   margin-bottom: var(--space-8);
   flex-wrap: wrap;
@@ -488,11 +489,6 @@
 }
 
 @media (max-width: 480px) {
-  .carrito-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
   .payment-row {
     grid-template-columns: 1fr;
   }
