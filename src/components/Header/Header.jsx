@@ -3,7 +3,7 @@ import { useEffect, useState, useCallback, memo, useRef } from 'react'
 import Button from '../Button/Button'
 import CartIcon from '../../pages/Productos/components/Carticon/Carticon'
 import './Header.css'
-import logo from '../../assets/imagenes/logoalex.jpg'
+import logo from '../../../public/imagenes/logoalex.jpg'
 
 const MobileMenuButton = memo(({ isOpen, onClick }) => {
   return (

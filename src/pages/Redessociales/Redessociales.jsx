@@ -30,7 +30,7 @@ const RedesSociales = () => {
     instagram: [
       {
         id: 1,
-        image: 'src/assets/imagenes/alterofilia1.JPG',
+        image: 'public/imagenes/alterofilia1.JPG',
         caption:
           '¡Nuevo récord personal en Clean & Jerk! 💪 #CrossFit #Superación',
         likes: 124,
@@ -39,7 +39,7 @@ const RedesSociales = () => {
       },
       {
         id: 2,
-        image: 'src/assets/imagenes/alterofilia2.JPG',
+        image: 'public/imagenes/alterofilia2.JPG',
         caption:
           'WOD de hoy: "Murph" - ¡Todos dieron el máximo! 🔥 #TeamAder #NoExcuses',
         likes: 98,
@@ -48,7 +48,7 @@ const RedesSociales = () => {
       },
       {
         id: 3,
-        image: 'src/assets/imagenes/alterofilia3.JPG',
+        image: 'public/imagenes/alterofilia3.JPG',
         caption:
           '¡Nuevos equipos en el box! Ven a probarlos 🏋️‍♂️ #AderCrossFit #NuevoEquipo',
         likes: 156,
@@ -59,7 +59,7 @@ const RedesSociales = () => {
     facebook: [
       {
         id: 1,
-        image: 'src/assets/imagenes/box.jpg',
+        image: 'public/imagenes/box.jpg',
         caption:
           '¡Inscripciones abiertas para la competición de verano! Reserva tu plaza ahora 🏆 #AderCompetition',
         likes: 87,
@@ -69,7 +69,7 @@ const RedesSociales = () => {
       },
       {
         id: 2,
-        image: 'src/assets/imagenes/boxfrente.jpg',
+        image: 'public/imagenes/boxfrente.jpg',
         caption:
           'Taller de nutrición este sábado con nuestra nutricionista deportiva. ¡No te lo pierdas! 🥗 #FuelYourWorkout',
         likes: 65,
@@ -176,7 +176,7 @@ const RedesSociales = () => {
           <div className='cf-social-hero-image'>
             <div className='cf-social-pulse-ring'></div>
             <img
-              src='src/assets/imagenes/logoalex.jpg'
+              src='public/imagenes/logoalex.jpg'
               alt='AderCrossfit Logo'
               className='cf-social-logo-image'
             />
@@ -244,9 +244,7 @@ const RedesSociales = () => {
                     <div key={post.id} className='cf-social-post'>
                       <div className='cf-social-post-image'>
                         <img
-                          src={
-                            post.image || 'src/assets/imagenes/grupocrosfit.JPG'
-                          }
+                          src={post.image || 'public/imagenes/grupocrosfit.JPG'}
                           alt={`Post ${post.id}`}
                         />
                       </div>
@@ -319,9 +317,7 @@ const RedesSociales = () => {
                     >
                       <div className='cf-social-post-image'>
                         <img
-                          src={
-                            post.image || 'src/assets/imagenes/grupocrosfit.JPG'
-                          }
+                          src={post.image || 'public/imagenes/grupocrosfit.JPG'}
                           alt={`Post ${post.id}`}
                         />
                       </div>
@@ -456,7 +452,7 @@ const RedesSociales = () => {
 
           <div className='cf-social-cta-image'>
             <img
-              src='src/assets/imagenes/grupocrosfit.JPG'
+              src='public/imagenes/grupocrosfit.JPG'
               alt='Comunidad AderCrossfit'
             />
           </div>
