@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import Header from '../../components/Header/Header'
-import './Precios.css'
+import './Tarifas.css'
 
-const Precios = () => {
+const Tarifas = () => {
   const [selectedPlan, setSelectedPlan] = useState('mensual')
   const [fadeIn, setFadeIn] = useState(false)
 
@@ -319,4 +319,4 @@ const Precios = () => {
   )
 }
 
-export default Precios
+export default Tarifas

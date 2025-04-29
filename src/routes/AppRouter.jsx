@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Home from '../pages/Home/Home'
 import Register from '../pages/Register/Registro/Register'
 import Clases from '../pages/Clases/Clases'
-import Entrenamientos from '../pages/Entrenamientos/Entrenamientos'
+import RedesSociales from '../pages/Redessociales/Redessociales'
 import Contacto from '../pages/Contactos/Contacto'
 import UserDashboard from '../pages/Register/sections/Dashboard/UserDashboard'
 import Medico from '../pages/Register/sections/Medico/Medico'
@@ -11,7 +11,7 @@ import Marcas from '../pages/Register/sections/Marcas/page/Marcas'
 import Iniciarsesion from '../pages/Iniciar Sesion/iniciarsesion'
 import Productos from '../pages/Productos/Productos'
 import Carrito from '../pages/Productos/pages/Carrito/Carrito'
-import Precios from '../pages/Precios/Precios'
+import Tarifas from '../pages/Tarifas/Tarifas'
 import Administracion from '../pages/Administracion/Administracion/Administracion'
 import AdminClases from '../pages/Administracion/AdminClases/AdminClases'
 import AdminProductos from '../pages/Administracion/AdminProductos/components/pages/AdminProductos/AdminProductos'
@@ -45,8 +45,8 @@ const AppRouter = () => {
             <Route path='/productos' element={<Productos />} />
             <Route path='/carrito' element={<Carrito />} />
             <Route path='/contacto' element={<Contacto />} />
-            <Route path='/precios' element={<Precios />} />
-            <Route path='/entrenamientos' element={<Entrenamientos />} />
+            <Route path='/tarifas' element={<Tarifas />} />
+            <Route path='/redessociales' element={<RedesSociales />} />
             <Route path='/administracion' element={<Administracion />} />
             <Route path='/videos' element={<Videos />} />
 

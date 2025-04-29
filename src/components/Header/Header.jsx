@@ -162,8 +162,8 @@ const Header = () => {
           )}
 
           <NavLink to='/contacto'>Contacto</NavLink>
-          <NavLink to='/precios'>Precios</NavLink>
-          <NavLink to='/entrenamientos'>Entrenamientos</NavLink>
+          <NavLink to='/tarifas'>Tarifas</NavLink>
+          <NavLink to='/redessociales'>RedesSociales</NavLink>
           <NavLink to='/productos'>Productos</NavLink>
 
           <div className='cf-cart-wrapper'>
