@@ -186,3 +186,54 @@ export const obtenerMensajesNoLeidos = async (token) => {
     return { success: false, cantidad: 0 }
   }
 }
+
+export const actualizarMensajePrivado = async (
+  token,
+  mensajeId,
+  nuevoTexto
+) => {
+  try {
+    if (!mensajeId) {
+      console.error('ID de mensaje no proporcionado')
+      return { success: false, message: 'ID de mensaje no válido' }
+    }
+
+    console.log('Enviando solicitud de actualización:')
+    console.log('- ID del mensaje:', mensajeId)
+    console.log('- Nuevo texto:', nuevoTexto)
+
+    const response = await fetch(
+      `${API_BASE_URL}/mensajes-privados/${mensajeId}`,
+      {
+        method: 'PUT',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ mensaje: nuevoTexto })
+      }
+    )
+
+    console.log(
+      'Respuesta de actualización:',
+      response.status,
+      response.statusText
+    )
+
+    const responseData = await response.json()
+    console.log('Datos de respuesta:', responseData)
+
+    if (!response.ok) {
+      throw new Error(responseData.message || 'Error al actualizar el mensaje')
+    }
+
+    return responseData
+  } catch (error) {
+    console.error('Error al actualizar mensaje privado:', error)
+    return { success: false, message: error.message }
+  }
+}
+
+export const updatePrivateMessage = actualizarMensajePrivado
+export const deletePrivateMessage = eliminarMensajePrivado

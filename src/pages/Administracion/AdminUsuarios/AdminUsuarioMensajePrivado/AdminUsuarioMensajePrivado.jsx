@@ -3,13 +3,15 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Send } from 'lucide-react'
 import Header from '../../../../components/Header/Header'
 import Button from '../../../../components/Button/Button'
-import { obtenerUsuarioPorId } from '../../../../services/Api/usuarios'
+import { obtenerUsuarioPorId } from '../../../../services/Api/index'
 import {
   obtenerConversacion,
   obtenerMensajesConversacion,
   enviarMensajePrivado,
-  marcarMensajesComoLeidos
-} from '../../../../services/Api/mensajesPrivados'
+  marcarMensajesComoLeidos,
+  actualizarMensajePrivado,
+  eliminarMensajePrivado
+} from '../../../../services/Api/index'
 import { getImageUrl } from '../../../../pages/Clases/utils/imageUtils'
 import './AdminUsuarioMensajePrivado.css'
 
@@ -26,6 +28,8 @@ const AdminUsuarioMensajes = () => {
   const [fadeIn, setFadeIn] = useState(false)
   const mensajesRef = useRef(null)
   const textareaRef = useRef(null)
+  const [editingMessageId, setEditingMessageId] = useState(null)
+  const [editText, setEditText] = useState('')
 
   useEffect(() => {
     const fetchData = async () => {
@@ -155,6 +159,84 @@ const AdminUsuarioMensajes = () => {
     } finally {
       setEnviando(false)
     }
+  }
+
+  const startEditing = (msg) => {
+    setEditingMessageId(msg._id)
+    setEditText(msg.mensaje)
+  }
+
+  const cancelEditing = () => {
+    setEditingMessageId(null)
+    setEditText('')
+  }
+
+  const saveEdit = async () => {
+    if (editText.trim() && editingMessageId) {
+      try {
+        const token = localStorage.getItem('token')
+
+        console.log('Guardando edición para mensaje (admin):', editingMessageId)
+        console.log('Nuevo texto:', editText)
+
+        const resultado = await actualizarMensajePrivado(
+          token,
+          editingMessageId,
+          editText
+        )
+
+        console.log('Resultado de la actualización:', resultado)
+
+        if (resultado && resultado.success) {
+          setMensajes(
+            mensajes.map((msg) =>
+              msg._id === editingMessageId ? { ...msg, mensaje: editText } : msg
+            )
+          )
+
+          if (conversacionActual && conversacionActual._id) {
+            await cargarMensajesConversacion(token, conversacionActual._id)
+          }
+        } else {
+          setError(
+            'No se pudo actualizar el mensaje: ' +
+              (resultado.message || 'Error desconocido')
+          )
+        }
+
+        cancelEditing()
+      } catch (error) {
+        console.error('Error al actualizar mensaje:', error)
+        setError('Error al actualizar el mensaje: ' + error.message)
+      }
+    }
+  }
+
+  const handleDeleteMessage = async (messageId) => {
+    if (window.confirm('¿Estás seguro de que quieres eliminar este mensaje?')) {
+      try {
+        const token = localStorage.getItem('token')
+
+        const resultado = await eliminarMensajePrivado(token, messageId)
+
+        if (resultado && resultado.success) {
+          setMensajes(mensajes.filter((msg) => msg._id !== messageId))
+
+          if (conversacionActual && conversacionActual._id) {
+            await cargarMensajesConversacion(token, conversacionActual._id)
+          }
+        } else {
+          setError('No se pudo eliminar el mensaje')
+        }
+      } catch (error) {
+        console.error('Error al eliminar mensaje:', error)
+        setError('Error al eliminar el mensaje: ' + error.message)
+      }
+    }
+  }
+
+  const canModifyMessage = (msg) => {
+    return msg.remitente._id !== userId
   }
 
   const formatearFecha = (fecha) => {
@@ -309,6 +391,7 @@ const AdminUsuarioMensajes = () => {
                   index === 0 ||
                   new Date(mensaje.fecha).toDateString() !==
                     new Date(mensajes[index - 1].fecha).toDateString()
+                const isEditing = editingMessageId === mensaje._id
 
                 return (
                   <div
@@ -328,10 +411,60 @@ const AdminUsuarioMensajes = () => {
                       }`}
                     >
                       <div className='cf-admin-mensajes-mensaje-contenido'>
-                        <p>{mensaje.mensaje}</p>
-                        <span className='cf-admin-mensajes-mensaje-fecha'>
-                          {formatearFecha(mensaje.fecha)}
-                        </span>
+                        {isEditing ? (
+                          <div className='cf-admin-mensajes-mensaje-edit'>
+                            <textarea
+                              value={editText}
+                              onChange={(e) => setEditText(e.target.value)}
+                              className='cf-admin-mensajes-edit-textarea'
+                              autoFocus
+                            />
+                            <div className='cf-admin-mensajes-edit-buttons'>
+                              <button
+                                onClick={saveEdit}
+                                className='cf-admin-mensajes-edit-save-btn'
+                              >
+                                <span className='cf-admin-mensajes-save-icon'></span>
+                                Guardar
+                              </button>
+                              <button
+                                onClick={cancelEditing}
+                                className='cf-admin-mensajes-edit-cancel-btn'
+                              >
+                                <span className='cf-admin-mensajes-cancel-icon'></span>
+                                Cancelar
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <>
+                            <p>{mensaje.mensaje}</p>
+                            <span className='cf-admin-mensajes-mensaje-fecha'>
+                              {formatearFecha(mensaje.fecha)}
+                            </span>
+
+                            {canModifyMessage(mensaje) && (
+                              <div className='cf-admin-mensajes-mensaje-actions'>
+                                <button
+                                  onClick={() => startEditing(mensaje)}
+                                  className='cf-admin-mensajes-mensaje-action-btn cf-admin-mensajes-edit-btn'
+                                  title='Editar mensaje'
+                                >
+                                  <span className='cf-admin-mensajes-edit-icon'></span>
+                                </button>
+                                <button
+                                  onClick={() =>
+                                    handleDeleteMessage(mensaje._id)
+                                  }
+                                  className='cf-admin-mensajes-mensaje-action-btn cf-admin-mensajes-delete-btn'
+                                  title='Eliminar mensaje'
+                                >
+                                  <span className='cf-admin-mensajes-delete-icon'></span>
+                                </button>
+                              </div>
+                            )}
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>

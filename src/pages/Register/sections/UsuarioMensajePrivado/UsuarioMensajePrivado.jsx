@@ -6,8 +6,10 @@ import {
   obtenerMensajesPrivados,
   obtenerMensajesConversacion,
   enviarMensajePrivado,
-  marcarMensajesComoLeidos
-} from '../../../../services/Api/mensajesPrivados'
+  marcarMensajesComoLeidos,
+  actualizarMensajePrivado,
+  eliminarMensajePrivado
+} from '../../../../services/Api/index'
 import { getImageUrl } from '../../../../pages/Clases/utils/imageUtils'
 import './UsuarioMensajePrivado.css'
 
@@ -23,6 +25,8 @@ const UsuarioMensajePrivado = () => {
   const mensajesRef = useRef(null)
   const [userId, setUserId] = useState(null)
   const [animationComplete, setAnimationComplete] = useState(false)
+  const [editingMessageId, setEditingMessageId] = useState(null)
+  const [editText, setEditText] = useState('')
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -98,6 +102,80 @@ const UsuarioMensajePrivado = () => {
       setError('Error al cargar los mensajes.')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const startEditing = (msg) => {
+    setEditingMessageId(msg._id)
+    setEditText(msg.mensaje)
+  }
+
+  const cancelEditing = () => {
+    setEditingMessageId(null)
+    setEditText('')
+  }
+
+  const saveEdit = async () => {
+    if (editText.trim() && editingMessageId) {
+      try {
+        const token = localStorage.getItem('token')
+
+        console.log('Guardando edición para mensaje:', editingMessageId)
+        console.log('Nuevo texto:', editText)
+
+        const resultado = await actualizarMensajePrivado(
+          token,
+          editingMessageId,
+          editText
+        )
+
+        console.log('Resultado de la actualización:', resultado)
+
+        if (resultado && resultado.success) {
+          setMensajes(
+            mensajes.map((msg) =>
+              msg._id === editingMessageId ? { ...msg, mensaje: editText } : msg
+            )
+          )
+
+          if (conversacionId) {
+            await cargarMensajesConversacion(token, conversacionId)
+          }
+        } else {
+          setError(
+            'No se pudo actualizar el mensaje: ' +
+              (resultado.message || 'Error desconocido')
+          )
+        }
+
+        cancelEditing()
+      } catch (error) {
+        console.error('Error al actualizar mensaje:', error)
+        setError('Error al actualizar el mensaje: ' + error.message)
+      }
+    }
+  }
+
+  const handleDeleteMessage = async (messageId) => {
+    if (window.confirm('¿Estás seguro de que quieres eliminar este mensaje?')) {
+      try {
+        const token = localStorage.getItem('token')
+
+        const resultado = await eliminarMensajePrivado(token, messageId)
+
+        if (resultado && resultado.success) {
+          setMensajes(mensajes.filter((msg) => msg._id !== messageId))
+
+          if (conversacionId) {
+            await cargarMensajesConversacion(token, conversacionId)
+          }
+        } else {
+          setError('No se pudo eliminar el mensaje')
+        }
+      } catch (error) {
+        console.error('Error al eliminar mensaje:', error)
+        setError('Error al eliminar el mensaje: ' + error.message)
+      }
     }
   }
 
@@ -223,6 +301,7 @@ const UsuarioMensajePrivado = () => {
               <div className='cf-mensajes-messages-list'>
                 {mensajes.map((mensaje) => {
                   const esUsuarioActual = mensaje.remitente._id === userId
+                  const isEditing = editingMessageId === mensaje._id
 
                   return (
                     <div
@@ -234,10 +313,60 @@ const UsuarioMensajePrivado = () => {
                       }`}
                     >
                       <div className='cf-mensajes-message-content'>
-                        <p>{mensaje.mensaje}</p>
-                        <span className='cf-mensajes-message-time'>
-                          {new Date(mensaje.fecha).toLocaleString()}
-                        </span>
+                        {isEditing ? (
+                          <div className='cf-mensajes-message-edit'>
+                            <textarea
+                              value={editText}
+                              onChange={(e) => setEditText(e.target.value)}
+                              className='cf-mensajes-edit-textarea'
+                              autoFocus
+                            />
+                            <div className='cf-mensajes-edit-buttons'>
+                              <button
+                                onClick={saveEdit}
+                                className='cf-mensajes-edit-save-btn'
+                              >
+                                <span className='cf-mensajes-save-icon'></span>
+                                Guardar
+                              </button>
+                              <button
+                                onClick={cancelEditing}
+                                className='cf-mensajes-edit-cancel-btn'
+                              >
+                                <span className='cf-mensajes-cancel-icon'></span>
+                                Cancelar
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <>
+                            <p>{mensaje.mensaje}</p>
+                            <span className='cf-mensajes-message-time'>
+                              {new Date(mensaje.fecha).toLocaleString()}
+                            </span>
+
+                            {esUsuarioActual && (
+                              <div className='cf-mensajes-message-actions'>
+                                <button
+                                  onClick={() => startEditing(mensaje)}
+                                  className='cf-mensajes-message-action-btn cf-mensajes-edit-btn'
+                                  title='Editar mensaje'
+                                >
+                                  <span className='cf-mensajes-edit-icon'></span>
+                                </button>
+                                <button
+                                  onClick={() =>
+                                    handleDeleteMessage(mensaje._id)
+                                  }
+                                  className='cf-mensajes-message-action-btn cf-mensajes-delete-btn'
+                                  title='Eliminar mensaje'
+                                >
+                                  <span className='cf-mensajes-delete-icon'></span>
+                                </button>
+                              </div>
+                            )}
+                          </>
+                        )}
                       </div>
                     </div>
                   )
