@@ -31,63 +31,75 @@ import {
   PhysicalStatsPage
 } from '../pages/Register/sections/Aspecto/features/physical-stats'
 import { CartProvider } from '../pages/Productos/context/CartContext'
+import { ConsentProvider } from '../context/ConssentContext'
+import PendingTasksChecker from '../components/Pending Tasks/PendingTasksChecker'
 
 const AppRouter = () => {
   return (
     <Router>
       <CartProvider>
-        <PhysicalStatsProvider>
-          <Routes>
-            <Route path='/' element={<Home />} />
-            <Route path='/registro' element={<Register />} />
-            <Route path='/iniciar-sesion' element={<Iniciarsesion />} />
-            <Route path='/clases' element={<Clases />} />
-            <Route path='/productos' element={<Productos />} />
-            <Route path='/carrito' element={<Carrito />} />
-            <Route path='/contacto' element={<Contacto />} />
-            <Route path='/tarifas' element={<Tarifas />} />
-            <Route path='/redessociales' element={<RedesSociales />} />
-            <Route path='/administracion' element={<Administracion />} />
-            <Route path='/videos' element={<Videos />} />
+        <ConsentProvider>
+          <PhysicalStatsProvider>
+            <PendingTasksChecker>
+              <Routes>
+                <Route path='/' element={<Home />} />
+                <Route path='/registro' element={<Register />} />
+                <Route path='/iniciar-sesion' element={<Iniciarsesion />} />
+                <Route path='/clases' element={<Clases />} />
+                <Route path='/productos' element={<Productos />} />
+                <Route path='/carrito' element={<Carrito />} />
+                <Route path='/contacto' element={<Contacto />} />
+                <Route path='/tarifas' element={<Tarifas />} />
+                <Route path='/redessociales' element={<RedesSociales />} />
+                <Route path='/administracion' element={<Administracion />} />
+                <Route path='/videos' element={<Videos />} />
 
-            <Route path='/administracion/clases' element={<AdminClases />} />
-            <Route
-              path='/administracion/productos'
-              element={<AdminProductos />}
-            />
-            <Route
-              path='/administracion/usuarios'
-              element={<AdminUsuarios />}
-            />
-            <Route path='/admin/medical-info' element={<MedicalInfoList />} />
-            <Route
-              path='/administracion/consentimientos'
-              element={<AdminConsentimientos />}
-            />
-            <Route
-              path='/admin/usuario/:userId/clases'
-              element={<AdminUsuarioClases />}
-            />
-            <Route
-              path='/admin/usuario/:userId/mensajes'
-              element={<AdminUsuarioMensajePrivado />}
-            />
+                <Route
+                  path='/administracion/clases'
+                  element={<AdminClases />}
+                />
+                <Route
+                  path='/administracion/productos'
+                  element={<AdminProductos />}
+                />
+                <Route
+                  path='/administracion/usuarios'
+                  element={<AdminUsuarios />}
+                />
+                <Route
+                  path='/admin/medical-info'
+                  element={<MedicalInfoList />}
+                />
+                <Route
+                  path='/administracion/consentimientos'
+                  element={<AdminConsentimientos />}
+                />
+                <Route
+                  path='/admin/usuario/:userId/clases'
+                  element={<AdminUsuarioClases />}
+                />
+                <Route
+                  path='/admin/usuario/:userId/mensajes'
+                  element={<AdminUsuarioMensajePrivado />}
+                />
 
-            <Route path='/dashboard' element={<UserDashboard />} />
-            <Route path='/dashboard/medico' element={<Medico />} />
-            <Route path='/dashboard/aspecto' element={<Aspecto />} />
-            <Route path='/physical-stats' element={<PhysicalStatsPage />} />
-            <Route path='/dashboard/marcas' element={<Marcas />} />
-            <Route path='/dashboard/chat' element={<Chat />} />
-            <Route path='/dashboard/mensajes' element={<UserMensajes />} />
-            <Route
-              path='/dashboard/editar-perfil/:id'
-              element={<EditarPerfil />}
-            />
+                <Route path='/dashboard' element={<UserDashboard />} />
+                <Route path='/dashboard/medico' element={<Medico />} />
+                <Route path='/dashboard/aspecto' element={<Aspecto />} />
+                <Route path='/physical-stats' element={<PhysicalStatsPage />} />
+                <Route path='/dashboard/marcas' element={<Marcas />} />
+                <Route path='/dashboard/chat' element={<Chat />} />
+                <Route path='/dashboard/mensajes' element={<UserMensajes />} />
+                <Route
+                  path='/dashboard/editar-perfil/:id'
+                  element={<EditarPerfil />}
+                />
 
-            <Route path='*' element={<NotFound />} />
-          </Routes>
-        </PhysicalStatsProvider>
+                <Route path='*' element={<NotFound />} />
+              </Routes>
+            </PendingTasksChecker>
+          </PhysicalStatsProvider>
+        </ConsentProvider>
       </CartProvider>
     </Router>
   )

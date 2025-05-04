@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import './Consentimiento.css'
-import { guardarConsentimiento } from '../../../../services/Api'
+import { guardarConsentimiento } from '../../../../services/Api/index'
 
 const Consentimiento = ({ onConsentAccepted }) => {
   const [aceptado, setAceptado] = useState(false)
@@ -80,8 +80,16 @@ const Consentimiento = ({ onConsentAccepted }) => {
 
       console.log('Consentimiento guardado:', response)
 
-      setAceptado(true)
-      onConsentAccepted()
+      if (response && response.success) {
+        setAceptado(true)
+
+        localStorage.setItem('consentimientoFirmado', 'true')
+        onConsentAccepted()
+      } else {
+        throw new Error(
+          response?.message || 'Error al guardar el consentimiento'
+        )
+      }
     } catch (err) {
       console.error('Error al guardar el consentimiento:', err)
       setError(

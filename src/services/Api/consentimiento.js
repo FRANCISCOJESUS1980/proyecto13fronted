@@ -2,11 +2,6 @@ import { API_BASE_URL, checkResponse, handleApiError } from './config'
 
 export const guardarConsentimiento = async (consentimientoData, token) => {
   try {
-    if (!consentimientoData.userId) {
-      console.error('Error: userId no proporcionado', consentimientoData)
-      throw new Error('El userId es requerido')
-    }
-
     console.log('Enviando datos de consentimiento:', consentimientoData)
 
     const response = await fetch(`${API_BASE_URL}/consentimientos`, {
@@ -18,9 +13,19 @@ export const guardarConsentimiento = async (consentimientoData, token) => {
       body: JSON.stringify(consentimientoData)
     })
 
-    return await checkResponse(response)
+    const data = await checkResponse(response)
+    console.log('Consentimiento guardado exitosamente:', data)
+
+    return {
+      success: true,
+      data
+    }
   } catch (error) {
-    return handleApiError(error, 'Error al guardar el consentimiento')
+    console.error('Error al guardar consentimiento:', error)
+    return {
+      success: false,
+      message: error.message || 'Error al guardar el consentimiento'
+    }
   }
 }
 
@@ -82,5 +87,55 @@ export const eliminarConsentimiento = async (id, token) => {
     return await checkResponse(response)
   } catch (error) {
     return handleApiError(error, 'Error al eliminar el consentimiento')
+  }
+}
+export const verificarConsentimiento = async (userId, token) => {
+  try {
+    console.log(`Verificando consentimiento para usuario ${userId}`)
+
+    const response = await fetch(
+      `${API_BASE_URL}/consentimientos/usuario/${userId}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+
+    if (response.status === 404) {
+      console.log('No se encontró consentimiento para el usuario')
+      return {
+        success: true,
+        consentimientoFirmado: false,
+        consentimiento: null
+      }
+    }
+
+    const data = await checkResponse(response)
+
+    return {
+      success: true,
+      consentimientoFirmado: true,
+      consentimiento: data.data
+    }
+  } catch (error) {
+    console.error('Error en verificarConsentimiento:', error)
+
+    if (error.message && error.message.includes('404')) {
+      return {
+        success: true,
+        consentimientoFirmado: false,
+        consentimiento: null
+      }
+    }
+
+    return {
+      success: false,
+      consentimientoFirmado: false,
+      consentimiento: null,
+      error: error.message
+    }
   }
 }
