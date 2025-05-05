@@ -154,8 +154,8 @@
 }
 
 .cf-clase-card-hueco {
-  width: 42px;
-  height: 42px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   overflow: hidden;
   background-color: rgba(255, 255, 255, 0.1);
@@ -297,7 +297,7 @@
   }
 
   .cf-clase-card-hueco {
-    width: 38px;
-    height: 38px;
+    width: 60px;
+    height: 60px;
   }
 }
