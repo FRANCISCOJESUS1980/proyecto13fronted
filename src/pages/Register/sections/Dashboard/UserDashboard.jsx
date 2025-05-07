@@ -107,6 +107,13 @@ const UserDashboard = () => {
 
   const sectionData = [
     {
+      icon: 'class',
+      title: 'Clases',
+      description: 'Consulta horarios y reserva tus clases',
+      path: '/clases',
+      color: 'teal'
+    },
+    {
       icon: 'medical',
       title: 'Información Médica',
       description: 'Gestiona tu información médica y de salud',
@@ -149,7 +156,7 @@ const UserDashboard = () => {
       path: `/dashboard/editar-perfil/${userId}`,
       color: 'orange'
     },
-    // Nuevas tarjetas añadidas
+
     {
       icon: 'video',
       title: 'Videos',
@@ -157,13 +164,7 @@ const UserDashboard = () => {
       path: '/videos',
       color: 'red'
     },
-    {
-      icon: 'class',
-      title: 'Clases',
-      description: 'Consulta horarios y reserva tus clases',
-      path: '/clases',
-      color: 'teal'
-    },
+
     {
       icon: 'product',
       title: 'Productos',
@@ -197,7 +198,7 @@ const UserDashboard = () => {
         return (
           <span className='cf-dash-section-icon cf-dash-profile-icon'></span>
         )
-      // Nuevos iconos añadidos
+
       case 'video':
         return <span className='cf-dash-section-icon cf-dash-video-icon'></span>
       case 'class':

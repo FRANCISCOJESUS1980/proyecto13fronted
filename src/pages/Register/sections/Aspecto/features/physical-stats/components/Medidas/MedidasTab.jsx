@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import usePhysicalStats from '../../hooks/usePhysicalStats'
+import alertService from '../../../../../../../../components/sweealert2/sweealert2'
 import './MedidasTab.css'
 
 const MedidasTab = ({ onMessage }) => {
   const { stats, loading, saveStats, fetchLatestStats } = usePhysicalStats()
   const [animationComplete, setAnimationComplete] = useState(false)
+  const originalDataRef = useRef(null)
 
   const [formData, setFormData] = useState({
     altura: '',
@@ -17,6 +19,14 @@ const MedidasTab = ({ onMessage }) => {
     biceps: '',
     muslos: ''
   })
+
+  useEffect(() => {
+    window.medidasHasUnsavedChanges = false
+
+    return () => {
+      window.medidasHasUnsavedChanges = false
+    }
+  }, [])
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -41,7 +51,7 @@ const MedidasTab = ({ onMessage }) => {
   useEffect(() => {
     if (stats) {
       console.log('Medidas cargadas:', stats)
-      setFormData({
+      const newFormData = {
         altura: stats.altura || '',
         peso: stats.peso || '',
         grasa: stats.grasa || '',
@@ -51,7 +61,11 @@ const MedidasTab = ({ onMessage }) => {
         cadera: stats.cadera || '',
         biceps: stats.biceps || '',
         muslos: stats.muslos || ''
-      })
+      }
+      setFormData(newFormData)
+
+      originalDataRef.current = JSON.stringify(newFormData)
+      window.medidasHasUnsavedChanges = false
     }
   }, [stats])
 
@@ -61,6 +75,13 @@ const MedidasTab = ({ onMessage }) => {
       ...prev,
       [name]: value
     }))
+
+    const updatedData = {
+      ...formData,
+      [name]: value
+    }
+    const currentData = JSON.stringify(updatedData)
+    window.medidasHasUnsavedChanges = originalDataRef.current !== currentData
   }
 
   const handleSubmit = async (e) => {
@@ -72,6 +93,21 @@ const MedidasTab = ({ onMessage }) => {
     }, {})
 
     const result = await saveStats(numericData)
+
+    if (result.success) {
+      originalDataRef.current = JSON.stringify(formData)
+      window.medidasHasUnsavedChanges = false
+
+      alertService.success(
+        '¡Éxito!',
+        'Tus medidas han sido guardadas correctamente.'
+      )
+    } else {
+      alertService.error(
+        'Error',
+        result.message || 'No se pudieron guardar las medidas.'
+      )
+    }
 
     onMessage({
       text: result.message,

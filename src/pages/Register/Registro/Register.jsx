@@ -7,6 +7,7 @@ import {
   registrarUsuario
 } from '../../../services/Api/index'
 import handleSubmitHelper from '../../../utils/HandleSubmit'
+import alertService from '../../../components/sweealert2/sweealert2'
 import './Register.css'
 
 const Register = () => {
@@ -35,6 +36,25 @@ const Register = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0]
     if (file) {
+      const maxSize = 5 * 1024 * 1024
+      const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif']
+
+      if (file.size > maxSize) {
+        alertService.error(
+          'Archivo demasiado grande',
+          'La imagen debe ser menor a 5MB. Por favor, selecciona otra imagen.'
+        )
+        return
+      }
+
+      if (!validTypes.includes(file.type)) {
+        alertService.error(
+          'Formato no válido',
+          'Por favor, selecciona una imagen en formato JPG, PNG o GIF.'
+        )
+        return
+      }
+
       setSelectedImage(file)
       const reader = new FileReader()
       reader.onloadend = () => {
@@ -54,12 +74,22 @@ const Register = () => {
 
           if (data.success) {
             setFormData((prev) => ({ ...prev, rol: data.rol }))
+
+            alertService.toast(
+              `Código válido: ${
+                data.rol === 'admin' ? 'Administrador' : 'Entrenador'
+              }`,
+              'success'
+            )
           } else {
             setFormData((prev) => ({ ...prev, rol: 'usuario' }))
+
+            alertService.toast('Código no válido', 'error')
           }
         } catch (error) {
           console.error('Error al verificar código:', error)
           setFormData((prev) => ({ ...prev, rol: 'usuario' }))
+          alertService.toast('Error al verificar código', 'error')
         }
       }
     }
@@ -76,13 +106,74 @@ const Register = () => {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
+  const validateForm = () => {
+    if (formData.password.length < 6) {
+      alertService.error(
+        'Contraseña débil',
+        'La contraseña debe tener al menos 6 caracteres'
+      )
+      return false
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(formData.email)) {
+      alertService.error(
+        'Email no válido',
+        'Por favor, introduce un email válido'
+      )
+      return false
+    }
+
+    if (formData.nombre.trim().length < 3) {
+      alertService.error(
+        'Nombre demasiado corto',
+        'El nombre debe tener al menos 3 caracteres'
+      )
+      return false
+    }
+
+    return true
+  }
+
   const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    if (!validateForm()) {
+      return
+    }
+
     await handleSubmitHelper(e, 'registro', {
       formData,
       selectedImage,
       setIsLoading,
       setRegistroExitoso
     })
+  }
+
+  const handleLoginClick = () => {
+    if (
+      formData.nombre ||
+      formData.email ||
+      formData.password ||
+      selectedImage
+    ) {
+      alertService
+        .confirm(
+          '¿Abandonar registro?',
+          'Perderás los datos que has introducido. ¿Quieres ir a la página de inicio de sesión?',
+          {
+            confirmButtonText: 'Sí, ir a iniciar sesión',
+            cancelButtonText: 'No, continuar con el registro'
+          }
+        )
+        .then((result) => {
+          if (result.isConfirmed) {
+            navigate('/iniciar-sesion')
+          }
+        })
+    } else {
+      navigate('/iniciar-sesion')
+    }
   }
 
   return (
@@ -171,7 +262,6 @@ const Register = () => {
                     type='password'
                     name='password'
                     placeholder='Contraseña'
-                    button
                     value={formData.password}
                     onChange={handleChange}
                     required
@@ -236,10 +326,7 @@ const Register = () => {
 
             <p className='cf-login-text'>
               ¿Ya tienes una cuenta?{' '}
-              <span
-                onClick={() => navigate('/iniciar-sesion')}
-                className='cf-login-link'
-              >
+              <span onClick={handleLoginClick} className='cf-login-link'>
                 Inicia sesión aquí
               </span>
             </p>
