@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
+import alertService from '../../../../../../../components/sweealert2/sweealert2'
 import './PersonalRecordForm.css'
 
 const CATEGORIAS = [
@@ -39,6 +40,17 @@ const PersonalRecordForm = ({
   const [errors, setErrors] = useState({})
   const [customExercise, setCustomExercise] = useState(false)
   const [animationComplete, setAnimationComplete] = useState(false)
+  const originalDataRef = useRef(null)
+  const formRef = useRef(null)
+  const cancelBtnRef = useRef(null)
+
+  useEffect(() => {
+    window.personalRecordHasUnsavedChanges = false
+
+    return () => {
+      window.personalRecordHasUnsavedChanges = false
+    }
+  }, [])
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -50,15 +62,23 @@ const PersonalRecordForm = ({
 
   useEffect(() => {
     if (record) {
-      setFormData({
+      const recordData = {
         ejercicio: record.ejercicio || '',
         peso: record.peso || '',
         repeticiones: record.repeticiones || '1',
-        fecha: record.fecha || new Date().toISOString().split('T')[0],
+        fecha: record.fecha
+          ? new Date(record.fecha).toISOString().split('T')[0]
+          : new Date().toISOString().split('T')[0],
         categoria: record.categoria || 'Levantamiento de Potencia'
-      })
+      }
 
+      setFormData(recordData)
       setCustomExercise(!EJERCICIOS_COMUNES.includes(record.ejercicio))
+
+      originalDataRef.current = JSON.stringify(recordData)
+      window.personalRecordHasUnsavedChanges = false
+    } else {
+      originalDataRef.current = JSON.stringify(formData)
     }
   }, [record])
 
@@ -75,6 +95,14 @@ const PersonalRecordForm = ({
         [name]: null
       })
     }
+
+    const updatedData = {
+      ...formData,
+      [name]: value
+    }
+    const currentData = JSON.stringify(updatedData)
+    window.personalRecordHasUnsavedChanges =
+      originalDataRef.current !== currentData
   }
 
   const handleExerciseChange = (e) => {
@@ -93,6 +121,14 @@ const PersonalRecordForm = ({
         ejercicio: value
       })
     }
+
+    const updatedData = {
+      ...formData,
+      ejercicio: value === 'custom' ? '' : value
+    }
+    const currentData = JSON.stringify(updatedData)
+    window.personalRecordHasUnsavedChanges =
+      originalDataRef.current !== currentData
   }
 
   const validateForm = () => {
@@ -128,7 +164,51 @@ const PersonalRecordForm = ({
     e.preventDefault()
 
     if (validateForm()) {
+      window.personalRecordHasUnsavedChanges = false
       onSubmit(formData)
+    } else {
+      alertService.error(
+        'Error de validación',
+        'Por favor, corrige los errores en el formulario'
+      )
+    }
+  }
+
+  const handleCancelClick = () => {
+    if (window.personalRecordHasUnsavedChanges) {
+      alertService.clearAlerts()
+
+      alertService
+        .confirm(
+          '¿Estás seguro?',
+          'Tienes cambios sin guardar. ¿Deseas salir sin guardar?',
+          {
+            confirmButtonText: 'Sí, salir',
+            cancelButtonText: 'No, continuar editando',
+            allowOutsideClick: false,
+
+            customClass: {
+              container: 'swal2-container-top-layer',
+              popup: 'swal2-popup-top-layer'
+            },
+
+            target: document.body
+          }
+        )
+        .then((result) => {
+          if (result.isConfirmed) {
+            window.personalRecordHasUnsavedChanges = false
+            onCancel()
+          } else {
+            if (cancelBtnRef.current) {
+              setTimeout(() => {
+                cancelBtnRef.current.focus()
+              }, 100)
+            }
+          }
+        })
+    } else {
+      onCancel()
     }
   }
 
@@ -151,8 +231,26 @@ const PersonalRecordForm = ({
     }
   }
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        handleCancelClick()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
+
   return (
-    <div className={`cf-pr-overlay ${animationComplete ? 'cf-pr-active' : ''}`}>
+    <div
+      className={`cf-pr-overlay ${animationComplete ? 'cf-pr-active' : ''}`}
+      tabIndex='-1'
+    >
       <div
         className={`cf-pr-container ${
           animationComplete ? 'cf-pr-slide-in' : ''
@@ -168,14 +266,14 @@ const PersonalRecordForm = ({
           <button
             type='button'
             className='cf-pr-close-btn'
-            onClick={onCancel}
+            onClick={handleCancelClick}
             aria-label='Cerrar formulario'
           >
             <span className='cf-pr-close-icon'></span>
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className='cf-pr-form'>
+        <form ref={formRef} onSubmit={handleSubmit} className='cf-pr-form'>
           <div className='cf-pr-form-group'>
             <label htmlFor='ejercicio-select' className='cf-pr-label'>
               <span className='cf-pr-label-icon cf-pr-exercise-icon'></span>
@@ -340,8 +438,9 @@ const PersonalRecordForm = ({
           <div className='cf-pr-form-actions'>
             <button
               type='button'
-              onClick={onCancel}
+              onClick={handleCancelClick}
               className='cf-pr-cancel-btn'
+              ref={cancelBtnRef}
             >
               <span className='cf-pr-cancel-icon'></span>
               Cancelar

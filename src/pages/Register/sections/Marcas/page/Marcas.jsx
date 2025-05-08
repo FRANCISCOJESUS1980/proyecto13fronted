@@ -5,7 +5,7 @@ import Button from '../../../../../components/Button/Button'
 import PersonalRecordForm from '../components/PersonalRecords/PersonalRecordForm/PersonalRecordForm'
 import PersonalRecordsList from '../components/PersonalRecords/PersonalRecordList/PersonalRecordList'
 import PersonalRecordsChart from '../components/PersonalRecords/PersonalRecordChart/PersonalRecordChart'
-import { toast } from 'react-toastify'
+import alertService from '../../../../../components/sweealert2/sweealert2'
 import {
   fetchPersonalRecordsApi,
   fetchUniqueExercisesApi,
@@ -55,7 +55,7 @@ const PersonalRecordsPage = () => {
       setRecords(processedData)
     } catch (err) {
       setError(err.message)
-      toast.error('Error al cargar las marcas personales')
+      alertService.error('Error', 'Error al cargar las marcas personales')
     } finally {
       setIsLoading(false)
     }
@@ -92,13 +92,13 @@ const PersonalRecordsPage = () => {
 
       setRecords([newRecord, ...records])
       setShowForm(false)
-      toast.success('¡Marca personal guardada con éxito!')
+      alertService.success('¡Éxito!', '¡Marca personal guardada con éxito!')
 
       if (!uniqueExercises.includes(record.ejercicio)) {
         setUniqueExercises([...uniqueExercises, record.ejercicio])
       }
     } catch (err) {
-      toast.error(err.message)
+      alertService.error('Error', err.message)
     }
   }
 
@@ -106,9 +106,9 @@ const PersonalRecordsPage = () => {
     try {
       await deletePersonalRecordApi(id)
       setRecords(records.filter((record) => record._id !== id))
-      toast.success('Marca personal eliminada')
+      alertService.success('¡Éxito!', 'Marca personal eliminada correctamente')
     } catch (err) {
-      toast.error(err.message)
+      alertService.error('Error', err.message)
     }
   }
 
@@ -137,7 +137,10 @@ const PersonalRecordsPage = () => {
       )
 
       setSelectedRecord(null)
-      toast.success('Marca personal actualizada')
+      alertService.success(
+        '¡Éxito!',
+        'Marca personal actualizada correctamente'
+      )
 
       if (
         updatedRecord.ejercicio !== records.find((r) => r._id === id)?.ejercicio
@@ -145,7 +148,103 @@ const PersonalRecordsPage = () => {
         fetchUniqueExercises()
       }
     } catch (err) {
-      toast.error(err.message)
+      alertService.error('Error', err.message)
+    }
+  }
+
+  const handleCloseForm = () => {
+    if (window.personalRecordHasUnsavedChanges) {
+      alertService.clearAlerts()
+
+      alertService
+        .confirm(
+          '¿Estás seguro?',
+          'Tienes cambios sin guardar. ¿Deseas salir sin guardar?',
+          {
+            confirmButtonText: 'Sí, salir',
+            cancelButtonText: 'No, continuar editando',
+            allowOutsideClick: false,
+
+            customClass: {
+              container: 'swal2-container-top-layer',
+              popup: 'swal2-popup-top-layer'
+            },
+
+            target: document.body
+          }
+        )
+        .then((result) => {
+          if (result.isConfirmed) {
+            window.personalRecordHasUnsavedChanges = false
+            setShowForm(false)
+          }
+        })
+    } else {
+      setShowForm(false)
+    }
+  }
+
+  const handleCloseEditForm = () => {
+    if (window.personalRecordHasUnsavedChanges) {
+      alertService.clearAlerts()
+
+      alertService
+        .confirm(
+          '¿Estás seguro?',
+          'Tienes cambios sin guardar. ¿Deseas salir sin guardar?',
+          {
+            confirmButtonText: 'Sí, salir',
+            cancelButtonText: 'No, continuar editando',
+            allowOutsideClick: false,
+
+            customClass: {
+              container: 'swal2-container-top-layer',
+              popup: 'swal2-popup-top-layer'
+            },
+
+            target: document.body
+          }
+        )
+        .then((result) => {
+          if (result.isConfirmed) {
+            window.personalRecordHasUnsavedChanges = false
+            setSelectedRecord(null)
+          }
+        })
+    } else {
+      setSelectedRecord(null)
+    }
+  }
+
+  const handleBackNavigation = () => {
+    if (window.personalRecordHasUnsavedChanges) {
+      alertService.clearAlerts()
+
+      alertService
+        .confirm(
+          '¿Estás seguro?',
+          'Tienes cambios sin guardar. ¿Deseas salir sin guardar?',
+          {
+            confirmButtonText: 'Sí, salir',
+            cancelButtonText: 'No, continuar editando',
+            allowOutsideClick: false,
+
+            customClass: {
+              container: 'swal2-container-top-layer',
+              popup: 'swal2-popup-top-layer'
+            },
+
+            target: document.body
+          }
+        )
+        .then((result) => {
+          if (result.isConfirmed) {
+            window.personalRecordHasUnsavedChanges = false
+            navigate('/dashboard')
+          }
+        })
+    } else {
+      navigate('/dashboard')
     }
   }
 
@@ -170,7 +269,7 @@ const PersonalRecordsPage = () => {
       <div className='cf-marcas-back-button'>
         <Button
           variant='secondary'
-          onClick={() => navigate('/dashboard')}
+          onClick={handleBackNavigation}
           leftIcon={<span>←</span>}
         >
           Volver al Dashboard
@@ -279,7 +378,7 @@ const PersonalRecordsPage = () => {
           <div className='cf-marcas-modal'>
             <PersonalRecordForm
               onSubmit={handleAddRecord}
-              onCancel={() => setShowForm(false)}
+              onCancel={handleCloseForm}
             />
           </div>
         </div>
@@ -293,7 +392,7 @@ const PersonalRecordsPage = () => {
               onSubmit={(updatedRecord) =>
                 handleEditRecord(selectedRecord._id, updatedRecord)
               }
-              onCancel={() => setSelectedRecord(null)}
+              onCancel={handleCloseEditForm}
               isEditing={true}
             />
           </div>

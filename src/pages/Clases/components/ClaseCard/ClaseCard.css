@@ -149,6 +149,7 @@
 
 .cf-clase-card-huecos {
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 0.5rem;
 }
@@ -187,10 +188,10 @@
 .cf-clase-card-usuario-indicador {
   position: absolute;
   bottom: -2px;
-  right: -2px;
+  right: 4px;
   background-color: #10b981;
   color: white;
-  font-size: 0.625rem;
+  font-size: 1rem;
   padding: 0.125rem 0.25rem;
   border-radius: 2px;
   font-weight: 600;

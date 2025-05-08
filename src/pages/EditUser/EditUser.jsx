@@ -1,12 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Header from '../../components/Header/Header'
-import {
-  obtenerPerfilUsuario,
-  actualizarPerfilUsuario
-} from '../../services/Api/index'
+import { obtenerPerfilUsuario } from '../../services/Api/index'
 import Button from '../../components/Button/Button'
 import handleSubmitHelper from '../../utils/HandleSubmit'
+import alertService from '../../components/sweealert2/sweealert2'
 import './EditUser.css'
 
 const EditUser = () => {
@@ -24,6 +22,8 @@ const EditUser = () => {
   const [avatarPreview, setAvatarPreview] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [animationComplete, setAnimationComplete] = useState(false)
+  const originalUserRef = useRef(null)
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -64,6 +64,8 @@ const EditUser = () => {
         }
 
         setUser(userData)
+
+        originalUserRef.current = JSON.stringify(userData)
         setLoading(false)
       } catch (error) {
         console.error('Error fetching user:', error)
@@ -72,6 +74,15 @@ const EditUser = () => {
     }
     fetchUser()
   }, [navigate])
+
+  useEffect(() => {
+    if (originalUserRef.current) {
+      const currentData = JSON.stringify(user)
+      setHasUnsavedChanges(
+        originalUserRef.current !== currentData || avatarFile !== null
+      )
+    }
+  }, [user, avatarFile])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -101,8 +112,52 @@ const EditUser = () => {
       avatarFile,
       isSubmitting,
       setIsSubmitting,
-      navigate
+      navigate,
+      onSuccess: () => {
+        originalUserRef.current = JSON.stringify(user)
+        setHasUnsavedChanges(false)
+
+        alertService.success('¡Éxito!', 'Perfil actualizado correctamente')
+      },
+      onError: (error) => {
+        alertService.error(
+          'Error',
+          error.message || 'Error al actualizar el perfil'
+        )
+      }
     })
+  }
+
+  const handleNavigateAway = (destination) => {
+    if (hasUnsavedChanges) {
+      alertService.clearAlerts()
+
+      alertService
+        .confirm(
+          '¿Estás seguro?',
+          'Tienes cambios sin guardar. ¿Deseas salir sin guardar?',
+          {
+            confirmButtonText: 'Sí, salir',
+            cancelButtonText: 'No, continuar editando',
+            allowOutsideClick: false,
+
+            customClass: {
+              container: 'swal2-container-top-layer',
+              popup: 'swal2-popup-top-layer'
+            },
+
+            target: document.body
+          }
+        )
+        .then((result) => {
+          if (result.isConfirmed) {
+            setHasUnsavedChanges(false)
+            navigate(destination)
+          }
+        })
+    } else {
+      navigate(destination)
+    }
   }
 
   if (loading) {
@@ -126,7 +181,7 @@ const EditUser = () => {
       <div className='cf-edit-user-back-button'>
         <Button
           variant='secondary'
-          onClick={() => navigate('/dashboard')}
+          onClick={() => handleNavigateAway('/dashboard')}
           leftIcon={<span>←</span>}
         >
           Volver al Dashboard
@@ -143,6 +198,13 @@ const EditUser = () => {
         </div>
 
         <h2 className='cf-edit-user-heading'>Editar Perfil</h2>
+
+        {hasUnsavedChanges && (
+          <div className='cf-edit-user-unsaved-changes'>
+            <span className='cf-edit-user-warning-icon'></span>
+            Tienes cambios sin guardar
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className='cf-edit-user-form'>
           <div className='cf-edit-user-avatar-upload'>
@@ -286,7 +348,7 @@ const EditUser = () => {
 
           <button
             type='button'
-            onClick={() => navigate('/dashboard')}
+            onClick={() => handleNavigateAway('/dashboard')}
             className='cf-edit-user-cancel-button'
           >
             Cancelar

@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
+import alertService from '../../../../../../../components/sweealert2/sweealert2'
 import './PersonalRecordList.css'
 
 const PersonalRecordsList = ({ records, onDelete, onEdit }) => {
-  const [confirmDelete, setConfirmDelete] = useState(null)
   const [viewDetails, setViewDetails] = useState(null)
 
   const getCategoryClass = (category) => {
@@ -17,9 +17,35 @@ const PersonalRecordsList = ({ records, onDelete, onEdit }) => {
     return classes[category] || 'category-other'
   }
 
-  const handleDelete = (id) => {
-    setConfirmDelete(null)
-    onDelete(id)
+  const handleDeleteClick = (id, ejercicio) => {
+    alertService.clearAlerts()
+
+    alertService
+      .confirm(
+        '¿Estás seguro?',
+        `La marca personal de "${ejercicio}" será eliminada permanentemente.`,
+        {
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: 'Sí, eliminar',
+          cancelButtonText: 'Cancelar',
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          reverseButtons: true,
+
+          customClass: {
+            container: 'swal2-container-top-layer',
+            popup: 'swal2-popup-top-layer'
+          },
+
+          target: document.body
+        }
+      )
+      .then((result) => {
+        if (result.isConfirmed) {
+          onDelete(id)
+        }
+      })
   }
 
   const handleViewDetails = (record) => {
@@ -91,7 +117,7 @@ const PersonalRecordsList = ({ records, onDelete, onEdit }) => {
               </button>
               <button
                 className='delete-btn'
-                onClick={() => setConfirmDelete(record._id)}
+                onClick={() => handleDeleteClick(record._id, record.ejercicio)}
                 title='Eliminar'
               >
                 ×
@@ -100,32 +126,6 @@ const PersonalRecordsList = ({ records, onDelete, onEdit }) => {
           </div>
         ))}
       </div>
-
-      {confirmDelete && (
-        <div className='confirm-modal-overlay'>
-          <div className='confirm-modal'>
-            <h4>Confirmar eliminación</h4>
-            <p>
-              ¿Estás seguro de que quieres eliminar esta marca personal? Esta
-              acción no se puede deshacer.
-            </p>
-            <div className='confirm-actions'>
-              <button
-                className='cancel-btn'
-                onClick={() => setConfirmDelete(null)}
-              >
-                Cancelar
-              </button>
-              <button
-                className='delete-confirm-btn'
-                onClick={() => handleDelete(confirmDelete)}
-              >
-                Eliminar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {viewDetails && (
         <div className='cf-marcas-modal-overlay'>

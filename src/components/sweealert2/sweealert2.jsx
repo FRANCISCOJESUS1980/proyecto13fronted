@@ -4,71 +4,174 @@ import './sweealert2.css'
 
 const MySwal = withReactContent(Swal)
 
+const clearExistingAlerts = () => {
+  Swal.close()
+
+  const rootElement = document.getElementById('root')
+  if (rootElement && rootElement.hasAttribute('aria-hidden')) {
+    rootElement.removeAttribute('aria-hidden')
+  }
+}
+
 const alertService = {
   success: (title, text, options = {}) => {
+    clearExistingAlerts()
     return MySwal.fire({
       icon: 'success',
-      title,
-      text,
-      ...options
+      title: title,
+      text: text,
+      showConfirmButton: true,
+      confirmButtonText: 'Aceptar',
+      confirmButtonColor: '#3085d6',
+      ...options,
+
+      customClass: {
+        container: 'swal2-container-top-layer',
+        popup: 'swal2-popup-top-layer',
+        ...(options.customClass || {})
+      },
+      target: document.body
     })
   },
 
   error: (title, text, options = {}) => {
+    clearExistingAlerts()
     return MySwal.fire({
       icon: 'error',
-      title,
-      text,
-      ...options
-    })
-  },
+      title: title,
+      text: text,
+      showConfirmButton: true,
+      confirmButtonText: 'Aceptar',
+      confirmButtonColor: '#d33',
+      ...options,
 
-  warning: (title, text, options = {}) => {
-    return MySwal.fire({
-      icon: 'warning',
-      title,
-      text,
-      ...options
+      customClass: {
+        container: 'swal2-container-top-layer',
+        popup: 'swal2-popup-top-layer',
+        ...(options.customClass || {})
+      },
+
+      target: document.body
     })
   },
 
   info: (title, text, options = {}) => {
+    clearExistingAlerts()
     return MySwal.fire({
       icon: 'info',
-      title,
-      text,
-      ...options
+      title: title,
+      text: text,
+      showConfirmButton: true,
+      confirmButtonText: 'Aceptar',
+      confirmButtonColor: '#3085d6',
+      ...options,
+
+      customClass: {
+        container: 'swal2-container-top-layer',
+        popup: 'swal2-popup-top-layer',
+        ...(options.customClass || {})
+      },
+
+      target: document.body
     })
   },
 
-  confirm: (title, text, options = {}) => {
+  warning: (title, text, options = {}) => {
+    clearExistingAlerts()
     return MySwal.fire({
+      icon: 'warning',
+      title: title,
+      text: text,
+      showConfirmButton: true,
+      confirmButtonText: 'Aceptar',
+      confirmButtonColor: '#f8bb86',
+      ...options,
+
+      customClass: {
+        container: 'swal2-container-top-layer',
+        popup: 'swal2-popup-top-layer',
+        ...(options.customClass || {})
+      },
+
+      target: document.body
+    })
+  },
+
+  confirm: (titleOrOptions, text, options = {}) => {
+    clearExistingAlerts()
+
+    const defaultOptions = {
+      title: '¿Estás seguro?',
+      text: '¿Deseas continuar con esta acción?',
       icon: 'question',
-      title,
-      text,
       showCancelButton: true,
-      confirmButtonText: options.confirmButtonText || 'Confirmar',
-      cancelButtonText: options.cancelButtonText || 'Cancelar',
-      ...options
-    })
-  },
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No',
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      reverseButtons: true,
+      focusCancel: false,
+      allowOutsideClick: false,
+      allowEscapeKey: true,
+      allowEnterKey: true,
+      backdrop: true,
 
-  custom: (options) => {
-    return MySwal.fire(options)
-  },
+      customClass: {
+        container: 'swal2-container-top-layer',
+        popup: 'swal2-popup-top-layer'
+      },
 
-  toast: (title, icon = 'success', options = {}) => {
+      target: document.body,
+
+      didClose: () => {
+        const rootElement = document.getElementById('root')
+        if (rootElement && rootElement.hasAttribute('aria-hidden')) {
+          rootElement.removeAttribute('aria-hidden')
+        }
+      }
+    }
+
+    if (typeof titleOrOptions === 'object') {
+      return MySwal.fire({
+        ...defaultOptions,
+        ...titleOrOptions,
+        didClose: () => {
+          if (titleOrOptions.didClose) titleOrOptions.didClose()
+          const rootElement = document.getElementById('root')
+          if (rootElement && rootElement.hasAttribute('aria-hidden')) {
+            rootElement.removeAttribute('aria-hidden')
+          }
+        }
+      })
+    }
+
     return MySwal.fire({
-      toast: true,
-      position: 'top-end',
-      icon,
-      title,
-      showConfirmButton: false,
-      timer: 3000,
-      timerProgressBar: true,
-      ...options
+      ...defaultOptions,
+      title: titleOrOptions,
+      text: text,
+      ...options,
+      didClose: () => {
+        if (options.didClose) options.didClose()
+        const rootElement = document.getElementById('root')
+        if (rootElement && rootElement.hasAttribute('aria-hidden')) {
+          rootElement.removeAttribute('aria-hidden')
+        }
+      }
     })
-  }
+  },
+
+  clearAlerts: clearExistingAlerts
 }
+
+const style = document.createElement('style')
+style.innerHTML = `
+  .swal2-container-top-layer {
+    z-index: 9999 !important;
+  }
+  .swal2-popup-top-layer {
+    z-index: 10000 !important;
+  }
+`
+document.head.appendChild(style)
 
 export default alertService
