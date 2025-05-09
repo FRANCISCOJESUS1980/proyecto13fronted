@@ -509,3 +509,8 @@
     transform: scale(1);
   }
 }
+@media (min-width: 1000px) {
+  .carrito-header {
+    margin-top: 50px;
+  }
+}

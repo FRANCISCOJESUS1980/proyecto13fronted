@@ -553,3 +553,8 @@
     grid-template-columns: 1fr;
   }
 }
+@media (min-width: 1000px) {
+  .cf-contacto-header {
+    margin-top: 50px;
+  }
+}

@@ -726,3 +726,8 @@
     width: 82%;
   }
 }
+@media (min-width: 1000px) {
+  .cf-medical-info-header {
+    margin-top: 50px;
+  }
+}

@@ -254,3 +254,8 @@
     font-size: 1.125rem;
   }
 }
+@media (min-width: 1000px) {
+  .cf-clases-header {
+    margin-top: 50px;
+  }
+}

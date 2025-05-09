@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { X, PlusCircle, Trash } from 'lucide-react'
 import { useFormData } from '../../hooks/useFormData'
 import { useEntrenadores } from '../../hooks/useEntrenadores'
 import { guardarClase } from '../../services/clasesService'
+import alertService from '../../../../../components/sweealert2/sweealert2'
 import './ClaseModal.css'
 
 const ClaseModal = ({
@@ -11,10 +12,12 @@ const ClaseModal = ({
   editingId,
   initialData,
   setError,
-  setSuccess
+  setSuccess,
+  setHasUnsavedChanges
 }) => {
   const [loading, setLoading] = useState(false)
   const { entrenadores } = useEntrenadores()
+  const originalFormDataRef = useRef(null)
 
   const {
     formData,
@@ -28,6 +31,24 @@ const ClaseModal = ({
     removeHorario,
     updateHorario
   } = useFormData(initialData)
+
+  useEffect(() => {
+    originalFormDataRef.current = JSON.stringify({
+      ...formData,
+      imagen: null
+    })
+  }, [])
+
+  useEffect(() => {
+    if (originalFormDataRef.current) {
+      const currentData = JSON.stringify({
+        ...formData,
+        imagen: null
+      })
+      const hasChanges = originalFormDataRef.current !== currentData
+      setHasUnsavedChanges(hasChanges)
+    }
+  }, [formData, setHasUnsavedChanges])
 
   const categorias = [
     'yoga',
@@ -52,35 +73,55 @@ const ClaseModal = ({
     'domingo'
   ]
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
+
+    if (setHasUnsavedChanges) {
+      setHasUnsavedChanges(false)
+    }
+
     setLoading(true)
     setError(null)
 
-    try {
-      const result = await guardarClase(formData, editingId, modoCreacion)
+    guardarClase(formData, editingId, modoCreacion)
+      .then((result) => {
+        if (result.success) {
+          alertService.success(
+            '¡Éxito!',
+            `${result.clasesCreadas} horarios de clase ${
+              editingId ? 'actualizados' : 'creados'
+            } con éxito`
+          )
+          onSuccess()
+        }
 
-      if (result.success) {
-        setSuccess(
-          `${result.clasesCreadas} horarios de clase ${
-            editingId ? 'actualizados' : 'creados'
-          } con éxito`
+        if (result.clasesConError > 0) {
+          alertService.error(
+            'Error',
+            `Hubo errores al crear ${result.clasesConError} horarios. Por favor, inténtalo de nuevo.`
+          )
+        }
+      })
+      .catch((error) => {
+        console.error('Error al guardar la clase:', error)
+        alertService.error(
+          'Error',
+          error.message || 'Error al guardar la clase'
         )
-        setTimeout(() => setSuccess(null), 3000)
-        onSuccess()
-      }
 
-      if (result.clasesConError > 0) {
-        setError(
-          `Hubo errores al crear ${result.clasesConError} horarios. Por favor, inténtalo de nuevo.`
-        )
-      }
-    } catch (error) {
-      console.error('Error al guardar la clase:', error)
-      setError(error.message || 'Error al guardar la clase')
-    } finally {
-      setLoading(false)
-    }
+        if (setHasUnsavedChanges) {
+          setHasUnsavedChanges(true)
+        }
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }
+
+  const handleCloseModal = () => {
+    if (loading) return
+
+    onClose()
   }
 
   return (
@@ -92,6 +133,16 @@ const ClaseModal = ({
             <X size={20} />
           </button>
         </div>
+
+        {setHasUnsavedChanges && (
+          <div className='cf-clase-unsaved-changes-indicator'>
+            <div className='cf-clase-unsaved-changes-icon'></div>
+            <span>
+              Los cambios se guardarán al hacer clic en{' '}
+              {editingId ? 'Actualizar' : 'Crear'}
+            </span>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className='cf-clase-modal-form'>
           <div className='cf-clase-form-group'>
@@ -324,10 +375,7 @@ const ClaseModal = ({
                 max='50'
                 value={formData.capacidadMaxima}
                 onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    capacidadMaxima: e.target.value
-                  })
+                  setFormData({ ...formData, capacidadMaxima: e.target.value })
                 }
                 required
               />

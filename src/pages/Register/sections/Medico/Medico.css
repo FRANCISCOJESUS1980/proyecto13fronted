@@ -458,3 +458,8 @@
     height: 60px;
   }
 }
+@media (min-width: 1000px) {
+  .cf-medico-back-button {
+    margin-top: 50px;
+  }
+}

@@ -647,3 +647,8 @@
   border-radius: var(--border-radius-xl);
   box-shadow: var(--shadow-xl);
 }
+@media (min-width: 1000px) {
+  .cf-social-back-button {
+    margin-top: 50px;
+  }
+}

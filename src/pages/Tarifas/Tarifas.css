@@ -394,3 +394,8 @@
     font-size: var(--font-size-4xl);
   }
 }
+@media (min-width: 1000px) {
+  .precios-hero {
+    margin-top: 50px;
+  }
+}

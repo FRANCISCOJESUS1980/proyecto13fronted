@@ -593,3 +593,8 @@
     padding: 1rem;
   }
 }
+@media (min-width: 1000px) {
+  .cf-admin-clases-header {
+    margin-top: 50px;
+  }
+}

@@ -277,3 +277,8 @@
     padding: 2rem 1rem;
   }
 }
+@media (min-width: 1000px) {
+  .cf-admin-productos-header {
+    margin-top: 50px;
+  }
+}

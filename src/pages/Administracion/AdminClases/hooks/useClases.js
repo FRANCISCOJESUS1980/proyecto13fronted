@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { fetchClasesAPI, deleteClaseAPI } from '../services/clasesService'
+import alertService from '../../../../components/sweealert2/sweealert2'
 
 export const useClases = () => {
   const [clases, setClases] = useState([])
@@ -23,21 +24,18 @@ export const useClases = () => {
   }, [])
 
   const handleDelete = async (id) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar esta clase?')) {
-      setLoading(true)
-      try {
-        const data = await deleteClaseAPI(id)
-        if (data.success) {
-          fetchClases()
-          setSuccess('Clase eliminada con éxito')
-          setTimeout(() => setSuccess(null), 3000)
-        }
-      } catch (error) {
-        console.error('Error al eliminar la clase:', error)
-        setError('Error al eliminar la clase')
-      } finally {
-        setLoading(false)
+    setLoading(true)
+    try {
+      const data = await deleteClaseAPI(id)
+      if (data.success) {
+        fetchClases()
+        alertService.success('¡Éxito!', 'Clase eliminada con éxito')
       }
+    } catch (error) {
+      console.error('Error al eliminar la clase:', error)
+      alertService.error('Error', 'Error al eliminar la clase')
+    } finally {
+      setLoading(false)
     }
   }
 

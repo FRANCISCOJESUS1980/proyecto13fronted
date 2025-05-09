@@ -9,6 +9,7 @@ import { organizarClasesPorDia } from './utils/organizarClases'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import Button from '../../../components/Button/Button'
+import alertService from '../../../components/sweealert2/sweealert2'
 import './AdminClases.css'
 
 const AdminClases = () => {
@@ -16,6 +17,7 @@ const AdminClases = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [formData, setFormData] = useState(null)
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
 
   const {
     clases,
@@ -64,13 +66,102 @@ const AdminClases = () => {
 
     setEditingId(clase._id)
     setIsModalOpen(true)
+    setHasUnsavedChanges(false)
   }
 
   const handleCloseModal = () => {
+    if (hasUnsavedChanges) {
+      alertService.clearAlerts()
+
+      alertService
+        .confirm(
+          '¿Estás seguro?',
+          'Tienes cambios sin guardar. ¿Deseas salir sin guardar?',
+          {
+            confirmButtonText: 'Sí, salir',
+            cancelButtonText: 'No, continuar editando',
+            allowOutsideClick: false,
+            customClass: {
+              container: 'swal2-container-top-layer',
+              popup: 'swal2-popup-top-layer'
+            },
+            target: document.body
+          }
+        )
+        .then((result) => {
+          if (result.isConfirmed) {
+            setHasUnsavedChanges(false)
+            closeModalCompletely()
+          }
+        })
+    } else {
+      closeModalCompletely()
+    }
+  }
+
+  const closeModalCompletely = () => {
     setIsModalOpen(false)
     setFormData(null)
     setEditingId(null)
     setError(null)
+  }
+
+  const handleDeleteConfirm = (id, nombre) => {
+    alertService.clearAlerts()
+
+    alertService
+      .confirm(
+        '¿Estás seguro?',
+        `La clase "${nombre}" será eliminada permanentemente.`,
+        {
+          icon: 'warning',
+          confirmButtonText: 'Sí, eliminar',
+          cancelButtonText: 'Cancelar',
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          reverseButtons: true,
+          customClass: {
+            container: 'swal2-container-top-layer',
+            popup: 'swal2-popup-top-layer'
+          },
+          target: document.body
+        }
+      )
+      .then((result) => {
+        if (result.isConfirmed) {
+          handleDelete(id)
+        }
+      })
+  }
+
+  const handleNavigateAway = () => {
+    if (hasUnsavedChanges) {
+      alertService.clearAlerts()
+
+      alertService
+        .confirm(
+          '¿Estás seguro?',
+          'Tienes cambios sin guardar. ¿Deseas salir sin guardar?',
+          {
+            confirmButtonText: 'Sí, salir',
+            cancelButtonText: 'No, continuar editando',
+            allowOutsideClick: false,
+            customClass: {
+              container: 'swal2-container-top-layer',
+              popup: 'swal2-popup-top-layer'
+            },
+            target: document.body
+          }
+        )
+        .then((result) => {
+          if (result.isConfirmed) {
+            setHasUnsavedChanges(false)
+            navigate('/administracion')
+          }
+        })
+    } else {
+      navigate('/administracion')
+    }
   }
 
   const formatearHorario = (horario, duracion) => {
@@ -248,7 +339,7 @@ const AdminClases = () => {
                   </button>
                   <button
                     className='cf-admin-clases-card-btn cf-admin-clases-card-btn-delete'
-                    onClick={() => handleDelete(clase._id)}
+                    onClick={() => handleDeleteConfirm(clase._id, clase.nombre)}
                     aria-label='Eliminar clase'
                   >
                     <div className='cf-admin-clases-card-btn-icon'></div>
@@ -270,7 +361,7 @@ const AdminClases = () => {
         <div className='cf-admin-clases-header'>
           <Button
             variant='secondary'
-            onClick={() => navigate('/administracion')}
+            onClick={handleNavigateAway}
             leftIcon={<ArrowLeft size={18} />}
           >
             Volver a Administración
@@ -280,7 +371,12 @@ const AdminClases = () => {
             className='cf-admin-clases-new-btn'
             variant='primary'
             size='md'
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => {
+              setFormData(null)
+              setEditingId(null)
+              setIsModalOpen(true)
+              setHasUnsavedChanges(false)
+            }}
             leftIcon={<Plus size={18} />}
           >
             Nueva Clase
@@ -369,12 +465,14 @@ const AdminClases = () => {
           onClose={handleCloseModal}
           onSuccess={() => {
             fetchClases()
-            handleCloseModal()
+            setHasUnsavedChanges(false)
+            closeModalCompletely()
           }}
           editingId={editingId}
           initialData={formData}
           setError={setError}
           setSuccess={setSuccess}
+          setHasUnsavedChanges={setHasUnsavedChanges}
         />
       )}
     </div>

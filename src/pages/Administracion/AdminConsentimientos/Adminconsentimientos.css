@@ -575,3 +575,8 @@
     width: 100%;
   }
 }
+@media (min-width: 1000px) {
+  .cf-consentimientos-header {
+    margin-top: 50px;
+  }
+}

@@ -601,3 +601,8 @@
     font-size: 1.75rem;
   }
 }
+@media (min-width: 1000px) {
+  .cf-admin-header {
+    margin-top: 50px;
+  }
+}

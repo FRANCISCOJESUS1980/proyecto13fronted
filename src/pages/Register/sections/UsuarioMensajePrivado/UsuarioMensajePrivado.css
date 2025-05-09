@@ -510,3 +510,8 @@
     align-self: flex-end;
   }
 }
+@media (min-width: 1000px) {
+  .cf-mensajes-back-button {
+    margin-top: 50px;
+  }
+}

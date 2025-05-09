@@ -377,3 +377,8 @@
     height: 60px;
   }
 }
+@media (min-width: 1000px) {
+  .cf-marcas-back-button {
+    margin-top: 50px;
+  }
+}

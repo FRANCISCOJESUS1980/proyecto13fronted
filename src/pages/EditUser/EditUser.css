@@ -667,3 +667,8 @@ input[type='file']:hover {
     display: flex;
   }
 }
+@media (min-width: 1000px) {
+  .cf-edit-user-back-button {
+    margin-top: 50px;
+  }
+}
