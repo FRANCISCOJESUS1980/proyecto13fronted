@@ -7,7 +7,7 @@ export const obtenerProductos = async (
   ordenar = 'destacado'
 ) => {
   try {
-    let url = `${API_BASE_URL}/productos?page=${page}&limit=${limit}`
+    let url = `${API_BASE_URL}/productos?page=${page}&limit=${limit}&estado=activo`
 
     if (categoria) {
       url += `&categoria=${categoria}`
@@ -32,7 +32,9 @@ export const obtenerProductos = async (
 
 export const buscarProductos = async (query) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/productos/search?q=${query}`)
+    const response = await fetch(
+      `${API_BASE_URL}/productos/search?q=${query}&estado=activo`
+    )
     return await checkResponse(response)
   } catch (error) {
     handleApiError(error, 'Error en la búsqueda de productos:')
@@ -46,20 +48,31 @@ export const obtenerProductosAdmin = async (
   categoria = ''
 ) => {
   try {
-    let url = `${API_BASE_URL}/productos?page=${page}&limit=${limit}`
+    let url = `${API_BASE_URL}/productos/admin?page=${page}&limit=${limit}`
 
     if (categoria) {
       url += `&categoria=${categoria}`
     }
 
+    console.log('Llamando a URL:', url)
+
     const response = await fetch(url, {
+      method: 'GET',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`
       }
     })
 
+    console.log('Status:', response.status)
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error('Error response:', errorText)
+    }
+
     return await checkResponse(response)
   } catch (error) {
+    console.error('Error completo:', error)
     handleApiError(error, 'Error al obtener productos para administración:')
   }
 }
@@ -67,7 +80,7 @@ export const obtenerProductosAdmin = async (
 export const buscarProductosAdmin = async (token, query) => {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/productos/search?q=${query}`,
+      `${API_BASE_URL}/productos/admin/search?q=${query}`,
       {
         headers: {
           Authorization: `Bearer ${token}`
@@ -106,7 +119,7 @@ export const crearProducto = async (token, productData, imageFile) => {
       formData.append('imagen', imageFile)
     }
 
-    for (let pair of formData.entries()) {
+    for (const pair of formData.entries()) {
       console.log(pair[0] + ': ' + pair[1])
     }
 
@@ -194,11 +207,12 @@ export const cambiarEstadoProducto = async (token, productId) => {
     const response = await fetch(
       `${API_BASE_URL}/productos/${productId}/estado`,
       {
-        method: 'PATCH',
+        method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({})
       }
     )
 

@@ -81,7 +81,7 @@
   top: 160px;
   right: 20px;
   z-index: 100;
-  background-color: var(--color-primary, #3498db);
+  background-color: var(--color-red);
   color: var(--color-primary-contrast, #fff);
   border: none;
   border-radius: var(--border-radius-full, 50%);

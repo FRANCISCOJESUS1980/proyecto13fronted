@@ -8,11 +8,13 @@ import Pagination from '../../Pagination/Pagination'
 import Button from '../../../../../../components/Button/Button'
 import { useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
+import alertService from '../../../../../../components/sweealert2/sweealert2'
 import './AdminProductos.css'
 
 const AdminProductos = () => {
   const navigate = useNavigate()
   const [fadeIn, setFadeIn] = useState(false)
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
 
   const {
     state,
@@ -33,6 +35,112 @@ const AdminProductos = () => {
   useEffect(() => {
     setTimeout(() => setFadeIn(true), 100)
   }, [])
+
+  const handleCloseModal = () => {
+    if (hasUnsavedChanges) {
+      alertService.clearAlerts()
+
+      alertService
+        .confirm(
+          '¿Estás seguro?',
+          'Tienes cambios sin guardar. ¿Deseas salir sin guardar?',
+          {
+            confirmButtonText: 'Sí, salir',
+            cancelButtonText: 'No, continuar editando',
+            allowOutsideClick: false,
+            customClass: {
+              container: 'swal2-container-top-layer',
+              popup: 'swal2-popup-top-layer'
+            },
+            target: document.body
+          }
+        )
+        .then((result) => {
+          if (result.isConfirmed) {
+            setHasUnsavedChanges(false)
+            closeModal()
+          }
+        })
+    } else {
+      closeModal()
+    }
+  }
+
+  const handleDeleteConfirm = (id, nombre) => {
+    alertService.clearAlerts()
+
+    alertService
+      .confirm(
+        '¿Estás seguro?',
+        `El producto "${nombre}" será eliminado permanentemente.`,
+        {
+          icon: 'warning',
+          confirmButtonText: 'Sí, eliminar',
+          cancelButtonText: 'Cancelar',
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          reverseButtons: true,
+          customClass: {
+            container: 'swal2-container-top-layer',
+            popup: 'swal2-popup-top-layer'
+          },
+          target: document.body
+        }
+      )
+      .then((result) => {
+        if (result.isConfirmed) {
+          handleDelete(id)
+        }
+      })
+  }
+
+  const handleNavigateAway = () => {
+    if (hasUnsavedChanges) {
+      alertService.clearAlerts()
+
+      alertService
+        .confirm(
+          '¿Estás seguro?',
+          'Tienes cambios sin guardar. ¿Deseas salir sin guardar?',
+          {
+            confirmButtonText: 'Sí, salir',
+            cancelButtonText: 'No, continuar editando',
+            allowOutsideClick: false,
+            customClass: {
+              container: 'swal2-container-top-layer',
+              popup: 'swal2-popup-top-layer'
+            },
+            target: document.body
+          }
+        )
+        .then((result) => {
+          if (result.isConfirmed) {
+            setHasUnsavedChanges(false)
+            navigate('/administracion')
+          }
+        })
+    } else {
+      navigate('/administracion')
+    }
+  }
+
+  const handleFormSubmit = async (e) => {
+    const success = await handleSubmit(e)
+
+    if (success) {
+      setHasUnsavedChanges(false)
+    }
+  }
+
+  const handleUpdateForm = (field, value) => {
+    updateForm(field, value)
+    setHasUnsavedChanges(true)
+  }
+
+  const handleImageChangeWithDetection = (e) => {
+    handleImageChange(e)
+    setHasUnsavedChanges(true)
+  }
 
   return (
     <div
@@ -60,7 +168,7 @@ const AdminProductos = () => {
         <div className='cf-admin-productos-header'>
           <Button
             variant='secondary'
-            onClick={() => navigate('/administracion')}
+            onClick={handleNavigateAway}
             leftIcon={<ArrowLeft size={18} />}
             className='cf-admin-productos-back-btn'
           >
@@ -73,7 +181,10 @@ const AdminProductos = () => {
             className='cf-admin-productos-new-btn'
             variant='primary'
             size='md'
-            onClick={openModal}
+            onClick={() => {
+              setHasUnsavedChanges(false)
+              openModal()
+            }}
             leftIcon={<Plus size={18} />}
           >
             Nuevo Producto
@@ -90,7 +201,7 @@ const AdminProductos = () => {
           />
         </div>
 
-        {state.loading ? (
+        {state.loading && !state.modalOpen ? (
           <div className='cf-admin-productos-loading'>
             <div className='cf-admin-productos-spinner'></div>
             <p className='cf-admin-productos-loading-text'>
@@ -123,8 +234,13 @@ const AdminProductos = () => {
                   >
                     <ProductoCard
                       producto={producto}
-                      onEdit={handleEdit}
-                      onDelete={handleDelete}
+                      onEdit={(producto) => {
+                        setHasUnsavedChanges(false)
+                        handleEdit(producto)
+                      }}
+                      onDelete={() =>
+                        handleDeleteConfirm(producto._id, producto.nombre)
+                      }
                       onToggleEstado={toggleEstado}
                     />
                   </div>
@@ -152,10 +268,11 @@ const AdminProductos = () => {
           previewImage={state.previewImage}
           loading={state.loading}
           editando={state.editando}
-          onSubmit={handleSubmit}
-          onClose={closeModal}
-          onUpdateForm={updateForm}
-          onImageChange={handleImageChange}
+          onSubmit={handleFormSubmit}
+          onClose={handleCloseModal}
+          onUpdateForm={handleUpdateForm}
+          onImageChange={handleImageChangeWithDetection}
+          hasUnsavedChanges={hasUnsavedChanges}
         />
       )}
     </div>

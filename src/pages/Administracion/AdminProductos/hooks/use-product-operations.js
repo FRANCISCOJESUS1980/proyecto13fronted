@@ -12,7 +12,7 @@ import {
   initialState,
   ACTIONS
 } from '../components/reducers/productReducer'
-import { handleProductSubmit } from '../../../../utils/HandleSubmit'
+import alertService from '../../../../components/sweealert2/sweealert2'
 
 const ITEMS_PER_PAGE = 8
 
@@ -100,18 +100,12 @@ export function useProductOperations() {
     const file = e.target.files[0]
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        dispatch({
-          type: ACTIONS.SET_ERROR,
-          payload: 'La imagen no debe superar los 5MB'
-        })
+        alertService.error('Error', 'La imagen no debe superar los 5MB')
         return
       }
 
       if (!file.type.startsWith('image/')) {
-        dispatch({
-          type: ACTIONS.SET_ERROR,
-          payload: 'El archivo debe ser una imagen'
-        })
+        alertService.error('Error', 'El archivo debe ser una imagen')
         return
       }
 
@@ -126,19 +120,86 @@ export function useProductOperations() {
 
   const handleSubmit = useCallback(
     async (e) => {
-      return handleProductSubmit({
-        e,
-        state,
-        token,
-        validateForm,
-        dispatch,
-        cargarProductos,
-        ACTIONS,
-        actualizarProducto,
-        crearProducto
-      })
+      e.preventDefault()
+
+      if (!validateForm()) {
+        const errorMessages = Object.values(state.formErrors)
+          .filter((error) => error)
+          .join('\n• ')
+
+        if (errorMessages) {
+          alertService.error(
+            'Error de validación',
+            `Por favor, corrige los siguientes errores:\n\n• ${errorMessages}`
+          )
+        }
+        return false
+      }
+
+      dispatch({ type: ACTIONS.SET_LOADING, payload: true })
+
+      try {
+        let response
+
+        if (state.editando) {
+          response = await actualizarProducto(
+            token,
+            state.editando,
+            state.form,
+            state.form.imagen
+          )
+
+          if (response.success) {
+            alertService.success(
+              '¡Éxito!',
+              'Producto actualizado correctamente'
+            )
+            dispatch({
+              type: ACTIONS.SET_SUCCESS_MESSAGE,
+              payload: 'Producto actualizado correctamente'
+            })
+            dispatch({ type: ACTIONS.SET_MODAL_OPEN, payload: false })
+            cargarProductos()
+            return true
+          }
+        } else {
+          response = await crearProducto(token, state.form, state.form.imagen)
+
+          if (response.success) {
+            alertService.success('¡Éxito!', 'Producto creado correctamente')
+            dispatch({
+              type: ACTIONS.SET_SUCCESS_MESSAGE,
+              payload: 'Producto creado correctamente'
+            })
+            dispatch({ type: ACTIONS.SET_MODAL_OPEN, payload: false })
+            cargarProductos()
+            return true
+          }
+        }
+
+        return false
+      } catch (error) {
+        alertService.error(
+          'Error',
+          error.message || 'Error al guardar el producto'
+        )
+        dispatch({
+          type: ACTIONS.SET_ERROR,
+          payload: 'Error al guardar el producto: ' + error.message
+        })
+        return false
+      } finally {
+        dispatch({ type: ACTIONS.SET_LOADING, payload: false })
+      }
     },
-    [token, state, validateForm, cargarProductos]
+    [
+      token,
+      state.form,
+      state.formErrors,
+      state.editando,
+      validateForm,
+      cargarProductos
+    ]
   )
 
   const handleEdit = useCallback((producto) => {
@@ -164,12 +225,11 @@ export function useProductOperations() {
 
   const handleDelete = useCallback(
     async (id) => {
-      if (!window.confirm('¿Estás seguro de eliminar este producto?')) return
-
       dispatch({ type: ACTIONS.SET_LOADING, payload: true })
       try {
         const response = await eliminarProducto(token, id)
         if (response.success) {
+          alertService.success('¡Éxito!', 'Producto eliminado correctamente')
           dispatch({
             type: ACTIONS.SET_SUCCESS_MESSAGE,
             payload: 'Producto eliminado correctamente'
@@ -177,6 +237,10 @@ export function useProductOperations() {
           cargarProductos()
         }
       } catch (error) {
+        alertService.error(
+          'Error',
+          'Error al eliminar el producto: ' + error.message
+        )
         dispatch({
           type: ACTIONS.SET_ERROR,
           payload: 'Error al eliminar el producto: ' + error.message
@@ -193,25 +257,38 @@ export function useProductOperations() {
       dispatch({ type: ACTIONS.SET_LOADING, payload: true })
       try {
         const response = await cambiarEstadoProducto(token, id)
-        if (response.success) {
+        if (response && response.success) {
           dispatch({
-            type: ACTIONS.SET_SUCCESS_MESSAGE,
-            payload: `Estado del producto ${
-              response.data.estado === 'activo' ? 'activado' : 'desactivado'
-            }`
+            type: ACTIONS.UPDATE_PRODUCT_STATUS,
+            payload: {
+              id,
+              estado: response.data.estado
+            }
           })
-          cargarProductos()
+
+          alertService.success(
+            '¡Éxito!',
+            `Producto ${
+              response.data.estado === 'activo' ? 'activado' : 'desactivado'
+            } correctamente`
+          )
         }
       } catch (error) {
+        console.error('Error completo:', error)
+        alertService.error(
+          'Error',
+          'Error al cambiar estado: ' + (error.message || 'Error desconocido')
+        )
         dispatch({
           type: ACTIONS.SET_ERROR,
-          payload: 'Error al cambiar estado: ' + error.message
+          payload:
+            'Error al cambiar estado: ' + (error.message || 'Error desconocido')
         })
       } finally {
         dispatch({ type: ACTIONS.SET_LOADING, payload: false })
       }
     },
-    [token, cargarProductos]
+    [token]
   )
 
   const resetForm = useCallback(() => {

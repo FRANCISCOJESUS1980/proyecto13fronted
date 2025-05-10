@@ -19,8 +19,14 @@ const ProductoForm = ({
   onSubmit,
   onClose,
   onUpdateForm,
-  onImageChange
+  onImageChange,
+  hasUnsavedChanges
 }) => {
+  const handleCancelClick = (e) => {
+    e.preventDefault()
+    onClose()
+  }
+
   return (
     <div className='cf-producto-form-overlay'>
       <div className='cf-producto-form-modal'>
@@ -30,10 +36,20 @@ const ProductoForm = ({
             className='cf-producto-form-close-btn'
             variant='outline'
             size='icon'
-            onClick={onClose}
+            onClick={handleCancelClick}
             rightIcon={<X size={20} />}
           />
         </div>
+
+        {hasUnsavedChanges && (
+          <div className='cf-producto-form-unsaved-changes'>
+            <div className='cf-producto-form-unsaved-changes-icon'></div>
+            <span>
+              Los cambios se guardarán al hacer clic en{' '}
+              {editando ? 'Actualizar' : 'Crear'}
+            </span>
+          </div>
+        )}
 
         <form onSubmit={onSubmit} className='cf-producto-form'>
           <div className='cf-producto-form-grid'>
@@ -260,8 +276,9 @@ const ProductoForm = ({
               className='cf-producto-form-btn-secondary'
               variant='secondary'
               size='md'
-              onClick={onClose}
+              onClick={handleCancelClick}
               disabled={loading}
+              type='button'
             >
               Cancelar
             </Button>
