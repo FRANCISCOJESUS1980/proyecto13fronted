@@ -9,6 +9,7 @@ import {
   deleteAllChatMessages
 } from '../../../../services/Api/index'
 import Button from '../../../../components/Button/Button'
+import alertService from '../../../../components/sweealert2/sweealert2'
 import './Chat.css'
 
 const socket = createSocketConnection()
@@ -72,6 +73,7 @@ const Chat = () => {
       scrollToBottom()
     } catch (error) {
       console.error('Error al cargar mensajes:', error.message)
+      alertService.error('Error', 'No se pudieron cargar los mensajes del chat')
       setIsLoading(false)
     }
   }
@@ -108,7 +110,13 @@ const Chat = () => {
     socket.on('chatMessage', handleNewMessage)
     socket.on('messageUpdated', handleMessageUpdated)
     socket.on('messageDeleted', handleMessageDeleted)
-    socket.on('error', (error) => console.error('Error del socket:', error))
+    socket.on('error', (error) => {
+      console.error('Error del socket:', error)
+      alertService.error(
+        'Error de conexión',
+        'Se ha producido un error en la conexión del chat'
+      )
+    })
 
     return () => {
       socket.off('chatHistory', handleChatHistory)
@@ -133,6 +141,7 @@ const Chat = () => {
         setMessage('')
       } catch (error) {
         console.error('Error al enviar mensaje:', error)
+        alertService.error('Error', 'No se pudo enviar el mensaje')
       }
     }
   }
@@ -153,39 +162,79 @@ const Chat = () => {
         const token = localStorage.getItem('token')
         await updateChatMessage(editingMessageId, editText, token)
         cancelEditing()
+        alertService.success('¡Éxito!', 'Mensaje actualizado correctamente')
       } catch (error) {
         console.error('Error al actualizar mensaje:', error)
-        alert('Error al actualizar el mensaje: ' + error.message)
+        alertService.error(
+          'Error',
+          'No se pudo actualizar el mensaje: ' + error.message
+        )
       }
     }
   }
 
   const handleDeleteMessage = async (messageId) => {
-    if (window.confirm('¿Estás seguro de que quieres eliminar este mensaje?')) {
-      try {
-        const token = localStorage.getItem('token')
-        await deleteChatMessage(messageId, token)
-      } catch (error) {
-        console.error('Error al eliminar mensaje:', error)
-        alert('Error al eliminar el mensaje: ' + error.message)
-      }
-    }
+    alertService
+      .confirm('¿Estás seguro?', '¿Quieres eliminar este mensaje?', {
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        reverseButtons: true
+      })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const token = localStorage.getItem('token')
+            await deleteChatMessage(messageId, token)
+            alertService.success('¡Eliminado!', 'El mensaje ha sido eliminado')
+          } catch (error) {
+            console.error('Error al eliminar mensaje:', error)
+            alertService.error(
+              'Error',
+              'No se pudo eliminar el mensaje: ' + error.message
+            )
+          }
+        }
+      })
   }
 
   const handleDeleteAllMessages = async () => {
-    if (
-      window.confirm(
-        '¿Estás seguro de que quieres eliminar TODOS los mensajes? Esta acción no se puede deshacer.'
+    alertService
+      .confirm(
+        '¿Estás completamente seguro?',
+        'Esta acción eliminará TODOS los mensajes del chat y no se puede deshacer',
+        {
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Sí, eliminar todos',
+          cancelButtonText: 'Cancelar',
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          reverseButtons: true,
+          focusCancel: true
+        }
       )
-    ) {
-      try {
-        const token = localStorage.getItem('token')
-        await deleteAllChatMessages(token)
-      } catch (error) {
-        console.error('Error al eliminar todos los mensajes:', error)
-        alert('Error al eliminar todos los mensajes: ' + error.message)
-      }
-    }
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const token = localStorage.getItem('token')
+            await deleteAllChatMessages(token)
+            alertService.success(
+              '¡Eliminados!',
+              'Todos los mensajes han sido eliminados'
+            )
+          } catch (error) {
+            console.error('Error al eliminar todos los mensajes:', error)
+            alertService.error(
+              'Error',
+              'No se pudieron eliminar todos los mensajes: ' + error.message
+            )
+          }
+        }
+      })
   }
 
   const formatDate = (dateString) => {

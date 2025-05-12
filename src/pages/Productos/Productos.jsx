@@ -9,6 +9,7 @@ import {
 import Header from '../../components/Header/Header'
 import { obtenerProductos, buscarProductos } from '../../services/Api/index'
 import { useCart } from '../Productos/context/CartContext'
+import alertService from '../../components/sweealert2/sweealert2'
 import './Productos.css'
 
 const CATEGORIAS = [
@@ -83,22 +84,15 @@ const Productos = () => {
   const handleAddToCart = (producto) => {
     addToCart(producto)
 
-    // Mostrar una notificación o feedback visual
-    const notification = document.createElement('div')
-    notification.className = 'cf-productos-notification'
-    notification.textContent = `${producto.nombre} añadido al carrito`
-    document.body.appendChild(notification)
-
-    setTimeout(() => {
-      notification.classList.add('cf-productos-notification-show')
-    }, 100)
-
-    setTimeout(() => {
-      notification.classList.remove('cf-productos-notification-show')
-      setTimeout(() => {
-        document.body.removeChild(notification)
-      }, 300)
-    }, 2000)
+    alertService.success(
+      '¡Añadido al carrito!',
+      `${producto.nombre} ha sido añadido al carrito correctamente`,
+      {
+        showConfirmButton: true,
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#3085d6'
+      }
+    )
   }
 
   const getAnimationDelay = (index) => {

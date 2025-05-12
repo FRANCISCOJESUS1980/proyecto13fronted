@@ -526,3 +526,8 @@
     align-self: flex-end;
   }
 }
+@media (min-width: 1000px) {
+  .cf-admin-mensajes-header {
+    margin-top: 50px;
+  }
+}

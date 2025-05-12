@@ -13,6 +13,7 @@ import {
   eliminarMensajePrivado
 } from '../../../../services/Api/index'
 import { getImageUrl } from '../../../../pages/Clases/utils/imageUtils'
+import alertService from '../../../../components/sweealert2/sweealert2'
 import './AdminUsuarioMensajePrivado.css'
 
 const AdminUsuarioMensajes = () => {
@@ -43,6 +44,7 @@ const AdminUsuarioMensajes = () => {
 
         if (!userId) {
           setError('ID de usuario no válido')
+          alertService.error('Error', 'ID de usuario no válido')
           setLoading(false)
           return
         }
@@ -79,6 +81,7 @@ const AdminUsuarioMensajes = () => {
       } catch (error) {
         console.error('Error al cargar datos:', error)
         setError(error.message || 'Error al cargar datos')
+        alertService.error('Error', error.message || 'Error al cargar datos')
       } finally {
         setLoading(false)
 
@@ -105,10 +108,12 @@ const AdminUsuarioMensajes = () => {
       } else {
         console.error('Error en la respuesta al obtener mensajes:', data)
         setError('No se pudieron cargar los mensajes.')
+        alertService.error('Error', 'No se pudieron cargar los mensajes.')
       }
     } catch (error) {
       console.error('Error al cargar mensajes:', error)
       setError('Error al cargar los mensajes.')
+      alertService.error('Error', 'Error al cargar los mensajes.')
     }
   }
 
@@ -152,10 +157,12 @@ const AdminUsuarioMensajes = () => {
         }
       } else {
         setError('No se pudo enviar el mensaje')
+        alertService.error('Error', 'No se pudo enviar el mensaje')
       }
     } catch (error) {
       console.error('Error al enviar mensaje:', error)
       setError(error.message || 'Error al enviar el mensaje')
+      alertService.error('Error', error.message || 'Error al enviar el mensaje')
     } finally {
       setEnviando(false)
     }
@@ -166,9 +173,35 @@ const AdminUsuarioMensajes = () => {
     setEditText(msg.mensaje)
   }
 
-  const cancelEditing = () => {
-    setEditingMessageId(null)
-    setEditText('')
+  const cancelEditing = (skipConfirmation = false) => {
+    const mensajeOriginal = mensajes.find((m) => m._id === editingMessageId)
+
+    const hayChangesSinGuardar =
+      mensajeOriginal && editText !== mensajeOriginal.mensaje
+
+    if (skipConfirmation || !hayChangesSinGuardar) {
+      setEditingMessageId(null)
+      setEditText('')
+    } else {
+      alertService
+        .confirm(
+          '¿Cancelar edición?',
+          'Tienes cambios sin guardar. ¿Estás seguro de que quieres cancelar?',
+          {
+            confirmButtonText: 'Sí, cancelar',
+            cancelButtonText: 'No, seguir editando',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            reverseButtons: true
+          }
+        )
+        .then((result) => {
+          if (result.isConfirmed) {
+            setEditingMessageId(null)
+            setEditText('')
+          }
+        })
+    }
   }
 
   const saveEdit = async () => {
@@ -197,42 +230,67 @@ const AdminUsuarioMensajes = () => {
           if (conversacionActual && conversacionActual._id) {
             await cargarMensajesConversacion(token, conversacionActual._id)
           }
-        } else {
-          setError(
-            'No se pudo actualizar el mensaje: ' +
-              (resultado.message || 'Error desconocido')
-          )
-        }
 
-        cancelEditing()
+          alertService.success('¡Éxito!', 'Mensaje actualizado correctamente')
+
+          cancelEditing(true)
+        } else {
+          const errorMsg =
+            'No se pudo actualizar el mensaje: ' +
+            (resultado.message || 'Error desconocido')
+          setError(errorMsg)
+          alertService.error('Error', errorMsg)
+        }
       } catch (error) {
         console.error('Error al actualizar mensaje:', error)
-        setError('Error al actualizar el mensaje: ' + error.message)
+        const errorMsg = 'Error al actualizar el mensaje: ' + error.message
+        setError(errorMsg)
+        alertService.error('Error', errorMsg)
       }
     }
   }
 
   const handleDeleteMessage = async (messageId) => {
-    if (window.confirm('¿Estás seguro de que quieres eliminar este mensaje?')) {
-      try {
-        const token = localStorage.getItem('token')
+    alertService
+      .confirm('¿Estás seguro?', '¿Quieres eliminar este mensaje?', {
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        reverseButtons: true
+      })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const token = localStorage.getItem('token')
 
-        const resultado = await eliminarMensajePrivado(token, messageId)
+            const resultado = await eliminarMensajePrivado(token, messageId)
 
-        if (resultado && resultado.success) {
-          setMensajes(mensajes.filter((msg) => msg._id !== messageId))
+            if (resultado && resultado.success) {
+              setMensajes(mensajes.filter((msg) => msg._id !== messageId))
 
-          if (conversacionActual && conversacionActual._id) {
-            await cargarMensajesConversacion(token, conversacionActual._id)
+              if (conversacionActual && conversacionActual._id) {
+                await cargarMensajesConversacion(token, conversacionActual._id)
+              }
+
+              alertService.success(
+                '¡Eliminado!',
+                'El mensaje ha sido eliminado'
+              )
+            } else {
+              alertService.error('Error', 'No se pudo eliminar el mensaje')
+              setError('No se pudo eliminar el mensaje')
+            }
+          } catch (error) {
+            console.error('Error al eliminar mensaje:', error)
+            const errorMsg = 'Error al eliminar el mensaje: ' + error.message
+            alertService.error('Error', errorMsg)
+            setError(errorMsg)
           }
-        } else {
-          setError('No se pudo eliminar el mensaje')
         }
-      } catch (error) {
-        console.error('Error al eliminar mensaje:', error)
-        setError('Error al eliminar el mensaje: ' + error.message)
-      }
-    }
+      })
   }
 
   const canModifyMessage = (msg) => {
@@ -265,6 +323,15 @@ const AdminUsuarioMensajes = () => {
       })
     }
   }
+
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError('')
+      }, 5000)
+      return () => clearTimeout(timer)
+    }
+  }, [error])
 
   if (loading && !userInfo) {
     return (
@@ -428,7 +495,7 @@ const AdminUsuarioMensajes = () => {
                                 Guardar
                               </button>
                               <button
-                                onClick={cancelEditing}
+                                onClick={() => cancelEditing()}
                                 className='cf-admin-mensajes-edit-cancel-btn'
                               >
                                 <span className='cf-admin-mensajes-cancel-icon'></span>

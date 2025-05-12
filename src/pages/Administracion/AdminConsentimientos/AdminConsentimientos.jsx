@@ -1,13 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import {
-  ArrowLeft,
-  Search,
-  X,
-  AlertTriangle,
-  Check,
-  XCircle
-} from 'lucide-react'
+import { Search, X, Check, XCircle } from 'lucide-react'
 import './Adminconsentimientos.css'
 import Header from '../../../components/Header/Header'
 import Button from '../../../components/Button/Button'
@@ -16,6 +9,7 @@ import {
   eliminarConsentimiento,
   obtenerTodosUsuarios
 } from '../../../services/Api'
+import alertService from '../../../components/sweealert2/sweealert2'
 
 const AdminConsentimientos = () => {
   const navigate = useNavigate()
@@ -26,8 +20,6 @@ const AdminConsentimientos = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [filteredConsentimientos, setFilteredConsentimientos] = useState([])
   const [deleteLoading, setDeleteLoading] = useState(null)
-  const [showConfirmDialog, setShowConfirmDialog] = useState(false)
-  const [consentimientoToDelete, setConsentimientoToDelete] = useState(null)
   const [fadeIn, setFadeIn] = useState(false)
 
   useEffect(() => {
@@ -121,32 +113,55 @@ const AdminConsentimientos = () => {
   }
 
   const handleDeleteClick = (consentimiento) => {
-    setConsentimientoToDelete(consentimiento)
-    setShowConfirmDialog(true)
+    alertService.clearAlerts()
+
+    alertService
+      .confirm(
+        '¿Estás seguro?',
+        `¿Deseas eliminar el consentimiento de ${consentimiento.nombreUsuario}?`,
+        {
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Sí, eliminar',
+          cancelButtonText: 'Cancelar',
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          reverseButtons: true,
+          customClass: {
+            container: 'swal2-container-top-layer',
+            popup: 'swal2-popup-top-layer'
+          },
+          target: document.body
+        }
+      )
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          await handleConfirmDelete(consentimiento)
+        }
+      })
   }
 
-  const handleCancelDelete = () => {
-    setShowConfirmDialog(false)
-    setConsentimientoToDelete(null)
-  }
+  const handleConfirmDelete = async (consentimiento) => {
+    if (!consentimiento || !consentimiento._id) return
 
-  const handleConfirmDelete = async () => {
-    if (!consentimientoToDelete || !consentimientoToDelete._id) return
-
-    setDeleteLoading(consentimientoToDelete._id)
+    setDeleteLoading(consentimiento._id)
 
     try {
       const token = localStorage.getItem('token')
-      await eliminarConsentimiento(consentimientoToDelete._id, token)
+      await eliminarConsentimiento(consentimiento._id, token)
 
       setConsentimientos((prevConsentimientos) =>
-        prevConsentimientos.filter((c) => c._id !== consentimientoToDelete._id)
+        prevConsentimientos.filter((c) => c._id !== consentimiento._id)
       )
 
-      setShowConfirmDialog(false)
-      setConsentimientoToDelete(null)
+      alertService.success('¡Éxito!', 'Consentimiento eliminado correctamente')
     } catch (error) {
       console.error('Error al eliminar consentimiento:', error)
+      alertService.error(
+        'Error',
+        'Error al eliminar el consentimiento: ' +
+          (error.message || 'Error desconocido')
+      )
       setError(
         'Error al eliminar el consentimiento: ' +
           (error.message || 'Error desconocido')
@@ -338,54 +353,6 @@ const AdminConsentimientos = () => {
           </>
         )}
       </div>
-
-      {showConfirmDialog && (
-        <div className='cf-consentimientos-dialog-overlay'>
-          <div className='cf-consentimientos-dialog'>
-            <div className='cf-consentimientos-dialog-header'>
-              <AlertTriangle
-                size={24}
-                className='cf-consentimientos-dialog-icon'
-              />
-              <h3 className='cf-consentimientos-dialog-title'>
-                Confirmar eliminación
-              </h3>
-            </div>
-            <div className='cf-consentimientos-dialog-content'>
-              <p>
-                ¿Estás seguro de que deseas eliminar el consentimiento de{' '}
-                <strong>{consentimientoToDelete?.nombreUsuario}</strong>?
-              </p>
-              <p className='cf-consentimientos-dialog-warning'>
-                Esta acción no se puede deshacer.
-              </p>
-            </div>
-            <div className='cf-consentimientos-dialog-actions'>
-              <button
-                className='cf-consentimientos-dialog-cancel'
-                onClick={handleCancelDelete}
-                disabled={deleteLoading}
-              >
-                Cancelar
-              </button>
-              <button
-                className='cf-consentimientos-dialog-confirm'
-                onClick={handleConfirmDelete}
-                disabled={deleteLoading}
-              >
-                {deleteLoading ? (
-                  <>
-                    <div className='cf-consentimientos-btn-spinner'></div>
-                    <span>Eliminando...</span>
-                  </>
-                ) : (
-                  'Eliminar'
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }

@@ -11,6 +11,7 @@ import {
   eliminarMensajePrivado
 } from '../../../../services/Api/index'
 import { getImageUrl } from '../../../../pages/Clases/utils/imageUtils'
+import alertService from '../../../../components/sweealert2/sweealert2'
 import './UsuarioMensajePrivado.css'
 
 const UsuarioMensajePrivado = () => {
@@ -70,6 +71,10 @@ const UsuarioMensajePrivado = () => {
         }
       } catch (error) {
         console.error('Error al cargar conversaciones:', error)
+        alertService.error(
+          'Error',
+          'No se pudo cargar la conversación. Por favor, intenta de nuevo más tarde.'
+        )
         setError(
           'No se pudo cargar la conversación. Por favor, intenta de nuevo más tarde.'
         )
@@ -95,10 +100,12 @@ const UsuarioMensajePrivado = () => {
         console.log('Mensajes marcados como leídos')
       } else {
         console.error('Error en la respuesta al obtener mensajes:', data)
+        alertService.error('Error', 'No se pudieron cargar los mensajes.')
         setError('No se pudieron cargar los mensajes.')
       }
     } catch (error) {
       console.error('Error al cargar mensajes:', error)
+      alertService.error('Error', 'Error al cargar los mensajes.')
       setError('Error al cargar los mensajes.')
     } finally {
       setLoading(false)
@@ -141,42 +148,68 @@ const UsuarioMensajePrivado = () => {
           if (conversacionId) {
             await cargarMensajesConversacion(token, conversacionId)
           }
+
+          alertService.success('¡Éxito!', 'Mensaje actualizado correctamente')
         } else {
-          setError(
+          const errorMsg =
             'No se pudo actualizar el mensaje: ' +
-              (resultado.message || 'Error desconocido')
-          )
+            (resultado.message || 'Error desconocido')
+          alertService.error('Error', errorMsg)
+          setError(errorMsg)
         }
 
         cancelEditing()
       } catch (error) {
         console.error('Error al actualizar mensaje:', error)
-        setError('Error al actualizar el mensaje: ' + error.message)
+        const errorMsg = 'Error al actualizar el mensaje: ' + error.message
+        alertService.error('Error', errorMsg)
+        setError(errorMsg)
       }
     }
   }
 
   const handleDeleteMessage = async (messageId) => {
-    if (window.confirm('¿Estás seguro de que quieres eliminar este mensaje?')) {
-      try {
-        const token = localStorage.getItem('token')
+    // Usar SweetAlert2 para la confirmación
+    alertService
+      .confirm('¿Estás seguro?', '¿Quieres eliminar este mensaje?', {
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        reverseButtons: true
+      })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const token = localStorage.getItem('token')
 
-        const resultado = await eliminarMensajePrivado(token, messageId)
+            const resultado = await eliminarMensajePrivado(token, messageId)
 
-        if (resultado && resultado.success) {
-          setMensajes(mensajes.filter((msg) => msg._id !== messageId))
+            if (resultado && resultado.success) {
+              setMensajes(mensajes.filter((msg) => msg._id !== messageId))
 
-          if (conversacionId) {
-            await cargarMensajesConversacion(token, conversacionId)
+              if (conversacionId) {
+                await cargarMensajesConversacion(token, conversacionId)
+              }
+
+              alertService.success(
+                '¡Eliminado!',
+                'El mensaje ha sido eliminado'
+              )
+            } else {
+              alertService.error('Error', 'No se pudo eliminar el mensaje')
+              setError('No se pudo eliminar el mensaje')
+            }
+          } catch (error) {
+            console.error('Error al eliminar mensaje:', error)
+            const errorMsg = 'Error al eliminar el mensaje: ' + error.message
+            alertService.error('Error', errorMsg)
+            setError(errorMsg)
           }
-        } else {
-          setError('No se pudo eliminar el mensaje')
         }
-      } catch (error) {
-        console.error('Error al eliminar mensaje:', error)
-        setError('Error al eliminar el mensaje: ' + error.message)
-      }
-    }
+      })
   }
 
   useEffect(() => {
@@ -217,15 +250,29 @@ const UsuarioMensajePrivado = () => {
           await cargarMensajesConversacion(token, conversacionId)
         }
       } else {
+        alertService.error('Error', 'No se pudo enviar el mensaje')
         setError('No se pudo enviar el mensaje')
       }
     } catch (error) {
       console.error('Error al enviar mensaje:', error)
+      alertService.error(
+        'Error',
+        'Error al enviar el mensaje. Por favor, intenta de nuevo.'
+      )
       setError('Error al enviar el mensaje. Por favor, intenta de nuevo.')
     } finally {
       setEnviando(false)
     }
   }
+
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError('')
+      }, 5000)
+      return () => clearTimeout(timer)
+    }
+  }, [error])
 
   return (
     <div className='cf-mensajes-container'>
