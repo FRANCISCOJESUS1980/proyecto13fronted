@@ -269,7 +269,6 @@ const NavigationCurtain = ({
                 onClick={(e) => e.stopPropagation()}
               >
                 <CartIcon />
-                <div className='cf-cart-pulse'></div>
               </div>
             </li>
           </ul>
