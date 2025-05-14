@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'react'
 import logo from '../../../../../public/imagenes/logoalex.jpg'
-import './Logo.css'
+import './logo.css'
 
 const Logo = ({ menuOpen }) => {
   const logoRef = useRef(null)
