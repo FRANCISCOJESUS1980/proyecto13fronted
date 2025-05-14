@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import CartIcon from '../../../../pages/Productos/components/Carticon/Carticon'
-import NavigationItem from './NavigationItem'
+import NavigationItem from './Navigationitem'
 import './NavigationCurtain.css'
 
 const NavigationCurtain = ({
