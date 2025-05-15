@@ -33,6 +33,7 @@ import {
 import { CartProvider } from '../pages/Productos/context/CartContext'
 import { ConsentProvider } from '../context/ConssentContext'
 import PendingTasksChecker from '../components/Pending Tasks/PendingTasksChecker'
+import AdminMensajeMasivo from '../pages/Administracion/AdminMensajeMasivo/AdminMensajeMasivo'
 
 const AppRouter = () => {
   return (
@@ -81,6 +82,10 @@ const AppRouter = () => {
                 <Route
                   path='/admin/usuario/:userId/mensajes'
                   element={<AdminUsuarioMensajePrivado />}
+                />
+                <Route
+                  path='/administracion/mensaje-masivo'
+                  element={<AdminMensajeMasivo />}
                 />
 
                 <Route path='/dashboard' element={<UserDashboard />} />

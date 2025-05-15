@@ -92,7 +92,12 @@ export const obtenerConversacion = async (token, userId) => {
   }
 }
 
-export const enviarMensajePrivado = async (token, destinatarioId, mensaje) => {
+export const enviarMensajePrivado = async (
+  token,
+  destinatarioId,
+  mensaje,
+  enviarEmail = true
+) => {
   try {
     if (!destinatarioId) {
       console.error('ID de destinatario no proporcionado')
@@ -108,7 +113,8 @@ export const enviarMensajePrivado = async (token, destinatarioId, mensaje) => {
       },
       body: JSON.stringify({
         destinatario: destinatarioId,
-        mensaje
+        mensaje,
+        enviarEmail
       })
     })
 
@@ -116,6 +122,34 @@ export const enviarMensajePrivado = async (token, destinatarioId, mensaje) => {
   } catch (error) {
     handleApiError(error, 'Error al enviar mensaje privado:')
     return { success: false }
+  }
+}
+export const enviarMensajeMasivo = async (
+  token,
+  { asunto, mensaje, enviarEmail = true }
+) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/mensajes-privados/masivo`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        asunto,
+        mensaje,
+        enviarEmail
+      })
+    })
+
+    return await checkResponse(response)
+  } catch (error) {
+    handleApiError(error, 'Error al enviar mensaje masivo:')
+    return {
+      success: false,
+      message: error.message || 'Error al enviar mensaje masivo'
+    }
   }
 }
 
