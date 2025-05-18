@@ -499,3 +499,20 @@
     width: 100%;
   }
 }
+.cf-clase-card-restriction-message {
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  color: #856404;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 10px;
+}
+
+@media (max-width: 768px) {
+  .cf-clase-card-restriction-message {
+    font-size: 0.8rem;
+    padding: 6px 8px;
+  }
+}

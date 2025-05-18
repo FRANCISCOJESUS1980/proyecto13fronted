@@ -3,9 +3,23 @@
   background-color: #121212;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   opacity: 0;
   transform: translateY(10px);
   transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.cf-clases-back-button {
+  max-width: 250px;
+  margin-top: 50px;
+}
+.cf-clases-back-icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23ffffff' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 .cf-clases-fade-in {

@@ -7,10 +7,13 @@ import { useUsuario } from './hooks/useUsuario'
 import { useClasesUsuario } from './hooks/useClasesUsuario'
 import { useCalendario } from './hooks/useCalendario'
 import { Calendar, Clock, Users } from 'lucide-react'
+import Button from '../../components/Button/Button'
+import { useNavigate } from 'react-router-dom'
 
 import './Clases.css'
 
 const Clases = () => {
+  const navigate = useNavigate()
   const [claseSeleccionada, setClaseSeleccionada] = useState(null)
   const [inscripcionExitosa, setInscripcionExitosa] = useState(null)
   const [cancelacionExitosa, setCancelacionExitosa] = useState(null)
@@ -38,7 +41,9 @@ const Clases = () => {
     estaInscrito,
     clasesDisponiblesHoy,
     clasesInscritasHoy,
-    totalClasesDisponibles
+    totalClasesDisponibles,
+    puedeInscribirse,
+    puedeCancelar
   } = useClasesUsuario({
     userId,
     selectedDate,
@@ -55,7 +60,14 @@ const Clases = () => {
   return (
     <div className={`cf-clases-container ${fadeIn ? 'cf-clases-fade-in' : ''}`}>
       <Header />
-
+      <Button
+        variant='secondary'
+        onClick={() => navigate('/dashboard')}
+        leftIcon={<span className='cf-clases-back-icon'></span>}
+        className='cf-clases-back-button'
+      >
+        Volver al Dashboard
+      </Button>
       <div className='cf-clases-content'>
         <div className='cf-clases-header'>
           <div className='cf-clases-header-title'>
@@ -149,6 +161,8 @@ const Clases = () => {
               estaInscrito={estaInscrito}
               loading={loading}
               claseSeleccionada={claseSeleccionada}
+              puedeInscribirse={puedeInscribirse}
+              puedeCancelar={puedeCancelar}
             />
           </div>
         )}

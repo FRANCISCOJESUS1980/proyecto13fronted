@@ -24,6 +24,7 @@ import Videos from '../pages/Videos/Videos'
 import AdminUsuarioClases from '../pages/Administracion/AdminUsuarios/AdminUsuarioClases/AdminUsuarioClases'
 import AdminUsuarioMensajePrivado from '../pages/Administracion/AdminUsuarios/AdminUsuarioMensajePrivado/AdminUsuarioMensajePrivado'
 import UserMensajes from '../pages/Register/sections/UsuarioMensajePrivado/UsuarioMensajePrivado'
+import GestionBonos from '../pages/Administracion/AdminGestionBonos/AdminGestionBonos'
 import NotFound from '../pages/NotFound/NotFound'
 
 import {
@@ -86,6 +87,11 @@ const AppRouter = () => {
                 <Route
                   path='/administracion/mensaje-masivo'
                   element={<AdminMensajeMasivo />}
+                />
+
+                <Route
+                  path='/admin/usuario/:userId/bonos'
+                  element={<GestionBonos />}
                 />
 
                 <Route path='/dashboard' element={<UserDashboard />} />

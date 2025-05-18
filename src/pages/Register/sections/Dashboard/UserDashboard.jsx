@@ -4,6 +4,8 @@ import './UserDashboard.css'
 import Header from '../../../../components/Header/Header'
 import { obtenerPerfilUsuario } from '../../../../services/Api/index'
 import { obtenerMensajesNoLeidos } from '../../../../services/Api/mensajesPrivados'
+import BonoInfo from '../../../Administracion/AdminGestionBonos/BonoInfo/BonoInfo'
+import { Dumbbell, ShoppingBag, Video } from 'lucide-react'
 
 const UserDashboard = () => {
   const navigate = useNavigate()
@@ -12,6 +14,7 @@ const UserDashboard = () => {
   const [loading, setLoading] = useState(true)
   const [unreadMessages, setUnreadMessages] = useState(0)
   const [animationComplete, setAnimationComplete] = useState(false)
+  const [bonoLoading, setBonoLoading] = useState(true)
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -198,14 +201,25 @@ const UserDashboard = () => {
         return (
           <span className='cf-dash-section-icon cf-dash-profile-icon'></span>
         )
-
       case 'video':
-        return <span className='cf-dash-section-icon cf-dash-video-icon'></span>
+        return (
+          <Video className='cf-dash-section-icon' size={24} strokeWidth={2} />
+        )
       case 'class':
-        return <span className='cf-dash-section-icon cf-dash-class-icon'></span>
+        return (
+          <Dumbbell
+            className='cf-dash-section-icon'
+            size={24}
+            strokeWidth={2}
+          />
+        )
       case 'product':
         return (
-          <span className='cf-dash-section-icon cf-dash-product-icon'></span>
+          <ShoppingBag
+            className='cf-dash-section-icon'
+            size={24}
+            strokeWidth={2}
+          />
         )
       default:
         return (
@@ -235,6 +249,17 @@ const UserDashboard = () => {
             <span className='cf-dash-logout-text'>Cerrar Sesión</span>
           </button>
         </div>
+
+        {localStorage.getItem('rol') !== 'admin' &&
+          localStorage.getItem('rol') !== 'monitor' &&
+          localStorage.getItem('rol') !== 'creador' && (
+            <div className='cf-dash-bono-section'>
+              <h2 className='cf-dash-section-title'>Tu Bono Actual</h2>
+              <div className='cf-dash-bono-container'>
+                <BonoInfo userId={userId} />
+              </div>
+            </div>
+          )}
 
         {loading ? (
           <div className='cf-dash-loading'>

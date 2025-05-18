@@ -1,0 +1,529 @@
+.cf-gestion-bonos-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #121212;
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+}
+
+.cf-animation-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cf-dumbbell-anim {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff5722' opacity='0.2'%3E%3Cpath d='M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14 4.14 5.57 2 7.71 3.43 9.14 2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22 14.86 20.57 16.29 22 18.43 19.86 19.86 21.29 21.29 19.86 19.86 18.43 22 16.29 20.57 14.86z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  top: 10%;
+  left: 10%;
+  animation: float 15s infinite ease-in-out;
+  opacity: 0.2;
+}
+
+.cf-kettlebell-anim {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff' opacity='0.15'%3E%3Cpath d='M12,2A2,2 0 0,1 14,4V7H16A2,2 0 0,1 18,9V14.5L14,15.5V14A2,2 0 0,0 12,12A2,2 0 0,0 10,14V15.5L6,14.5V9A2,2 0 0,1 8,7H10V4A2,2 0 0,1 12,2M12,4V7H10V4H12M12,14V22A2,2 0 0,1 10,20V14A2,2 0 0,1 12,14Z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  top: 30%;
+  right: 15%;
+  animation: float 20s infinite ease-in-out reverse;
+  opacity: 0.15;
+}
+
+.cf-barbell-anim {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff' opacity='0.1'%3E%3Cpath d='M22,7H21V6H17V7H16V3H14V7H10V3H8V7H7V6H3V7H2V9H3V10H7V9H8V13H7V12H3V13H2V15H3V16H7V15H8V19H10V15H14V19H16V15H17V16H21V15H22V13H21V12H17V13H16V9H17V10H21V9H22V7Z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  bottom: 20%;
+  left: 20%;
+  animation: float 25s infinite ease-in-out;
+  opacity: 0.1;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(15px, 15px) rotate(5deg);
+  }
+  50% {
+    transform: translate(0, 25px) rotate(0deg);
+  }
+  75% {
+    transform: translate(-15px, 10px) rotate(-5deg);
+  }
+}
+
+.cf-gestion-bonos-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  position: relative;
+  z-index: 2;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cf-gestion-bonos-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.cf-gestion-bonos-title-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cf-gestion-bonos-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.cf-gestion-bonos-section {
+  margin-bottom: 2.5rem;
+  animation: slideUp 0.5s ease forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.cf-gestion-bonos-section:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.cf-gestion-bonos-section:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+@keyframes slideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cf-gestion-bonos-section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 1.5rem;
+  position: relative;
+  padding-left: 1rem;
+}
+
+.cf-gestion-bonos-section-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background-color: #ff5722;
+  border-radius: 2px;
+}
+
+.cf-gestion-bonos-card {
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 1.5rem;
+}
+
+.cf-gestion-bonos-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+.cf-gestion-bonos-card-header {
+  padding: 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cf-gestion-bonos-card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+
+.cf-gestion-bonos-badge {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.cf-gestion-bonos-badge.activo {
+  background-color: rgba(46, 204, 113, 0.2);
+  color: #2ecc71;
+}
+
+.cf-gestion-bonos-badge.pausado {
+  background-color: rgba(241, 196, 15, 0.2);
+  color: #f1c40f;
+}
+
+.cf-gestion-bonos-badge.completado {
+  background-color: rgba(52, 152, 219, 0.2);
+  color: #3498db;
+}
+
+.cf-gestion-bonos-badge.expirado {
+  background-color: rgba(231, 76, 60, 0.2);
+  color: #e74c3c;
+}
+
+.cf-gestion-bonos-card-content {
+  padding: 1.25rem;
+}
+
+.cf-gestion-bonos-info-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.cf-gestion-bonos-info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.cf-gestion-bonos-info-item svg {
+  color: #ff5722;
+}
+
+.cf-gestion-bonos-info-item strong {
+  color: #fff;
+}
+#tipo {
+  color: #fff;
+  background-color: #1e1e1e;
+}
+.cf-gestion-bonos-pausa-info {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: rgba(241, 196, 15, 0.1);
+  border-left: 4px solid #f1c40f;
+  border-radius: 4px;
+}
+
+.cf-gestion-bonos-pausa-info p {
+  margin: 0.5rem 0;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.cf-gestion-bonos-card-actions {
+  padding: 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.cf-gestion-bonos-empty {
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  padding: 2.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.cf-gestion-bonos-empty p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.cf-gestion-bonos-historial {
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.cf-gestion-bonos-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.cf-gestion-bonos-table th,
+.cf-gestion-bonos-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cf-gestion-bonos-table th {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+.cf-gestion-bonos-table tr:last-child td {
+  border-bottom: none;
+}
+
+.cf-gestion-bonos-table tr:hover td {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.cf-gestion-bonos-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.cf-gestion-bonos-modal {
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  animation: modalSlideUp 0.4s ease;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cf-gestion-bonos-modal-header {
+  padding: 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cf-gestion-bonos-modal-header h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+
+.cf-gestion-bonos-modal-close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.3s ease;
+}
+
+.cf-gestion-bonos-modal-close:hover {
+  color: #fff;
+}
+
+.cf-gestion-bonos-modal form {
+  padding: 1.25rem;
+}
+
+.cf-gestion-bonos-form-group {
+  margin-bottom: 1.5rem;
+}
+
+.cf-gestion-bonos-form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.cf-gestion-bonos-form-group input,
+.cf-gestion-bonos-form-group select,
+.cf-gestion-bonos-form-group textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.cf-gestion-bonos-form-group input:focus,
+.cf-gestion-bonos-form-group select:focus,
+.cf-gestion-bonos-form-group textarea:focus {
+  outline: none;
+  border-color: #ff5722;
+  box-shadow: 0 0 0 2px rgba(255, 87, 34, 0.3);
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.cf-gestion-bonos-form-group textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.cf-gestion-bonos-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.cf-gestion-bonos-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.cf-gestion-bonos-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #ff5722;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.cf-gestion-bonos-loading-text {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.1rem;
+}
+
+.cf-gestion-bonos-error,
+.cf-gestion-bonos-alert {
+  padding: 1.25rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cf-gestion-bonos-error {
+  background-color: rgba(231, 76, 60, 0.1);
+  border-left: 4px solid #e74c3c;
+}
+
+.cf-gestion-bonos-alert.error {
+  background-color: rgba(231, 76, 60, 0.1);
+  border-left: 4px solid #e74c3c;
+}
+
+.cf-gestion-bonos-error-icon {
+  width: 24px;
+  height: 24px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e74c3c'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+@media (max-width: 768px) {
+  .cf-gestion-bonos-header {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .cf-gestion-bonos-info-row {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .cf-gestion-bonos-card-actions {
+    flex-direction: column;
+  }
+
+  .cf-gestion-bonos-card-actions button {
+    width: 100%;
+  }
+
+  .cf-gestion-bonos-form-actions {
+    flex-direction: column;
+  }
+
+  .cf-gestion-bonos-form-actions button {
+    width: 100%;
+  }
+
+  .cf-gestion-bonos-table {
+    display: block;
+    overflow-x: auto;
+  }
+}

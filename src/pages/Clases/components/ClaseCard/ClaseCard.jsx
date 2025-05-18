@@ -10,12 +10,17 @@ const ClaseCard = ({
   handleCancelar,
   estaInscrito,
   loading,
-  claseSeleccionada
+  claseSeleccionada,
+  puedeInscribirse,
+  puedeCancelar
 }) => {
   const inscrito = estaInscrito(clase)
   const completa = clase.inscritos.length >= clase.capacidadMaxima
   const porcentajeOcupacion =
     (clase.inscritos.length / clase.capacidadMaxima) * 100
+
+  const puedeInscribirseEnEstaClase = puedeInscribirse(clase)
+  const puedeCancelarEstaClase = puedeCancelar(clase)
 
   return (
     <div
@@ -66,17 +71,23 @@ const ClaseCard = ({
 
       <div className='cf-clase-card-actions'>
         {inscrito ? (
-          <button
-            className='cf-clase-card-btn cf-clase-card-btn-cancelar'
-            onClick={() => handleCancelar(clase._id)}
-            disabled={loading || claseSeleccionada === clase._id}
-          >
-            {loading && claseSeleccionada === clase._id ? (
-              <div className='cf-clase-card-spinner'></div>
-            ) : (
-              'Cancelar reserva'
-            )}
-          </button>
+          puedeCancelarEstaClase ? (
+            <button
+              className='cf-clase-card-btn cf-clase-card-btn-cancelar'
+              onClick={() => handleCancelar(clase._id)}
+              disabled={loading || claseSeleccionada === clase._id}
+            >
+              {loading && claseSeleccionada === clase._id ? (
+                <div className='cf-clase-card-spinner'></div>
+              ) : (
+                'Cancelar reserva'
+              )}
+            </button>
+          ) : (
+            <div className='cf-clase-card-restriction-message'>
+              No puedes cancelar con menos de 2 horas de antelación
+            </div>
+          )
         ) : completa ? (
           <button
             className='cf-clase-card-btn cf-clase-card-btn-completo'
@@ -84,7 +95,7 @@ const ClaseCard = ({
           >
             Clase completa
           </button>
-        ) : (
+        ) : puedeInscribirseEnEstaClase ? (
           <button
             className='cf-clase-card-btn cf-clase-card-btn-inscribir'
             onClick={() => handleInscribir(clase._id)}
@@ -96,6 +107,10 @@ const ClaseCard = ({
               'Reservar plaza'
             )}
           </button>
+        ) : (
+          <div className='cf-clase-card-restriction-message'>
+            Ya no puedes inscribirte a esta clase
+          </div>
         )}
       </div>
     </div>

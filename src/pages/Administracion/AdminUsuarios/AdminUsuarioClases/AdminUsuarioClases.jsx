@@ -37,6 +37,9 @@ const AdminUsuarioClases = () => {
     clasesInscritasTotal
   } = useUsuarioClases(userId, selectedDate)
 
+  const puedeInscribirse = () => true
+  const puedeCancelar = () => true
+
   const handleVolver = () => {
     navigate('/administracion/usuarios')
   }
@@ -176,6 +179,8 @@ const AdminUsuarioClases = () => {
               estaInscrito={estaInscrito}
               loading={loadingClases}
               claseSeleccionada={claseSeleccionada}
+              puedeInscribirse={puedeInscribirse}
+              puedeCancelar={puedeCancelar}
             />
           </div>
         )}

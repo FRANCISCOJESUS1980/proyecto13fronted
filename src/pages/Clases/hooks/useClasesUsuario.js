@@ -5,7 +5,8 @@ import {
   fetchClasesUsuario,
   inscribirClase,
   cancelarClase
-} from '../services/clasesUsuarioService'
+} from '../../../services/Api/index'
+import { useAuth } from '../../../components/Header/hooks/useAuth'
 
 export const useClasesUsuario = ({
   userId,
@@ -18,6 +19,159 @@ export const useClasesUsuario = ({
   const [clases, setClases] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const { userInfo } = useAuth() || {}
+
+  const obtenerHoraClase = (clase) => {
+    try {
+      if (!clase.horario) return null
+
+      let fechaClase
+
+      if (clase.esFechaEspecifica && clase.fecha) {
+        fechaClase = new Date(clase.fecha)
+      } else {
+        const hoy = new Date()
+        const diaSemanaHoy = format(hoy, 'EEEE', { locale: es }).toLowerCase()
+
+        if (clase.diaSemana === diaSemanaHoy) {
+          fechaClase = new Date()
+        } else {
+          fechaClase = obtenerFechaPorDiaSemana(clase.diaSemana)
+        }
+      }
+
+      if (!fechaClase) return null
+
+      const [horas, minutos] = clase.horario.split(':')
+      fechaClase.setHours(parseInt(horas, 10), parseInt(minutos, 10), 0, 0)
+
+      return fechaClase
+    } catch (error) {
+      console.error('Error al obtener hora de clase:', error)
+      return null
+    }
+  }
+
+  const obtenerFechaPorDiaSemana = (diaSemana) => {
+    if (!diaSemana) return null
+
+    const diasSemana = [
+      'domingo',
+      'lunes',
+      'martes',
+      'miércoles',
+      'jueves',
+      'viernes',
+      'sábado'
+    ]
+    const diaIndice = diasSemana.indexOf(diaSemana.toLowerCase())
+
+    if (diaIndice === -1) return null
+
+    const hoy = new Date()
+    const diaActual = hoy.getDay()
+
+    let diasHasta = diaIndice - diaActual
+    if (diasHasta <= 0) diasHasta += 7
+
+    const fechaObjetivo = new Date(hoy)
+    fechaObjetivo.setDate(hoy.getDate() + diasHasta)
+
+    return fechaObjetivo
+  }
+
+  const esHoy = (fecha) => {
+    const hoy = new Date()
+    return (
+      fecha.getDate() === hoy.getDate() &&
+      fecha.getMonth() === hoy.getMonth() &&
+      fecha.getFullYear() === hoy.getFullYear()
+    )
+  }
+
+  const esDiaPasado = (fecha) => {
+    const hoy = new Date()
+    hoy.setHours(0, 0, 0, 0)
+    const fechaComparar = new Date(fecha)
+    fechaComparar.setHours(0, 0, 0, 0)
+    return fechaComparar < hoy
+  }
+
+  const claseYaPaso = (clase) => {
+    const horaActual = new Date()
+    const horaClase = obtenerHoraClase(clase)
+
+    if (!horaClase) return false
+
+    if (esHoy(horaClase)) {
+      const horaFinClase = new Date(horaClase)
+      horaFinClase.setMinutes(
+        horaFinClase.getMinutes() + (clase.duracion || 60)
+      )
+
+      return horaActual > horaFinClase
+    }
+
+    if (esDiaPasado(horaClase)) {
+      return true
+    }
+
+    return false
+  }
+
+  const puedeInscribirse = (clase) => {
+    if (
+      userInfo &&
+      (userInfo.rol === 'admin' ||
+        userInfo.rol === 'monitor' ||
+        userInfo.rol === 'creador')
+    ) {
+      return true
+    }
+
+    const horaActual = new Date()
+    const horaClase = obtenerHoraClase(clase)
+
+    if (!horaClase) return true
+
+    if (esDiaPasado(horaClase)) {
+      return false
+    }
+
+    if (esHoy(horaClase)) {
+      const diferenciaMinutos = (horaActual - horaClase) / (1000 * 60)
+      return diferenciaMinutos <= 10
+    }
+
+    return true
+  }
+
+  const puedeCancelar = (clase) => {
+    if (
+      userInfo &&
+      (userInfo.rol === 'admin' ||
+        userInfo.rol === 'monitor' ||
+        userInfo.rol === 'creador')
+    ) {
+      return true
+    }
+
+    const horaActual = new Date()
+    const horaClase = obtenerHoraClase(clase)
+
+    if (!horaClase) return true
+
+    if (claseYaPaso(clase)) {
+      return false
+    }
+
+    if (esHoy(horaClase)) {
+      const diferenciaHoras = (horaClase - horaActual) / (1000 * 60 * 60)
+      return diferenciaHoras >= 2
+    }
+
+    return true
+  }
 
   useEffect(() => {
     const cargarClases = async () => {
@@ -43,10 +197,19 @@ export const useClasesUsuario = ({
       return
     }
 
+    if (!claseId) {
+      console.error('Error: ID de clase no válido', claseId)
+      alert(
+        'Error al identificar la clase. Por favor, recarga la página e intenta de nuevo.'
+      )
+      return
+    }
+
     setLoading(true)
     setClaseSeleccionada(claseId)
 
     try {
+      console.log('Inscribiendo a clase con ID:', claseId)
       const claseActualizada = await inscribirClase(claseId)
 
       setClases((prevClases) =>
@@ -62,7 +225,24 @@ export const useClasesUsuario = ({
       setTimeout(() => setInscripcionExitosa(null), 3000)
     } catch (err) {
       console.error('Error al inscribirse:', err)
-      alert(err.message || 'Error al inscribirse en la clase')
+
+      if (err.message && err.message.includes('bono activo')) {
+        alert(
+          'No tienes un bono activo para inscribirte. Contacta con administración.'
+        )
+      } else if (err.message && err.message.includes('sesiones')) {
+        alert(
+          'No tienes sesiones disponibles en tu bono. Contacta con administración.'
+        )
+      } else if (err.message && err.message.includes('expirado')) {
+        alert(
+          'Tu bono ha expirado. Contacta con administración para renovarlo.'
+        )
+      } else if (err.message && err.message.includes('token')) {
+        alert('Tu sesión ha expirado. Por favor, inicia sesión de nuevo.')
+      } else {
+        alert(err.message || 'Error al inscribirse en la clase')
+      }
     } finally {
       setLoading(false)
       setClaseSeleccionada(null)
@@ -75,10 +255,19 @@ export const useClasesUsuario = ({
       return
     }
 
+    if (!claseId) {
+      console.error('Error: ID de clase no válido', claseId)
+      alert(
+        'Error al identificar la clase. Por favor, recarga la página e intenta de nuevo.'
+      )
+      return
+    }
+
     setLoading(true)
     setClaseSeleccionada(claseId)
 
     try {
+      console.log('Cancelando inscripción a clase con ID:', claseId)
       const claseActualizada = await cancelarClase(claseId)
 
       setClases((prevClases) =>
@@ -94,7 +283,11 @@ export const useClasesUsuario = ({
       setTimeout(() => setCancelacionExitosa(null), 3000)
     } catch (err) {
       console.error('Error al cancelar inscripción:', err)
-      alert(err.message || 'Error al cancelar la inscripción')
+      if (err.message && err.message.includes('token')) {
+        alert('Tu sesión ha expirado. Por favor, inicia sesión de nuevo.')
+      } else {
+        alert(err.message || 'Error al cancelar la inscripción')
+      }
     } finally {
       setLoading(false)
       setClaseSeleccionada(null)
@@ -143,6 +336,30 @@ export const useClasesUsuario = ({
     return getMinutos(a.horario) - getMinutos(b.horario)
   })
 
+  const clasesDisponiblesHoy = clases.filter((clase) => {
+    const diaHoy = format(new Date(), 'EEEE', { locale: es }).toLowerCase()
+    return (
+      (clase.esFechaEspecifica &&
+        clase.fecha &&
+        esHoy(new Date(clase.fecha))) ||
+      (!clase.esFechaEspecifica && clase.diaSemana === diaHoy)
+    )
+  }).length
+
+  const clasesInscritasHoy = clases.filter((clase) => {
+    const diaHoy = format(new Date(), 'EEEE', { locale: es }).toLowerCase()
+    const inscrito = estaInscrito(clase)
+    return (
+      inscrito &&
+      ((clase.esFechaEspecifica &&
+        clase.fecha &&
+        esHoy(new Date(clase.fecha))) ||
+        (!clase.esFechaEspecifica && clase.diaSemana === diaHoy))
+    )
+  }).length
+
+  const totalClasesDisponibles = clases.length
+
   return {
     clases,
     clasesOrdenadas,
@@ -150,6 +367,11 @@ export const useClasesUsuario = ({
     error,
     handleInscribir,
     handleCancelar,
-    estaInscrito
+    estaInscrito,
+    clasesDisponiblesHoy,
+    clasesInscritasHoy,
+    totalClasesDisponibles,
+    puedeInscribirse,
+    puedeCancelar
   }
 }

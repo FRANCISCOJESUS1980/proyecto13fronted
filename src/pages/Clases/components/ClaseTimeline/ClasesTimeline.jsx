@@ -11,7 +11,9 @@ const ClasesTimeline = ({
   handleCancelar,
   estaInscrito,
   loading,
-  claseSeleccionada
+  claseSeleccionada,
+  puedeInscribirse,
+  puedeCancelar
 }) => {
   const formattedDate = format(selectedDate, "EEEE d 'de' MMMM", { locale: es })
 
@@ -43,6 +45,8 @@ const ClasesTimeline = ({
                   estaInscrito={estaInscrito}
                   loading={loading}
                   claseSeleccionada={claseSeleccionada}
+                  puedeInscribirse={puedeInscribirse}
+                  puedeCancelar={puedeCancelar}
                 />
               </div>
             </div>

@@ -1,0 +1,120 @@
+.cf-bono-info {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.cf-bono-info h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 18px;
+  color: #333;
+}
+
+.cf-bono-info-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.cf-bono-info-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.cf-bono-info-label {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.cf-bono-info-value {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  display: flex;
+  align-items: center;
+}
+
+.cf-bono-info-icon {
+  margin-right: 6px;
+}
+
+.cf-bono-info-alerta {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background-color: #fff3cd;
+  border-left: 3px solid #ffc107;
+  color: #856404;
+  font-size: 14px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.cf-bono-info-alerta-icon {
+  margin-right: 8px;
+  color: #ffc107;
+}
+
+.cf-bono-inactivo {
+  border-left: 4px solid #dc3545;
+}
+
+.cf-bono-expirado {
+  border-left: 4px solid #dc3545;
+}
+
+.cf-bono-pocas-sesiones {
+  border-left: 4px solid #ffc107;
+}
+
+.cf-bono-info-loading {
+  padding: 16px;
+  text-align: center;
+  color: #666;
+}
+
+.cf-bono-info-error {
+  padding: 16px;
+  text-align: center;
+  color: #dc3545;
+}
+
+.cf-bono-info-empty {
+  border-left: 4px solid #6c757d;
+  color: #6c757d;
+}
+
+.cf-bono-estado-activo {
+  display: flex;
+  align-items: center;
+  color: #28a745;
+}
+
+.cf-bono-estado-inactivo {
+  color: #dc3545;
+}
+
+.cf-clases-timeline-advertencia {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  padding: 8px;
+  background-color: rgba(255, 193, 7, 0.1);
+  border-radius: 4px;
+  border-left: 3px solid #ffc107;
+}
+
+.cf-clases-timeline-advertencia-icon {
+  color: #ffc107;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.cf-clases-timeline-advertencia span {
+  font-size: 12px;
+  color: #856404;
+}
