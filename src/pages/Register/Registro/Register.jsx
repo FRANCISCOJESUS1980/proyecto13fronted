@@ -2,10 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Consentimiento from '../sections/Consentimiento/Consentimiento'
 import Header from '../../../components/Header/Header'
-import {
-  verificarCodigoAutorizacion,
-  registrarUsuario
-} from '../../../services/Api/index'
+import { verificarCodigoAutorizacion } from '../../../services/Api/index'
 import handleSubmitHelper from '../../../utils/HandleSubmit'
 import alertService from '../../../components/sweealert2/sweealert2'
 import './Register.css'
@@ -23,6 +20,7 @@ const Register = () => {
   const [registroExitoso, setRegistroExitoso] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [animationComplete, setAnimationComplete] = useState(false)
+  const [isVerifyingCode, setIsVerifyingCode] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -65,40 +63,50 @@ const Register = () => {
   }
 
   useEffect(() => {
-    const verificarCodigo = async () => {
-      if (formData.codigoAutorizacion) {
+    if (formData.codigoAutorizacion && !isVerifyingCode) {
+      const timeoutId = setTimeout(async () => {
+        setIsVerifyingCode(true)
+
         try {
           const data = await verificarCodigoAutorizacion(
             formData.codigoAutorizacion
           )
+          console.log('Respuesta del servidor:', data)
+          console.log('Rol recibido:', data.rol)
 
-          if (data.success) {
-            setFormData((prev) => ({ ...prev, rol: data.rol }))
+          if (data && data.success) {
+            const nuevoRol = data.rol
+            setFormData((prev) => ({ ...prev, rol: nuevoRol }))
 
-            alertService.toast(
-              `Código válido: ${
-                data.rol === 'admin' ? 'Administrador' : 'Entrenador'
-              }`,
-              'success'
+            alertService.success(
+              'Código válido',
+              `Rol asignado: ${
+                nuevoRol === 'admin' ? 'Administrador' : 'Entrenador'
+              }`
             )
-          } else {
+          } else if (formData.codigoAutorizacion.trim() !== '') {
             setFormData((prev) => ({ ...prev, rol: 'usuario' }))
-
-            alertService.toast('Código no válido', 'error')
+            alertService.error(
+              'Código no válido',
+              'Se te asignará el rol de usuario'
+            )
           }
         } catch (error) {
           console.error('Error al verificar código:', error)
-          setFormData((prev) => ({ ...prev, rol: 'usuario' }))
-          alertService.toast('Error al verificar código', 'error')
+          if (formData.codigoAutorizacion.trim() !== '') {
+            setFormData((prev) => ({ ...prev, rol: 'usuario' }))
+            alertService.error(
+              'Error',
+              'Error al verificar código. Se te asignará el rol de usuario'
+            )
+          }
+        } finally {
+          setIsVerifyingCode(false)
         }
-      }
+      }, 2000)
+
+      return () => clearTimeout(timeoutId)
     }
-
-    const timeoutId = setTimeout(() => {
-      verificarCodigo()
-    }, 500)
-
-    return () => clearTimeout(timeoutId)
   }, [formData.codigoAutorizacion])
 
   const handleChange = (e) => {
@@ -295,7 +303,8 @@ const Register = () => {
                   <div className='cf-role-badge'>
                     {formData.rol === 'admin'
                       ? 'Administrador'
-                      : formData.rol === 'entrenador'
+                      : formData.rol === 'entrenador' ||
+                        formData.rol === 'monitor'
                       ? 'Entrenador'
                       : 'Usuario'}
                   </div>

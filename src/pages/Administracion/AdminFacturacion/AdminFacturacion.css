@@ -1,0 +1,427 @@
+.cf-admin-facturacion {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #121212;
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+}
+
+.cf-animation-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cf-dumbbell-anim {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff5722' opacity='0.2'%3E%3Cpath d='M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14 4.14 5.57 2 7.71 3.43 9.14 2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22 14.86 20.57 16.29 22 18.43 19.86 19.86 21.29 21.29 19.86 19.86 18.43 22 16.29 20.57 14.86z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  top: 10%;
+  left: 10%;
+  animation: float 15s infinite ease-in-out;
+  opacity: 0.2;
+}
+
+.cf-kettlebell-anim {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff' opacity='0.15'%3E%3Cpath d='M12,2A2,2 0 0,1 14,4V7H16A2,2 0 0,1 18,9V14.5L14,15.5V14A2,2 0 0,0 12,12A2,2 0 0,0 10,14V15.5L6,14.5V9A2,2 0 0,1 8,7H10V4A2,2 0 0,1 12,2M12,4V7H10V4H12M12,14V22A2,2 0 0,1 10,20V14A2,2 0 0,1 12,14Z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  top: 30%;
+  right: 15%;
+  animation: float 20s infinite ease-in-out reverse;
+  opacity: 0.15;
+}
+
+.cf-barbell-anim {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff' opacity='0.1'%3E%3Cpath d='M22,7H21V6H17V7H16V3H14V7H10V3H8V7H7V6H3V7H2V9H3V10H7V9H8V13H7V12H3V13H2V15H3V16H7V15H8V19H10V15H14V19H16V15H17V16H21V15H22V13H21V12H17V13H16V9H17V10H21V9H22V7Z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  bottom: 20%;
+  left: 20%;
+  animation: float 25s infinite ease-in-out;
+  opacity: 0.1;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(15px, 15px) rotate(5deg);
+  }
+  50% {
+    transform: translate(0, 25px) rotate(0deg);
+  }
+  75% {
+    transform: translate(-15px, 10px) rotate(-5deg);
+  }
+}
+
+.cf-admin-facturacion-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  position: relative;
+  z-index: 2;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cf-admin-facturacion-header {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.cf-admin-facturacion-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.cf-admin-facturacion-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  animation: slideUp 0.5s ease forwards;
+  opacity: 0;
+  transform: translateY(20px);
+  animation-delay: 0.1s;
+}
+
+@keyframes slideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cf-admin-facturacion-stat-card {
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+}
+
+.cf-admin-facturacion-stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+.cf-admin-facturacion-stat-card h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0 0.75rem 0;
+}
+
+.cf-admin-facturacion-stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #ff5722;
+  margin: 0;
+}
+
+.cf-admin-facturacion-filters {
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.5s ease forwards;
+  opacity: 0;
+  transform: translateY(20px);
+  animation-delay: 0.2s;
+}
+
+.cf-admin-facturacion-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 200px;
+}
+
+.cf-admin-facturacion-filter-group label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.cf-admin-facturacion-select,
+.cf-admin-facturacion-search-input,
+.cf-admin-facturacion-date-input {
+  padding: 0.75rem 1rem;
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.cf-admin-facturacion-select:focus,
+.cf-admin-facturacion-search-input:focus,
+.cf-admin-facturacion-date-input:focus {
+  outline: none;
+  border-color: #ff5722;
+  box-shadow: 0 0 0 2px rgba(255, 87, 34, 0.3);
+  background-color: rgba(255, 255, 255, 0.12);
+  color: black;
+}
+.cf-admin-facturacion-search-input:focus {
+  color: white;
+}
+
+.cf-admin-facturacion-date-filters {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+}
+
+.cf-admin-facturacion-search {
+  flex: 2;
+}
+
+.cf-admin-facturacion-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  animation: slideUp 0.5s ease forwards;
+  opacity: 0;
+  transform: translateY(20px);
+  animation-delay: 0.3s;
+}
+
+.cf-admin-facturacion-export-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: none;
+}
+
+.cf-admin-facturacion-pdf-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.cf-admin-facturacion-pdf-btn:hover {
+  background-color: #c0392b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+.cf-admin-facturacion-excel-btn {
+  background-color: #27ae60;
+  color: white;
+}
+
+.cf-admin-facturacion-excel-btn:hover {
+  background-color: #219653;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+}
+
+.cf-admin-facturacion-table-container {
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  margin-bottom: 2rem;
+  animation: slideUp 0.5s ease forwards;
+  opacity: 0;
+  transform: translateY(20px);
+  animation-delay: 0.4s;
+}
+
+.cf-admin-facturacion-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.cf-admin-facturacion-table th,
+.cf-admin-facturacion-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cf-admin-facturacion-table th {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+.cf-admin-facturacion-table tr:last-child td {
+  border-bottom: none;
+}
+
+.cf-admin-facturacion-table tr:hover td {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.cf-admin-facturacion-monto {
+  font-weight: 600;
+  color: #ff5722;
+}
+
+.cf-admin-facturacion-estado {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.cf-admin-facturacion-estado-activo {
+  background-color: rgba(46, 204, 113, 0.2);
+  color: #2ecc71;
+}
+
+.cf-admin-facturacion-estado-pausado {
+  background-color: rgba(241, 196, 15, 0.2);
+  color: #f1c40f;
+}
+
+.cf-admin-facturacion-estado-cancelado {
+  background-color: rgba(231, 76, 60, 0.2);
+  color: #e74c3c;
+}
+
+.cf-admin-facturacion-estado-expirado {
+  background-color: rgba(149, 165, 166, 0.2);
+  color: #95a5a6;
+}
+
+.cf-admin-facturacion-no-results {
+  text-align: center;
+  padding: 2rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.cf-admin-facturacion-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.cf-admin-facturacion-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #ff5722;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.cf-admin-facturacion-loading p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.cf-admin-facturacion-error {
+  padding: 1.25rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: rgba(231, 76, 60, 0.1);
+  border-left: 4px solid #e74c3c;
+}
+
+.cf-admin-facturacion-error-icon {
+  width: 24px;
+  height: 24px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e74c3c'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+@media (max-width: 768px) {
+  .cf-admin-facturacion-header {
+    align-items: center;
+  }
+
+  .cf-admin-facturacion-filter-group {
+    width: 100%;
+  }
+
+  .cf-admin-facturacion-date-filters {
+    flex-direction: column;
+  }
+
+  .cf-admin-facturacion-actions {
+    flex-direction: column;
+  }
+
+  .cf-admin-facturacion-export-btn {
+    width: 100%;
+  }
+
+  .cf-admin-facturacion-table {
+    display: block;
+    overflow-x: auto;
+  }
+}

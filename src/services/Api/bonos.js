@@ -141,3 +141,56 @@ export const añadirSesiones = async (token, bonoId, sesionesData) => {
     throw error
   }
 }
+export const obtenerBonos = async (token) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/bonos`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || 'Error al obtener bonos')
+    }
+
+    return await response.json()
+  } catch (error) {
+    handleApiError(error, 'Error al obtener bonos:')
+    throw error
+  }
+}
+
+export const obtenerBonoActivo = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/bonos/activo`, {
+      credentials: 'include'
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+
+      if (
+        response.status === 404 ||
+        (errorData &&
+          errorData.message &&
+          errorData.message.includes('no tiene un bono activo'))
+      ) {
+        return null
+      }
+      throw new Error(errorData.message || 'Error al obtener bono activo')
+    }
+
+    const data = await response.json()
+
+    if (data && data.success) {
+      return data.data
+    } else {
+      return null
+    }
+  } catch (error) {
+    handleApiError(error, 'Error al obtener bono activo:')
+    return null
+  }
+}

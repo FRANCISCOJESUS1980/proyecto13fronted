@@ -1,6 +1,7 @@
 import { API_BASE_URL, handleApiError, checkResponse } from './config'
 import { isValid, format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import alertService from '../../components/sweealert2/sweealert2'
 
 const getAuthHeaders = (token) => {
   if (!token) {
@@ -41,14 +42,38 @@ export const deleteClase = async (id, token) => {
       throw new Error('ID de clase no válido (parece ser un token)')
     }
 
+    const confirmResult = await alertService.confirm(
+      '¿Eliminar clase?',
+      '¿Estás seguro de que deseas eliminar esta clase? Esta acción no se puede deshacer.',
+      {
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'No, cancelar',
+        icon: 'warning'
+      }
+    )
+
+    if (!confirmResult.isConfirmed) {
+      return { cancelled: true }
+    }
+
     const response = await fetch(`${API_BASE_URL}/classes/${id}`, {
       method: 'DELETE',
       headers: getAuthHeaders(token)
     })
 
-    return await checkResponse(response)
+    const result = await checkResponse(response)
+
+    if (result) {
+      alertService.success(
+        'Clase eliminada',
+        'La clase ha sido eliminada correctamente'
+      )
+    }
+
+    return result
   } catch (error) {
     handleApiError(error, 'Error al eliminar clase:')
+    alertService.error('Error', error.message || 'Error al eliminar la clase')
     throw error
   }
 }
@@ -109,6 +134,11 @@ export const guardarClaseAPI = async (
 
     const clasesCreadas = []
     const clasesConError = []
+
+    alertService.loading(
+      'Guardando clases',
+      'Estamos procesando tu solicitud. Por favor, espera...'
+    )
 
     for (const horario of formData.horarios) {
       const formDataToSend = new FormData()
@@ -182,13 +212,40 @@ export const guardarClaseAPI = async (
       }
     }
 
-    return {
+    alertService.close()
+
+    const result = {
       success: clasesCreadas.length > 0,
       clasesCreadas: clasesCreadas.length,
       clasesConError: clasesConError.length
     }
+
+    if (result.success) {
+      alertService.success(
+        'Clases guardadas',
+        `${result.clasesCreadas} horarios de clase ${
+          editingId ? 'actualizados' : 'creados'
+        } con éxito`
+      )
+    }
+
+    if (result.clasesConError > 0) {
+      alertService.warning(
+        'Atención',
+        `Hubo errores al crear ${result.clasesConError} horarios. Por favor, inténtalo de nuevo.`
+      )
+    }
+
+    return result
   } catch (error) {
+    try {
+      alertService.close()
+    } catch (e) {
+      console.error('Error al cerrar alerta:', e)
+    }
+
     handleApiError(error, 'Error al guardar clase:')
+    alertService.error('Error', error.message || 'Error al guardar la clase')
     throw error
   }
 }
@@ -247,6 +304,8 @@ export const cancelarClase = async (claseId) => {
       throw new Error('ID de clase no válido')
     }
 
+    console.log('Enviando solicitud de cancelación para clase ID:', claseId)
+
     const response = await fetch(
       `${API_BASE_URL}/classes/${claseId}/cancelar`,
       {
@@ -257,6 +316,7 @@ export const cancelarClase = async (claseId) => {
     )
 
     const data = await response.json()
+    console.log('Respuesta de cancelación:', data)
 
     if (!response.ok) {
       throw new Error(data.message || 'Error al cancelar inscripción')
@@ -275,6 +335,19 @@ export const inscribirClaseAdmin = async (claseId, userId) => {
       throw new Error('ID de clase o usuario no válido')
     }
 
+    const confirmResult = await alertService.confirm(
+      'Inscribir usuario',
+      '¿Estás seguro de que deseas inscribir a este usuario en la clase?',
+      {
+        confirmButtonText: 'Sí, inscribir',
+        cancelButtonText: 'No, cancelar'
+      }
+    )
+
+    if (!confirmResult.isConfirmed) {
+      return { cancelled: true }
+    }
+
     const response = await fetch(
       `${API_BASE_URL}/classes/${claseId}/inscribir-usuario`,
       {
@@ -291,9 +364,17 @@ export const inscribirClaseAdmin = async (claseId, userId) => {
       throw new Error(data.message || 'Error al inscribir al usuario')
     }
 
+    alertService.success(
+      'Usuario inscrito',
+      'El usuario ha sido inscrito correctamente a la clase'
+    )
     return data.data
   } catch (error) {
     handleApiError(error, 'Error al inscribir al usuario:')
+    alertService.error(
+      'Error',
+      error.message || 'Error al inscribir al usuario'
+    )
     throw error
   }
 }
@@ -302,6 +383,20 @@ export const cancelarClaseAdmin = async (claseId, userId) => {
   try {
     if (!claseId || !userId) {
       throw new Error('ID de clase o usuario no válido')
+    }
+
+    const confirmResult = await alertService.confirm(
+      'Cancelar inscripción',
+      '¿Estás seguro de que deseas cancelar la inscripción de este usuario?',
+      {
+        confirmButtonText: 'Sí, cancelar inscripción',
+        cancelButtonText: 'No, mantener inscripción',
+        icon: 'warning'
+      }
+    )
+
+    if (!confirmResult.isConfirmed) {
+      return { cancelled: true }
     }
 
     const response = await fetch(
@@ -320,9 +415,17 @@ export const cancelarClaseAdmin = async (claseId, userId) => {
       throw new Error(data.message || 'Error al cancelar inscripción')
     }
 
+    alertService.success(
+      'Inscripción cancelada',
+      'La inscripción del usuario ha sido cancelada correctamente'
+    )
     return data.data
   } catch (error) {
     handleApiError(error, 'Error al cancelar inscripción:')
+    alertService.error(
+      'Error',
+      error.message || 'Error al cancelar la inscripción'
+    )
     throw error
   }
 }

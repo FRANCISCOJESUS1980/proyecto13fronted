@@ -160,6 +160,37 @@ const alertService = {
     })
   },
 
+  loading: (
+    title = 'Procesando...',
+    text = 'Por favor, espera un momento',
+    options = {}
+  ) => {
+    clearExistingAlerts()
+    return MySwal.fire({
+      title: title,
+      text: text,
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading()
+      },
+      ...options,
+      customClass: {
+        container: 'swal2-container-top-layer',
+        popup: 'swal2-popup-top-layer',
+        ...(options.customClass || {})
+      },
+      target: document.body
+    })
+  },
+
+  showLoading: () => {
+    return Swal.showLoading()
+  },
+
+  close: clearExistingAlerts,
+
   clearAlerts: clearExistingAlerts
 }
 

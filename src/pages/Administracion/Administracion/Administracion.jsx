@@ -82,6 +82,14 @@ const Administracion = () => {
       path: '/administracion/consentimientos',
       icon: 'document',
       color: 'amber'
+    },
+    {
+      title: 'Facturación',
+      description:
+        'Gestiona los pagos, genera informes y analiza los ingresos por período.',
+      path: '/administracion/facturacion',
+      icon: 'invoice',
+      color: 'teal'
     }
   ]
 

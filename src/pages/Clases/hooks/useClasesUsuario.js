@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react'
 import { format, parseISO } from 'date-fns'
 import { es } from 'date-fns/locale'
-import {
-  fetchClasesUsuario,
-  inscribirClase,
-  cancelarClase
-} from '../../../services/Api/index'
+import { fetchClasesUsuario, inscribirClase } from '../../../services/Api/index'
 import { useAuth } from '../../../components/Header/hooks/useAuth'
+import alertService from '../../../components/sweealert2/sweealert2'
+import { API_BASE_URL } from '../../../services/Api/config'
 
 export const useClasesUsuario = ({
   userId,
@@ -43,7 +41,12 @@ export const useClasesUsuario = ({
       if (!fechaClase) return null
 
       const [horas, minutos] = clase.horario.split(':')
-      fechaClase.setHours(parseInt(horas, 10), parseInt(minutos, 10), 0, 0)
+      fechaClase.setHours(
+        Number.parseInt(horas, 10),
+        Number.parseInt(minutos, 10),
+        0,
+        0
+      )
 
       return fechaClase
     } catch (error) {
@@ -183,6 +186,7 @@ export const useClasesUsuario = ({
       } catch (err) {
         console.error('Error al cargar clases:', err)
         setError('No se pudieron cargar las clases')
+        alertService.error('Error', 'No se pudieron cargar las clases')
       } finally {
         setLoading(false)
       }
@@ -193,13 +197,17 @@ export const useClasesUsuario = ({
 
   const handleInscribir = async (claseId) => {
     if (!userId) {
-      alert('Debes iniciar sesión para inscribirte en una clase')
+      alertService.warning(
+        'Inicio de sesión requerido',
+        'Debes iniciar sesión para inscribirte en una clase'
+      )
       return
     }
 
     if (!claseId) {
       console.error('Error: ID de clase no válido', claseId)
-      alert(
+      alertService.error(
+        'Error de identificación',
         'Error al identificar la clase. Por favor, recarga la página e intenta de nuevo.'
       )
       return
@@ -221,27 +229,40 @@ export const useClasesUsuario = ({
         })
       )
 
+      alertService.success(
+        '¡Inscripción exitosa!',
+        '¡Te has inscrito correctamente a la clase!'
+      )
       setInscripcionExitosa('¡Te has inscrito correctamente a la clase!')
       setTimeout(() => setInscripcionExitosa(null), 3000)
     } catch (err) {
       console.error('Error al inscribirse:', err)
 
       if (err.message && err.message.includes('bono activo')) {
-        alert(
+        alertService.error(
+          'Bono no disponible',
           'No tienes un bono activo para inscribirte. Contacta con administración.'
         )
       } else if (err.message && err.message.includes('sesiones')) {
-        alert(
+        alertService.error(
+          'Sin sesiones disponibles',
           'No tienes sesiones disponibles en tu bono. Contacta con administración.'
         )
       } else if (err.message && err.message.includes('expirado')) {
-        alert(
+        alertService.error(
+          'Bono expirado',
           'Tu bono ha expirado. Contacta con administración para renovarlo.'
         )
       } else if (err.message && err.message.includes('token')) {
-        alert('Tu sesión ha expirado. Por favor, inicia sesión de nuevo.')
+        alertService.error(
+          'Sesión expirada',
+          'Tu sesión ha expirado. Por favor, inicia sesión de nuevo.'
+        )
       } else {
-        alert(err.message || 'Error al inscribirse en la clase')
+        alertService.error(
+          'Error de inscripción',
+          err.message || 'Error al inscribirse en la clase'
+        )
       }
     } finally {
       setLoading(false)
@@ -251,15 +272,32 @@ export const useClasesUsuario = ({
 
   const handleCancelar = async (claseId) => {
     if (!userId) {
-      alert('Debes iniciar sesión para cancelar tu inscripción')
+      alertService.warning(
+        'Inicio de sesión requerido',
+        'Debes iniciar sesión para cancelar tu inscripción'
+      )
       return
     }
 
     if (!claseId) {
       console.error('Error: ID de clase no válido', claseId)
-      alert(
+      alertService.error(
+        'Error de identificación',
         'Error al identificar la clase. Por favor, recarga la página e intenta de nuevo.'
       )
+      return
+    }
+
+    const confirmResult = await alertService.confirm(
+      '¿Cancelar inscripción?',
+      '¿Estás seguro de que deseas cancelar tu inscripción a esta clase?',
+      {
+        confirmButtonText: 'Sí, cancelar',
+        cancelButtonText: 'No, mantener inscripción'
+      }
+    )
+
+    if (!confirmResult.isConfirmed) {
       return
     }
 
@@ -268,7 +306,32 @@ export const useClasesUsuario = ({
 
     try {
       console.log('Cancelando inscripción a clase con ID:', claseId)
-      const claseActualizada = await cancelarClase(claseId)
+
+      const token = localStorage.getItem('token')
+      if (!token) {
+        throw new Error('No hay token de autenticación')
+      }
+
+      const response = await fetch(
+        `${API_BASE_URL}/classes/${claseId}/cancelar`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include'
+        }
+      )
+
+      const data = await response.json()
+      console.log('Respuesta de cancelación:', data)
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Error al cancelar inscripción')
+      }
+
+      const claseActualizada = data.data
 
       setClases((prevClases) =>
         prevClases.map((clase) => {
@@ -279,14 +342,25 @@ export const useClasesUsuario = ({
         })
       )
 
+      alertService.success(
+        'Cancelación exitosa',
+        'Has cancelado tu inscripción correctamente'
+      )
+
       setCancelacionExitosa('Has cancelado tu inscripción correctamente')
       setTimeout(() => setCancelacionExitosa(null), 3000)
     } catch (err) {
       console.error('Error al cancelar inscripción:', err)
       if (err.message && err.message.includes('token')) {
-        alert('Tu sesión ha expirado. Por favor, inicia sesión de nuevo.')
+        alertService.error(
+          'Sesión expirada',
+          'Tu sesión ha expirado. Por favor, inicia sesión de nuevo.'
+        )
       } else {
-        alert(err.message || 'Error al cancelar la inscripción')
+        alertService.error(
+          'Error de cancelación',
+          err.message || 'Error al cancelar la inscripción'
+        )
       }
     } finally {
       setLoading(false)
