@@ -8,9 +8,9 @@ import {
   Users,
   CreditCard
 } from 'lucide-react'
-import Header from '../../../components/Header/Header'
-import { obtenerTodosUsuarios } from '../../../services/Api/usuarios'
-import Button from '../../../components/Button/Button'
+import Header from '../../../../components/Header/Header'
+import { obtenerTodosUsuarios } from '../../../../services/Api/index'
+import Button from '../../../../components/Button/Button'
 import './AdminUsuarios.css'
 
 const AdminUsuarios = () => {

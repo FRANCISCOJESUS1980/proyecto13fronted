@@ -1,12 +1,12 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, User } from 'lucide-react'
-import Header from '../../../../components/Header/Header'
-import CalendarioDias from '../../../Clases/components/CalendarioDias/CalendarioDias'
-import ClasesTimeline from '../../../Clases/components/ClaseTimeline/ClasesTimeline'
-import MensajeEstado from '../../../Clases/components/MensajeEstado/MensajeEstado'
-import { useCalendario } from '../../../Clases/hooks/useCalendario'
+import Header from '../../../../../components/Header/Header'
+import CalendarioDias from '../../../../Clases/components/CalendarioDias/CalendarioDias'
+import ClasesTimeline from '../../../../Clases/components/ClaseTimeline/ClasesTimeline'
+import MensajeEstado from '../../../../Clases/components/MensajeEstado/MensajeEstado'
+import { useCalendario } from '../../../../Clases/hooks/useCalendario'
 import { useUsuarioClases } from '../hooks/useUsuarioClases'
-import Button from '../../../../components/Button/Button'
+import Button from '../../../../../components/Button/Button'
 import './AdminUsuarioClases.css'
 
 const AdminUsuarioClases = () => {

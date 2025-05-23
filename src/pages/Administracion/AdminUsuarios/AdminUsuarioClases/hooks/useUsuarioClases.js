@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
-import { API_BASE_URL } from '../../../../services/Api/config'
-import { obtenerUsuarioPorId } from '../../../../services/Api/index'
+import { API_BASE_URL } from '../../../../../services/Api/config'
+import { obtenerUsuarioPorId } from '../../../../../services/Api/index'
 
 export const useUsuarioClases = (userId, selectedDate) => {
   const [userInfo, setUserInfo] = useState(null)
