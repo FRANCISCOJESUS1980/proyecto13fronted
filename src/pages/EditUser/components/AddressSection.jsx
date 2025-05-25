@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import InputField from './inputField'
+import InputField from './inputField.jsx'
 
 const AddressSection = memo(({ user, onAddressChange }) => {
   return (
