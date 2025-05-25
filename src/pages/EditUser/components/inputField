@@ -1,6 +1,6 @@
 import { memo } from 'react'
 
-const InputField = memo(
+const inputField = memo(
   ({ icon, type, name, value, onChange, placeholder, required = false }) => {
     return (
       <div className='cf-edit-user-input-field'>
@@ -21,6 +21,6 @@ const InputField = memo(
   }
 )
 
-InputField.displayName = 'InputField'
+InputField.displayName = 'inputField'
 
-export default InputField
+export default inputField

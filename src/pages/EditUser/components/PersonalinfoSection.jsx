@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import InputField from './InputField'
+import InputField from './inputField'
 
 const PersonalInfoSection = memo(({ user, onChange }) => {
   return (

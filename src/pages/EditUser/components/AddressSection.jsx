@@ -1,12 +1,12 @@
 import { memo } from 'react'
-import InputField from './InputField'
+import inputField from './inputField'
 
 const AddressSection = memo(({ user, onAddressChange }) => {
   return (
     <>
       <h3 className='cf-edit-user-section-title'>Dirección</h3>
 
-      <InputField
+      <inputField
         icon='address'
         type='text'
         name='calle'
@@ -15,7 +15,7 @@ const AddressSection = memo(({ user, onAddressChange }) => {
         placeholder='Calle'
       />
 
-      <InputField
+      <inputField
         icon='city'
         type='text'
         name='ciudad'
@@ -24,7 +24,7 @@ const AddressSection = memo(({ user, onAddressChange }) => {
         placeholder='Ciudad'
       />
 
-      <InputField
+      <inputField
         icon='postal'
         type='text'
         name='codigoPostal'
@@ -33,7 +33,7 @@ const AddressSection = memo(({ user, onAddressChange }) => {
         placeholder='Código Postal'
       />
 
-      <InputField
+      <inputField
         icon='country'
         type='text'
         name='pais'
