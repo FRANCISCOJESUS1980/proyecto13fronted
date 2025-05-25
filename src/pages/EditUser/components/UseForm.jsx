@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import PersonalInfoSection from './PersonalInfoSection'
+import PersonalInfoSection from './PersonalinfoSection'
 import AddressSection from './AddressSection'
 import FormActions from './FormActions'
 
