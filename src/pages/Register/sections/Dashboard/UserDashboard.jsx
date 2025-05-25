@@ -5,7 +5,7 @@ import Header from '../../../../components/Header/Header'
 import { obtenerPerfilUsuario } from '../../../../services/Api/index'
 import { obtenerMensajesNoLeidos } from '../../../../services/Api/mensajesPrivados'
 import BonoInfo from '../../../Administracion/AdminGestionBonos/BonoInfo/BonoInfo'
-import { Dumbbell, ShoppingBag, Video } from 'lucide-react'
+import { Dumbbell, ShoppingBag, Video, Timer } from 'lucide-react'
 
 const UserDashboard = () => {
   const navigate = useNavigate()
@@ -117,6 +117,13 @@ const UserDashboard = () => {
       color: 'teal'
     },
     {
+      icon: 'timer',
+      title: 'TIMER',
+      description: 'Timer profesional para WODs de CrossFit',
+      path: '/dashboard/timer',
+      color: 'red'
+    },
+    {
       icon: 'medical',
       title: 'Información Médica',
       description: 'Gestiona tu información médica y de salud',
@@ -159,7 +166,6 @@ const UserDashboard = () => {
       path: `/dashboard/editar-perfil/${userId}`,
       color: 'orange'
     },
-
     {
       icon: 'video',
       title: 'Videos',
@@ -167,7 +173,6 @@ const UserDashboard = () => {
       path: '/videos',
       color: 'red'
     },
-
     {
       icon: 'product',
       title: 'Productos',
@@ -179,6 +184,10 @@ const UserDashboard = () => {
 
   const renderSectionIcon = (iconType) => {
     switch (iconType) {
+      case 'timer':
+        return (
+          <Timer className='cf-dash-section-icon' size={24} strokeWidth={2} />
+        )
       case 'medical':
         return (
           <span className='cf-dash-section-icon cf-dash-medical-icon'></span>

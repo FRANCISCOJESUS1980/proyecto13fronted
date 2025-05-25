@@ -25,6 +25,7 @@ import AdminUsuarioClases from '../pages/Administracion/AdminUsuarios/AdminUsuar
 import AdminUsuarioMensajePrivado from '../pages/Administracion/AdminUsuarios/AdminUsuarioMensajePrivado/AdminUsuarioMensajePrivado'
 import UserMensajes from '../pages/Register/sections/UsuarioMensajePrivado/UsuarioMensajePrivado'
 import GestionBonos from '../pages/Administracion/AdminGestionBonos/AdminGestionBonos'
+import Timer from '../pages/Register/sections/Timer/page/Timer'
 import NotFound from '../pages/NotFound/NotFound'
 
 import {
@@ -106,6 +107,7 @@ const AppRouter = () => {
                 <Route path='/dashboard/marcas' element={<Marcas />} />
                 <Route path='/dashboard/chat' element={<Chat />} />
                 <Route path='/dashboard/mensajes' element={<UserMensajes />} />
+                <Route path='/dashboard/timer' element={<Timer />} />
                 <Route
                   path='/dashboard/editar-perfil/:id'
                   element={<EditarPerfil />}

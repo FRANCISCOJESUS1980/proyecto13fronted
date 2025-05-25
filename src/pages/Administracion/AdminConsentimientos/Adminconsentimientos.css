@@ -183,9 +183,11 @@
 
 .cf-consentimientos-stats {
   display: flex;
+  justify-content: center;
+  align-items: center;
   gap: 1.5rem;
   margin-bottom: 2rem;
-  margin-right: 40px;
+
   flex-wrap: wrap;
 }
 
@@ -517,6 +519,29 @@
 .cf-consentimientos-dialog-confirm:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+.cf-consentimientos-pagination-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  padding: 20px 0;
+  border-top: 1px solid #e5e7eb;
+}
+
+.cf-consentimientos-pagination-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  background-color: rgba(30, 30, 30, 0.6);
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.cf-consentimientos-pagination-text {
+  font-size: 14px;
+  color: white;
+  font-weight: 500;
 }
 
 @keyframes cf-consentimientos-fade-in {
