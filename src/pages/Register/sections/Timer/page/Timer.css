@@ -372,10 +372,6 @@
 }
 
 @media (max-width: 768px) and (orientation: portrait) {
-  .timer-container {
-    padding: 15px;
-  }
-
   .timer-title {
     font-size: 1.5rem;
   }
@@ -391,6 +387,7 @@
   .mode-grid {
     grid-template-columns: 1fr;
     gap: 15px;
+    margin: 10px;
   }
 
   .mode-button {
