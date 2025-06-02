@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import './Loading.css'
+import './loading.css'
 
 const Loading = ({ isVisible = true, onComplete }) => {
   const [progress, setProgress] = useState(0)
