@@ -4,40 +4,6 @@
   overflow-x: hidden;
 }
 
-.cf-social-loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background-color: var(--color-background);
-  color: var(--color-foreground);
-  gap: var(--space-4);
-}
-
-.cf-social-barbell-loader {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: var(--space-4);
-}
-
-.cf-social-barbell-left,
-.cf-social-barbell-right {
-  width: 40px;
-  height: 40px;
-  background-color: var(--color-orange);
-  border-radius: 50%;
-  animation: cf-pulse 1.5s infinite;
-}
-
-.cf-social-barbell-bar {
-  width: 120px;
-  height: 10px;
-  background-color: var(--color-orange-border);
-  margin: 0 -5px;
-}
-
 .cf-social-back-button {
   display: flex;
   justify-content: center;

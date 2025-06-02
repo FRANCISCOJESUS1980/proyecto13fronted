@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useSocialMediaState } from '../hooks/useRedesSocialesState'
 import Header from '../../../components/Header/Header'
 import Button from '../../../components/Button/Button'
-import LoadingScreen from '../components/LoadingScreen'
+import Loading from '../../../components/Loading/loading'
 import HeroSection from '../components/HeroSection'
 import SocialNetworksSection from '../components/SocialNetworksSection'
 import FeaturesSection from '../components/FeaturesSection'
@@ -20,7 +20,7 @@ const RedesSociales = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false)
-    }, 1500)
+    }, /*1500*/ 8000)
     return () => clearTimeout(timer)
   }, [setLoading])
 
@@ -32,7 +32,7 @@ const RedesSociales = () => {
   }, [setAnimationComplete])
 
   if (loading) {
-    return <LoadingScreen />
+    return <Loading isVisible={loading} onComplete={() => setLoading(false)} />
   }
 
   return (

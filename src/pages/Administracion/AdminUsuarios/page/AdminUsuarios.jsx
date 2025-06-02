@@ -189,12 +189,12 @@ const AdminUsuarios = () => {
                   <div className='cf-admin-usuarios-avatar-container'>
                     {usuario.avatar ? (
                       <img
-                        src={usuario.avatar || '/default-avatar.jpg'}
+                        src={usuario.avatar || '/imagenes/default-avatar.png'}
                         alt={usuario.nombre}
                         className='cf-admin-usuarios-avatar'
                         onError={(e) => {
                           e.target.onerror = null
-                          e.target.src = '/default-avatar.jpg'
+                          e.target.src = '/imagenes/default-avatar.png'
                         }}
                       />
                     ) : (

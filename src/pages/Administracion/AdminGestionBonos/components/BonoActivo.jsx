@@ -20,7 +20,7 @@ const BonoActivo = memo(
             onClick={onAñadirSesiones}
             leftIcon={<Plus size={18} />}
           >
-            Asignar Bono
+            Añadir Sesion
           </Button>
         </div>
       )

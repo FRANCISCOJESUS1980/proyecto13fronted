@@ -1,21 +1,21 @@
 import { useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './Adminconsentimientos.css'
-import Header from '../../../components/Header/Header'
-import Button from '../../../components/Button/Button'
-import { useAuthGuard } from './hooks/use-auth-guard'
-import { useConsentimientos } from './hooks/use-consentimientos'
-import { useSearch } from './hooks/use-search'
-import { usePagination } from './hooks/use-pagination'
+import Header from '../../../../components/Header/Header'
+import Button from '../../../../components/Button/Button'
+import { useAuthGuard } from '../hooks/use-auth-guard'
+import { useConsentimientos } from '../hooks/use-consentimientos'
+import { useSearch } from '../hooks/use-search'
+import { usePagination } from '../hooks/use-pagination'
 import {
   enrichConsentimientosWithUsers,
   calculateStats
-} from './utils/consentimientos-utils'
-import ConsentimientosSearch from './components/ConsentimientosSearch'
-import ConsentimientosStats from './components/ConsentimientosStats'
-import ConsentimientosTable from './components/ConsentimientosTable'
-import LoadingSpinner from './components/LoadingSpinner'
-import ErrorMessage from './components/ErrorMessage'
+} from '../utils/consentimientos-utils'
+import ConsentimientosSearch from '../components/ConsentimientosSearch'
+import ConsentimientosStats from '../components/ConsentimientosStats'
+import ConsentimientosTable from '../components/ConsentimientosTable'
+import LoadingSpinner from '../components/LoadingSpinner'
+import ErrorMessage from '../components/ErrorMessage'
 
 const ITEMS_PER_PAGE = 5
 
