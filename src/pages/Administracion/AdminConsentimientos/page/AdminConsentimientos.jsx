@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import './Adminconsentimientos.css'
 import Header from '../../../../components/Header/Header'
 import Button from '../../../../components/Button/Button'
+import Loading from '../../../../components/Loading/loading'
 import { useAuthGuard } from '../hooks/use-auth-guard'
 import { useConsentimientos } from '../hooks/use-consentimientos'
 import { useSearch } from '../hooks/use-search'
@@ -14,7 +15,6 @@ import {
 import ConsentimientosSearch from '../components/ConsentimientosSearch'
 import ConsentimientosStats from '../components/ConsentimientosStats'
 import ConsentimientosTable from '../components/ConsentimientosTable'
-import LoadingSpinner from '../components/LoadingSpinner'
 import ErrorMessage from '../components/ErrorMessage'
 
 const ITEMS_PER_PAGE = 5
@@ -77,6 +77,10 @@ const AdminConsentimientos = () => {
     endIndex
   }
 
+  if (loading) {
+    return <Loading isVisible={loading} />
+  }
+
   return (
     <div
       className={`cf-consentimientos-container ${
@@ -104,23 +108,15 @@ const AdminConsentimientos = () => {
           onSearchChange={setSearchTerm}
         />
 
-        {loading ? (
-          <LoadingSpinner />
-        ) : (
-          <>
-            <ConsentimientosStats
-              stats={stats}
-              paginationInfo={paginationInfo}
-            />
-            <ConsentimientosTable
-              consentimientos={paginatedItems}
-              deleteLoading={deleteLoading}
-              onDelete={deleteConsentimiento}
-              paginationInfo={paginationInfo}
-              onPageChange={goToPage}
-            />
-          </>
-        )}
+        <ConsentimientosStats stats={stats} paginationInfo={paginationInfo} />
+
+        <ConsentimientosTable
+          consentimientos={paginatedItems}
+          deleteLoading={deleteLoading}
+          onDelete={deleteConsentimiento}
+          paginationInfo={paginationInfo}
+          onPageChange={goToPage}
+        />
       </div>
     </div>
   )

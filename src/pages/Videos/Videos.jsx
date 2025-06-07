@@ -1,8 +1,11 @@
 import { useState, useRef, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Header from '../../components/Header/Header'
+import Button from '../../components/Button/Button'
 import './Videos.css'
 
 const Videos = () => {
+  const navigate = useNavigate()
   const [videos] = useState([
     {
       id: 1,
@@ -104,11 +107,27 @@ const Videos = () => {
     }
   }, [])
 
+  const handleBackNavigation = () => {
+    navigate('/dashboard')
+  }
+
   return (
     <div className='cf-videos-container'>
       <Header />
-      <main className='cf-videos-main'>
+
+      <div className='cf-videos-header'>
+        <Button
+          variant='secondary'
+          onClick={handleBackNavigation}
+          leftIcon={<span>←</span>}
+          className='cf-videos-backbutton'
+        >
+          Volver al Dashboard
+        </Button>
         <h1 className='cf-videos-title'>Videos de Movimientos de CrossFit</h1>
+      </div>
+
+      <main className='cf-videos-main'>
         <p className='cf-videos-description'>
           Aprende la técnica correcta de los principales movimientos de CrossFit
           con nuestros videos explicativos. Dominar estos movimientos te ayudará

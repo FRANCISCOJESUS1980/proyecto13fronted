@@ -4,10 +4,10 @@ import { ArrowLeft } from 'lucide-react'
 import { useMedicalInfoState } from '../hooks/useMedicalinfoState'
 import Header from '../../../../components/Header/Header'
 import Button from '../../../../components/Button/Button'
+import Loading from '../../../../components/Loading/loading'
 import SearchFilters from '../components/SearchFilters'
 import UsersList from '../components/UsersList'
 import UserDetails from '../components/UserDetails'
-import LoadingState from '../components/LoadingState'
 import ErrorMessage from '../components/ErrorMessage'
 import './MedicalinfoList.css'
 
@@ -39,6 +39,15 @@ const MedicalInfoList = () => {
   useEffect(() => {
     fetchMedicalInfo()
   }, [fetchMedicalInfo])
+
+  if (loading) {
+    return (
+      <Loading
+        isVisible={loading}
+        loadingText='CARGANDO INFORMACIÓN MÉDICA...'
+      />
+    )
+  }
 
   return (
     <div
@@ -76,18 +85,14 @@ const MedicalInfoList = () => {
           onClearFilters={clearFilters}
         />
 
-        {loading ? (
-          <LoadingState />
-        ) : (
-          <div className='cf-medical-info-grid'>
-            <UsersList
-              filteredUsers={filteredUsers}
-              selectedUser={selectedUser}
-              onUserSelect={handleUserSelect}
-            />
-            <UserDetails selectedUser={selectedUser} />
-          </div>
-        )}
+        <div className='cf-medical-info-grid'>
+          <UsersList
+            filteredUsers={filteredUsers}
+            selectedUser={selectedUser}
+            onUserSelect={handleUserSelect}
+          />
+          <UserDetails selectedUser={selectedUser} />
+        </div>
       </div>
     </div>
   )

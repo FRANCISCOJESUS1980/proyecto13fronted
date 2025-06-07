@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { INITIAL_MEDICAL_INFO } from '../constants/medicalConfig'
 
 export const useMedicalForm = () => {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [animationComplete, setAnimationComplete] = useState(false)
   const [medicalInfo, setMedicalInfo] = useState(INITIAL_MEDICAL_INFO)
   const originalDataRef = useRef(null)

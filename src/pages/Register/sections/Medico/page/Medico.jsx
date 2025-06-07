@@ -8,10 +8,10 @@ import {
 import { FORM_SECTIONS } from '../constants/medicalConfig'
 import Header from '../../../../../components/Header/Header'
 import Button from '../../../../../components/Button/Button'
+import Loading from '../../../../../components/Loading/loading'
 import handleSubmitHelper from '../../../../../utils/HandleSubmit'
 import alertService from '../../../../../components/sweealert2/sweealert2'
 import MedicalAnimations from '../components/medical-form/MedicalAnimations'
-import MedicalLoadingScreen from '../components/medical-form/MedicalLoadingScreen'
 import MedicalHeader from '../components/medical-form/MedicalHeader'
 import MedicalSection from '../components/medical-form/MedicalSection'
 import MedicalSubmitButton from '../components/medical-form/MedicalSubmitButton'
@@ -31,7 +31,18 @@ const Medico = () => {
   } = useMedicalForm()
 
   useEffect(() => {
-    fetchMedicalInfo(setLoading, setMedicalData)
+    const loadMedicalData = async () => {
+      setLoading(true)
+
+      const dummySetLoading = () => {}
+
+      await fetchMedicalInfo(dummySetLoading, setMedicalData)
+      setTimeout(() => {
+        setLoading(false)
+      }, 0)
+    }
+
+    loadMedicalData()
   }, [setLoading, setMedicalData])
 
   const handleSubmit = useCallback(
@@ -51,8 +62,13 @@ const Medico = () => {
     handleBackNavigationWithChanges(checkFormChanges, navigate, alertService)
   }, [checkFormChanges, navigate])
 
-  if (loading && !medicalInfo.bloodType) {
-    return <MedicalLoadingScreen />
+  if (loading) {
+    return (
+      <Loading
+        isVisible={loading}
+        loadingText='CARGANDO FORMULARIO MÉDICO...'
+      />
+    )
   }
 
   return (

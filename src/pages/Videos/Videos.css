@@ -10,6 +10,13 @@
   margin: 0 auto;
   padding: var(--space-4);
 }
+.cf-videos-header {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 
 .cf-videos-title {
   font-size: 2.5rem;

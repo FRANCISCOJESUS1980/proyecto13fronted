@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Header from '../../../components/Header/Header'
+import Loading from '../../../components/Loading/loading'
 import CalendarioDias from '../components/CalendarioDias/CalendarioDias'
 import ClasesTimeline from '../components/ClaseTimeline/ClasesTimeline'
 import MensajeEstado from '../components/MensajeEstado/MensajeEstado'
@@ -35,6 +36,7 @@ const Clases = () => {
     clases,
     clasesOrdenadas,
     loading,
+    setLoading,
     error,
     handleInscribir,
     handleCancelar,
@@ -56,6 +58,16 @@ const Clases = () => {
   useEffect(() => {
     setTimeout(() => setFadeIn(true), 100)
   }, [])
+
+  if (loading && !claseSeleccionada) {
+    return (
+      <Loading
+        isVisible={loading}
+        loadingText='CARGANDO CLASES...'
+        onComplete={() => setLoading(false)}
+      />
+    )
+  }
 
   return (
     <div className={`cf-clases-container ${fadeIn ? 'cf-clases-fade-in' : ''}`}>
@@ -141,13 +153,6 @@ const Clases = () => {
             setSelectedDate={setSelectedDate}
           />
         </div>
-
-        {loading && !claseSeleccionada && (
-          <div className='cf-clases-loading'>
-            <div className='cf-clases-spinner'></div>
-            <p className='cf-clases-loading-text'>Cargando clases...</p>
-          </div>
-        )}
 
         {error ? (
           <MensajeEstado tipo='error' mensaje={error} />

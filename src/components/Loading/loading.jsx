@@ -2,17 +2,102 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import './loading.css'
 
-const Loading = ({ isVisible = true, onComplete }) => {
+const Loading = ({
+  isVisible = true,
+  onComplete,
+  loadingText = 'CARGANDO...'
+}) => {
   const [progress, setProgress] = useState(0)
   const [currentPhrase, setCurrentPhrase] = useState(0)
 
-  const phrases = [
-    'CONECTANDO REDES SOCIALES...',
-    'CARGANDO CONTENIDO...',
-    'PREPARANDO EXPERIENCIA...',
-    'ACTIVANDO MODO SOCIAL...',
-    'CASI LISTOS PARA CONECTAR...'
-  ]
+  const getPhrasesForContext = (text) => {
+    if (text.includes('FORMULARIO MÉDICO') || text.includes('MÉDICO')) {
+      return [
+        'CARGANDO FORMULARIO MÉDICO...',
+        'OBTENIENDO HISTORIAL CLÍNICO...',
+        'VERIFICANDO DATOS DE SALUD...',
+        'PREPARANDO CAMPOS MÉDICOS...',
+        'LISTO PARA COMPLETAR...'
+      ]
+    }
+    if (text.includes('PERFIL') || text.includes('USUARIO')) {
+      return [
+        'CARGANDO PERFIL DE USUARIO...',
+        'OBTENIENDO DATOS PERSONALES...',
+        'VERIFICANDO INFORMACIÓN...',
+        'PREPARANDO FORMULARIO...',
+        'CASI LISTO PARA EDITAR...'
+      ]
+    }
+    if (text.includes('INFORMACIÓN MÉDICA') || text.includes('MEDICAL')) {
+      return [
+        'CARGANDO INFORMACIÓN MÉDICA...',
+        'OBTENIENDO DATOS DE SALUD...',
+        'PROCESANDO HISTORIALES...',
+        'VERIFICANDO INFORMACIÓN...',
+        'PREPARANDO VISTA MÉDICA...'
+      ]
+    }
+    if (text.includes('FACTURACIÓN')) {
+      return [
+        'CARGANDO FACTURACIÓN...',
+        'OBTENIENDO BONOS...',
+        'CALCULANDO ESTADÍSTICAS...',
+        'PROCESANDO DATOS FINANCIEROS...',
+        'PREPARANDO DASHBOARD...'
+      ]
+    }
+    if (text.includes('CONSENTIMIENTOS')) {
+      return [
+        'CARGANDO CONSENTIMIENTOS...',
+        'OBTENIENDO DATOS...',
+        'PROCESANDO INFORMACIÓN...',
+        'PREPARANDO VISTA...',
+        'CASI LISTO...'
+      ]
+    }
+
+    return [
+      loadingText,
+      'OBTENIENDO DATOS...',
+      'PROCESANDO INFORMACIÓN...',
+      'PREPARANDO EXPERIENCIA...',
+      'CASI LISTOS...'
+    ]
+  }
+
+  const phrases = getPhrasesForContext(loadingText)
+
+  const getIconForContext = (text) => {
+    if (text.includes('FORMULARIO MÉDICO') || text.includes('MÉDICO'))
+      return '🩺'
+    if (text.includes('PERFIL') || text.includes('USUARIO')) return '👤'
+    if (text.includes('INFORMACIÓN MÉDICA') || text.includes('MEDICAL'))
+      return '🏥'
+    if (text.includes('FACTURACIÓN')) return '💰'
+    if (text.includes('CONSENTIMIENTOS')) return '📋'
+    if (text.includes('REDES') || text.includes('SOCIAL')) return '🔗'
+    return '⚡'
+  }
+
+  const contextIcon = getIconForContext(loadingText)
+
+  const getFooterText = (text) => {
+    if (text.includes('FORMULARIO MÉDICO') || text.includes('MÉDICO'))
+      return 'Preparando formulario de salud'
+    if (text.includes('PERFIL') || text.includes('USUARIO'))
+      return 'Preparando edición de perfil'
+    if (text.includes('INFORMACIÓN MÉDICA') || text.includes('MEDICAL'))
+      return 'Cargando datos médicos de usuarios'
+    if (text.includes('FACTURACIÓN')) return 'Cargando datos financieros'
+    if (text.includes('CONSENTIMIENTOS'))
+      return 'Cargando panel de administración'
+    if (text.includes('REDES') || text.includes('SOCIAL'))
+      return 'Conectando con tus redes sociales'
+    return 'Cargando aplicación'
+  }
+
+  const footerText = getFooterText(loadingText)
 
   useEffect(() => {
     if (!isVisible) return
@@ -24,21 +109,22 @@ const Loading = ({ isVisible = true, onComplete }) => {
           setTimeout(() => onComplete?.(), 500)
           return 100
         }
-        return prev + /*2*/ 0.5
+
+        return prev + 0.5
       })
-    }, /*30*/ 50)
+    }, 100)
 
     const phraseInterval = setInterval(() => {
       setCurrentPhrase((prev) => (prev + 1) % phrases.length)
-    }, 1000)
+    }, 2500)
 
     return () => {
       clearInterval(interval)
       clearInterval(phraseInterval)
     }
-  }, [isVisible, onComplete])
+  }, [isVisible, onComplete, phrases.length])
 
-  const particles = Array.from({ length: 20 }, (_, i) => i)
+  const particles = Array.from({ length: 10 }, (_, i) => i)
 
   return (
     <AnimatePresence>
@@ -74,7 +160,7 @@ const Loading = ({ isVisible = true, onComplete }) => {
                   opacity: [0.3, 0.8, 0.3]
                 }}
                 transition={{
-                  duration: 3 + Math.random() * 2,
+                  duration: 4 + Math.random() * 2,
                   repeat: Number.POSITIVE_INFINITY,
                   ease: 'easeInOut'
                 }}
@@ -99,7 +185,7 @@ const Loading = ({ isVisible = true, onComplete }) => {
                   }}
                   className='cf-loading-logo-icon'
                 >
-                  🔗
+                  {contextIcon}
                 </motion.div>
               </div>
             </motion.div>
@@ -165,7 +251,7 @@ const Loading = ({ isVisible = true, onComplete }) => {
             <div className='cf-loading-progress-container'>
               <div className='cf-loading-progress-header'>
                 <span>PROGRESO</span>
-                <span>{progress}%</span>
+                <span>{Math.round(progress)}%</span>
               </div>
 
               <div className='cf-loading-progress-bar'>
@@ -216,7 +302,7 @@ const Loading = ({ isVisible = true, onComplete }) => {
               animate={{ opacity: [0.5, 1, 0.5] }}
               transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
             >
-              Conectando con tus redes sociales
+              {footerText}
             </motion.p>
           </div>
 

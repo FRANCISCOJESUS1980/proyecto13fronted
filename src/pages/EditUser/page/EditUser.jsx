@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useEditUserState } from '../hooks/useEditUserState'
 import Header from '../../../components/Header/Header'
 import Button from '../../../components/Button/Button'
-import LoadingSpinner from '../components/LoadingSpinner'
+import Loading from '../../../components/Loading/loading'
 import AnimationWrapper from '../components/AnimationWrapper'
 import UnsavedChangesWarning from '../components/UnsavedChangesWarning'
 import AvatarUpload from '../components/AvatarUpload'
@@ -47,7 +47,12 @@ const EditUser = () => {
   }, [fetchUser])
 
   if (loading) {
-    return <LoadingSpinner />
+    return (
+      <Loading
+        isVisible={loading}
+        loadingText='CARGANDO PERFIL DE USUARIO...'
+      />
+    )
   }
 
   return (

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './UserDashboard.css'
 import Header from '../../../../components/Header/Header'
+import Loading from '../../../../components/Loading/loading'
 import { obtenerPerfilUsuario } from '../../../../services/Api/index'
 import { obtenerMensajesNoLeidos } from '../../../../services/Api/mensajesPrivados'
 import BonoInfo from '../../../Administracion/AdminGestionBonos/BonoInfo/BonoInfo'
@@ -62,6 +63,10 @@ const UserDashboard = () => {
         }
 
         await checkUnreadMessages()
+
+        setTimeout(() => {
+          setLoading(false)
+        }, 0)
       } catch (error) {
         console.error('Error al obtener datos del usuario:', error)
 
@@ -69,8 +74,10 @@ const UserDashboard = () => {
         if (nombre) {
           setUserName(nombre)
         }
-      } finally {
-        setLoading(false)
+
+        setTimeout(() => {
+          setLoading(false)
+        }, 0)
       }
     }
 
@@ -237,6 +244,16 @@ const UserDashboard = () => {
     }
   }
 
+  if (loading) {
+    return (
+      <Loading
+        isVisible={loading}
+        loadingText='CARGANDO DASHBOARD...'
+        onComplete={() => setLoading(false)}
+      />
+    )
+  }
+
   return (
     <div
       className={`cf-dash-container ${
@@ -270,45 +287,38 @@ const UserDashboard = () => {
             </div>
           )}
 
-        {loading ? (
-          <div className='cf-dash-loading'>
-            <div className='cf-dash-spinner'></div>
-            <p className='cf-dash-loading-text'>Cargando tu información...</p>
-          </div>
-        ) : (
-          <div className='cf-dash-sections'>
-            {sectionData.map((section, index) => (
-              <div
-                key={index}
-                className={`cf-dash-card cf-dash-card-${section.color}`}
-                onClick={() => navigate(section.path)}
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <div className='cf-dash-card-content'>
-                  <div
-                    className={`cf-dash-card-icon-container cf-dash-icon-${section.color}`}
-                  >
-                    {renderSectionIcon(section.icon)}
-                  </div>
-                  <div className='cf-dash-card-info'>
-                    <h2 className='cf-dash-card-title'>{section.title}</h2>
-                    <p className='cf-dash-card-description'>
-                      {section.description}
-                    </p>
-                  </div>
-                  {section.badge && (
-                    <div className='cf-dash-notification-badge'>
-                      <span>{section.badge}</span>
-                    </div>
-                  )}
-                  <div
-                    className={`cf-dash-card-arrow cf-dash-arrow-${section.color}`}
-                  ></div>
+        <div className='cf-dash-sections'>
+          {sectionData.map((section, index) => (
+            <div
+              key={index}
+              className={`cf-dash-card cf-dash-card-${section.color}`}
+              onClick={() => navigate(section.path)}
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
+              <div className='cf-dash-card-content'>
+                <div
+                  className={`cf-dash-card-icon-container cf-dash-icon-${section.color}`}
+                >
+                  {renderSectionIcon(section.icon)}
                 </div>
+                <div className='cf-dash-card-info'>
+                  <h2 className='cf-dash-card-title'>{section.title}</h2>
+                  <p className='cf-dash-card-description'>
+                    {section.description}
+                  </p>
+                </div>
+                {section.badge && (
+                  <div className='cf-dash-notification-badge'>
+                    <span>{section.badge}</span>
+                  </div>
+                )}
+                <div
+                  className={`cf-dash-card-arrow cf-dash-arrow-${section.color}`}
+                ></div>
               </div>
-            ))}
-          </div>
-        )}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )

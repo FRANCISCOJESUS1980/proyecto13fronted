@@ -1,34 +1,13 @@
-:root {
-  --primary: #ff5722;
-  --primary-dark: #e64a19;
-  --secondary: #212121;
-  --accent: #ffc107;
-  --light: #f5f5f5;
-  --dark: #121212;
-  --success: #4caf50;
-  --error: #f44336;
-  --gray-100: #f8f9fa;
-  --gray-200: #e9ecef;
-  --gray-300: #dee2e6;
-  --gray-400: #ced4da;
-  --gray-500: #adb5bd;
-  --gray-600: #6c757d;
-  --gray-700: #495057;
-  --gray-800: #343a40;
-  --gray-900: #212529;
-}
-
 body {
-  background-color: var(--gray-100);
-  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+  background-color: var(--color-background);
+  font-family: var(--font-family);
 }
 
 .edit-user-container {
-  width: 100% (calc());
-
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  background-color: var(--color-surface);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-xl);
   position: relative;
   overflow: hidden;
   height: 100%;
@@ -43,19 +22,23 @@ body {
   left: 0;
   width: 100%;
   height: 6px;
-  background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+  background: linear-gradient(
+    90deg,
+    var(--color-orange) 0%,
+    var(--color-amber) 100%
+  );
 }
 
 .edit-user-container h2 {
-  margin-bottom: 1.5rem;
-  color: var(--secondary);
+  margin-bottom: var(--space-6);
+  color: var(--color-foreground);
   text-align: center;
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
   text-transform: uppercase;
   letter-spacing: 1px;
   position: relative;
-  padding-bottom: 15px;
+  padding-bottom: var(--space-4);
 }
 
 .edit-user-container h2::after {
@@ -66,53 +49,54 @@ body {
   transform: translateX(-50%);
   width: 60px;
   height: 4px;
-  background-color: var(--primary);
-  border-radius: 2px;
+  background-color: var(--color-orange);
+  border-radius: var(--border-radius-sm);
 }
 
 .edit-user-form {
   display: grid;
-  gap: 1.5rem;
-  margin: 20px;
+  gap: var(--space-6);
+  margin: var(--space-5);
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--space-2);
 }
 
 .form-group label {
-  font-weight: 600;
-  color: var(--gray-700);
-  font-size: 0.9rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-foreground-muted);
+  font-size: var(--font-size-sm);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .form-group input {
-  padding: 0.75rem 1rem;
-  border: 2px solid var(--gray-300);
-  border-radius: 6px;
-  font-size: 1rem;
-  transition: all 0.2s ease;
-  background-color: var(--gray-100);
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
+  transition: var(--transition-fast);
+  background-color: var(--color-surface-light);
   width: 92%;
   flex-wrap: wrap;
+  color: var(--color-foreground);
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.2);
-  background-color: white;
+  border-color: var(--color-orange);
+  box-shadow: 0 0 0 3px var(--color-orange-lighter);
+  background-color: var(--color-surface);
 }
 
 .edit-user-container h3 {
-  margin: 1rem 0 0.5rem;
-  color: var(--gray-800);
-  font-size: 1.25rem;
-  font-weight: 600;
+  margin: var(--space-4) 0 var(--space-2);
+  color: var(--color-foreground);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
   position: relative;
   display: flex;
   align-items: center;
@@ -120,75 +104,46 @@ body {
 
 .edit-user-container h3::before {
   content: '📍';
-  margin-right: 8px;
-  font-size: 1.2rem;
+  margin-right: var(--space-2);
+  font-size: var(--font-size-lg);
 }
 
 .form-actions {
   display: flex;
-  gap: 1rem;
-  margin-top: 2rem;
+  gap: var(--space-4);
+  margin-top: var(--space-8);
   flex-wrap: wrap;
   flex-direction: column;
 }
 
-.loading {
-  text-align: center;
-  padding: 3rem;
-  font-size: 1.2rem;
-  color: var(--gray-600);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 200px;
-}
-
-.loading::after {
-  content: '';
-  display: block;
-  width: 50px;
-  height: 50px;
-  margin-top: 20px;
-  border: 5px solid var(--gray-300);
-  border-radius: 50%;
-  border-top-color: var(--primary);
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .avatar-preview {
-  margin-top: 0.5rem;
-  border: 2px solid var(--gray-300);
-  padding: 0.5rem;
-  border-radius: 8px;
+  margin-top: var(--space-2);
+  border: 2px solid var(--color-border);
+  padding: var(--space-2);
+  border-radius: var(--border-radius-lg);
   display: inline-block;
-  background-color: white;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-sm);
 }
 
 .avatar-preview img {
-  border-radius: 4px;
+  border-radius: var(--border-radius-sm);
   object-fit: cover;
 }
 
 input[type='file'] {
-  padding: 10px;
-  border: 2px dashed var(--gray-400);
-  border-radius: 6px;
-  background-color: var(--gray-100);
+  padding: var(--space-3);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--border-radius-md);
+  background-color: var(--color-surface-light);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: var(--transition-fast);
+  color: var(--color-foreground);
 }
 
 input[type='file']:hover {
-  border-color: var(--primary);
-  background-color: rgba(255, 87, 34, 0.05);
+  border-color: var(--color-orange);
+  background-color: var(--color-orange-light);
 }
 
 @media (max-width: 768px) {
@@ -200,22 +155,26 @@ input[type='file']:hover {
 .edit-user-container::after {
   content: '💪';
   position: absolute;
-  bottom: 10px;
-  right: 10px;
-  font-size: 2rem;
+  bottom: var(--space-3);
+  right: var(--space-3);
+  font-size: var(--font-size-2xl);
   opacity: 0.1;
   transform: rotate(15deg);
 }
 
 .cf-edit-user-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-background) 0%,
+    var(--color-surface) 100%
+  );
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
   overflow: hidden;
-  padding-bottom: 2rem;
+  padding-bottom: var(--space-8);
 }
 
 .cf-edit-user-animation-wrapper {
@@ -294,7 +253,7 @@ input[type='file']:hover {
 }
 
 .cf-edit-user-back-button {
-  margin-top: 1.5rem;
+  margin-top: var(--space-6);
   width: 100%;
   max-width: 450px;
   display: flex;
@@ -304,16 +263,16 @@ input[type='file']:hover {
 .cf-edit-user-form-wrapper {
   width: 100%;
   max-width: 450px;
-  margin-top: 1.5rem;
-  margin-bottom: 2rem;
-  margin-right: 1.5rem;
-  margin-left: 1.5rem;
-  padding: 2rem;
-  border-radius: 12px;
-  background-color: rgba(0, 0, 0, 0.4);
+  margin-top: var(--space-6);
+  margin-bottom: var(--space-8);
+  margin-right: var(--space-6);
+  margin-left: var(--space-6);
+  padding: var(--space-8);
+  border-radius: var(--border-radius-xl);
+  background-color: var(--color-surface);
   backdrop-filter: blur(10px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--color-border-light);
   transform: translateY(10px);
   opacity: 0;
   transition: all 0.7s ease;
@@ -327,7 +286,7 @@ input[type='file']:hover {
 .cf-edit-user-logo-wrapper {
   display: flex;
   justify-content: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-6);
   position: relative;
 }
 
@@ -345,27 +304,27 @@ input[type='file']:hover {
   content: '';
   position: absolute;
   inset: 0;
-  background-color: rgba(255, 90, 31, 0.2);
-  border-radius: 50%;
+  background-color: var(--color-orange-lighter);
+  border-radius: var(--border-radius-full);
   filter: blur(10px);
   width: 48px;
   height: 48px;
 }
 
 .cf-edit-user-heading {
-  font-size: 1.875rem;
-  font-weight: bold;
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
   text-align: center;
-  color: white;
-  margin-bottom: 1.5rem;
+  color: var(--color-foreground);
+  margin-bottom: var(--space-6);
 }
 
 .cf-edit-user-section-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: white;
-  margin-top: 1.5rem;
-  margin-bottom: 1rem;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-foreground);
+  margin-top: var(--space-6);
+  margin-bottom: var(--space-4);
   position: relative;
   display: inline-block;
 }
@@ -377,48 +336,48 @@ input[type='file']:hover {
   left: 0;
   width: 40px;
   height: 2px;
-  background-color: #ff5a1f;
-  border-radius: 2px;
+  background-color: var(--color-orange);
+  border-radius: var(--border-radius-sm);
 }
 
 .cf-edit-user-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: var(--space-6);
 }
 
 .cf-edit-user-avatar-upload {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-4);
 }
 
 .cf-edit-user-avatar-preview {
   width: 100px;
   height: 100px;
-  border-radius: 50%;
-  background-color: rgba(50, 50, 50, 0.5);
-  border: 2px solid rgba(255, 90, 31, 0.7);
+  border-radius: var(--border-radius-full);
+  background-color: var(--color-surface-light);
+  border: 2px solid var(--color-orange-border);
   background-size: cover;
   background-position: center;
   position: relative;
   overflow: hidden;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: var(--transition-normal);
 }
 
 .cf-edit-user-avatar-overlay {
   position: absolute;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--color-surface);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-size: 0.875rem;
+  color: var(--color-foreground);
+  font-size: var(--font-size-sm);
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: var(--transition-normal);
 }
 
 .cf-edit-user-avatar-preview:hover .cf-edit-user-avatar-overlay {
@@ -430,21 +389,21 @@ input[type='file']:hover {
 }
 
 .cf-edit-user-avatar-label {
-  margin-top: 0.75rem;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.875rem;
+  margin-top: var(--space-3);
+  color: var(--color-foreground-muted);
+  font-size: var(--font-size-sm);
   cursor: pointer;
-  transition: color 0.3s;
+  transition: var(--transition-fast);
 }
 
 .cf-edit-user-avatar-label:hover {
-  color: #ff5a1f;
+  color: var(--color-orange);
 }
 
 .cf-edit-user-input-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--space-4);
 }
 
 .cf-edit-user-input-field {
@@ -453,7 +412,7 @@ input[type='file']:hover {
 
 .cf-edit-user-input-icon {
   position: absolute;
-  left: 12px;
+  left: var(--space-3);
   top: 50%;
   transform: translateY(-50%);
   width: 20px;
@@ -493,45 +452,46 @@ input[type='file']:hover {
 
 .cf-edit-user-text-input {
   width: 89%;
-  background-color: rgba(50, 50, 50, 0.5);
-  color: white;
-  border: 1px solid rgba(100, 100, 100, 0.7);
-  border-radius: 8px;
-  padding: 12px 12px 12px 40px;
-  font-size: 0.875rem;
-  transition: all 0.3s;
+  background-color: var(--color-surface-light);
+  color: var(--color-foreground);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  padding: var(--space-3) var(--space-3) var(--space-3) 40px;
+  font-size: var(--font-size-sm);
+  transition: var(--transition-normal);
 }
 
 .cf-edit-user-text-input::placeholder {
-  color: rgba(180, 180, 180, 0.7);
+  color: var(--color-foreground-muted);
 }
 
 .cf-edit-user-text-input:focus {
   outline: none;
-  border-color: #ff5a1f;
-  box-shadow: 0 0 0 2px rgba(255, 90, 31, 0.3);
+  border-color: var(--color-orange);
+  box-shadow: 0 0 0 2px var(--color-orange-lighter);
 }
 
 .cf-edit-user-submit-button {
   position: relative;
   width: 100%;
-  background-color: #ff5a1f;
-  color: white;
-  font-weight: bold;
-  padding: 12px 16px;
+  background-color: var(--color-orange);
+  color: var(--color-foreground);
+  font-weight: var(--font-weight-bold);
+  padding: var(--space-3) var(--space-4);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--border-radius-lg);
   cursor: pointer;
-  transition: all 0.3s;
+  transition: var(--transition-normal);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  margin-top: 0.5rem;
+  margin-top: var(--space-2);
 }
 
 .cf-edit-user-submit-button:hover {
-  background-color: #e04e1a;
+  background-color: var(--color-orange);
+  filter: brightness(1.1);
   transform: scale(1.02);
 }
 
@@ -544,11 +504,11 @@ input[type='file']:hover {
   display: inline-block;
   width: 20px;
   height: 20px;
-  margin-left: 8px;
+  margin-left: var(--space-2);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23ffffff' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3'/%3E%3C/svg%3E");
   background-size: contain;
   background-repeat: no-repeat;
-  transition: transform 0.3s;
+  transition: var(--transition-normal);
 }
 
 .cf-edit-user-submit-button:hover .cf-edit-user-arrow-right {
@@ -568,9 +528,9 @@ input[type='file']:hover {
 }
 
 .cf-edit-user-spinner {
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top: 3px solid white;
+  border: 3px solid var(--color-border-light);
+  border-radius: var(--border-radius-full);
+  border-top: 3px solid var(--color-foreground);
   width: 24px;
   height: 24px;
   animation: spin 1s linear infinite;
@@ -582,7 +542,7 @@ input[type='file']:hover {
   left: 0;
   height: 4px;
   width: 100%;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: var(--color-border-light);
   overflow: hidden;
 }
 
@@ -592,7 +552,7 @@ input[type='file']:hover {
   background: linear-gradient(
     90deg,
     rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.5) 50%,
+    var(--color-foreground-muted) 50%,
     rgba(255, 255, 255, 0) 100%
   );
   animation: progress 2s ease-in-out infinite;
@@ -601,21 +561,21 @@ input[type='file']:hover {
 .cf-edit-user-cancel-button {
   position: relative;
   width: 100%;
-  background-color: rgba(80, 80, 80, 0.7);
-  color: white;
-  font-weight: bold;
-  padding: 12px 16px;
+  background-color: var(--color-surface-light);
+  color: var(--color-foreground);
+  font-weight: var(--font-weight-bold);
+  padding: var(--space-3) var(--space-4);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--border-radius-lg);
   cursor: pointer;
-  transition: all 0.3s;
+  transition: var(--transition-normal);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .cf-edit-user-cancel-button:hover {
-  background-color: rgba(100, 100, 100, 0.8);
+  background-color: var(--color-border);
 }
 
 .cf-edit-user-loading {
@@ -623,16 +583,20 @@ input[type='file']:hover {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  color: white;
-  font-size: 1.25rem;
-  background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
-  gap: 12px;
+  color: var(--color-foreground);
+  font-size: var(--font-size-xl);
+  background: linear-gradient(
+    135deg,
+    var(--color-background) 0%,
+    var(--color-surface) 100%
+  );
+  gap: var(--space-3);
 }
 
 @media (max-width: 640px) {
   .cf-edit-user-form-wrapper {
     max-width: 90%;
-    padding: 1.5rem;
+    padding: var(--space-6);
   }
 
   .cf-edit-user-dumbbell-anim,
@@ -650,10 +614,11 @@ input[type='file']:hover {
     max-width: 90%;
   }
 }
+
 @media (max-width: 480px) {
   .cf-edit-user-form-wrapper {
     max-width: 85%;
-    padding: 1.5rem;
+    padding: var(--space-6);
     justify-content: center;
     display: flex;
     flex-direction: column;
@@ -667,8 +632,9 @@ input[type='file']:hover {
     display: flex;
   }
 }
+
 @media (min-width: 1000px) {
   .cf-edit-user-back-button {
-    margin-top: 50px;
+    margin-top: var(--space-12);
   }
 }

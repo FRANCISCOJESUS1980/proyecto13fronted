@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import Header from '../../../../components/Header/Header'
 import Button from '../../../../components/Button/Button'
+import Loading from '../../../../components/Loading/loading'
 import './AdminFacturacion.css'
 import { obtenerBonos } from '../../../../services/Api/index'
 import { FacturacionStats } from '../components/FacturacionStats'
 import { FacturacionFilters } from '../components/FacturacionFilters'
 import { FacturacionActions } from '../components/FacturacionActions'
 import { FacturacionTable } from '../components/FacturacionTable'
-import { LoadingSpinner } from '../components/LoadingSpinner'
 import { ErrorMessage } from '../components/ErrorMessage'
 import { AnimationBackground } from '../components/AnimationBackground'
 import { calcularEstadisticas } from '../utils/estadisticas'
@@ -116,6 +116,10 @@ const AdminFacturacion = () => {
     }
   }, [])
 
+  if (loading) {
+    return <Loading isVisible={loading} loadingText='CARGANDO FACTURACIÓN...' />
+  }
+
   return (
     <div className='cf-admin-facturacion'>
       <Header />
@@ -134,9 +138,7 @@ const AdminFacturacion = () => {
           </Button>
         </div>
 
-        {loading ? (
-          <LoadingSpinner />
-        ) : error ? (
+        {error ? (
           <ErrorMessage message={error} />
         ) : (
           <>

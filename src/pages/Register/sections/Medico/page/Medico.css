@@ -423,17 +423,6 @@
   animation: progress 2s ease-in-out infinite;
 }
 
-.cf-medico-loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  color: white;
-  font-size: 1.25rem;
-  background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
-  gap: 12px;
-}
-
 @media (max-width: 768px) {
   .cf-medico-form-wrapper {
     max-width: 90%;

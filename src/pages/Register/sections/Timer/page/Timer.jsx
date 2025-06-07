@@ -1,8 +1,10 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, Settings } from 'lucide-react'
 import { TimerProvider, useTimerContext } from '../context/TimerContext'
 import Header from '../../../../../components/Header/Header'
+import Button from '../../../../../components/Button/Button'
+import Loading from '../../../../../components/Loading/loading'
 import ModeSelection from '../components/ModeSelection'
 import TimerSettings from '../components/TimerSettings'
 import TimerDisplay from '../components/TimerDisplay'
@@ -11,26 +13,48 @@ import './Timer.css'
 
 const TimerContent = () => {
   const navigate = useNavigate()
+  const [pageLoading, setPageLoading] = useState(true)
   const {
     state: { selectedMode, isRunning, isCountdown, showSettings },
     actions: { selectMode, setShowSettings, initializeAudio }
   } = useTimerContext()
 
   useEffect(() => {
-    initializeAudio()
+    const loadTimerPage = async () => {
+      try {
+        await initializeAudio()
+      } catch (error) {
+        console.error('Error al cargar timer:', error)
+      } finally {
+        setPageLoading(false)
+      }
+    }
+
+    loadTimerPage()
   }, [initializeAudio])
+
+  if (pageLoading) {
+    return (
+      <Loading
+        isVisible={pageLoading}
+        loadingText='CARGANDO TIMER...'
+        onComplete={() => setPageLoading(false)}
+      />
+    )
+  }
 
   if (!selectedMode) {
     return (
       <div className='timer-container'>
         <Header />
         <div className='timer-header'>
-          <button
-            className='back-button'
+          <Button
+            variant='secondary'
             onClick={() => navigate('/dashboard')}
+            leftIcon={<ArrowLeft size={24} />}
           >
-            <ArrowLeft size={24} />
-          </button>
+            Volver al Dashboard
+          </Button>
           <h1 className='timer-title'>CrossFit Timer</h1>
         </div>
         <ModeSelection onSelectMode={selectMode} />
@@ -46,16 +70,21 @@ const TimerContent = () => {
     >
       <Header />
       <div className='timer-header'>
-        <button className='back-button' onClick={() => selectMode(null)}>
-          <ArrowLeft size={24} />
-        </button>
-        <h1 className='timer-title'>{selectedMode.toUpperCase()}</h1>
-        <button
-          className='settings-button'
-          onClick={() => setShowSettings(!showSettings)}
+        <Button
+          variant='secondary'
+          onClick={() => selectMode(null)}
+          leftIcon={<ArrowLeft size={24} />}
         >
-          <Settings size={24} />
-        </button>
+          Volver
+        </Button>
+        <h1 className='timer-title'>{selectedMode.toUpperCase()}</h1>
+        <Button
+          variant='primary'
+          onClick={() => setShowSettings(!showSettings)}
+          leftIcon={<Settings size={24} />}
+        >
+          Ajustes
+        </Button>
       </div>
 
       {showSettings && <TimerSettings />}
