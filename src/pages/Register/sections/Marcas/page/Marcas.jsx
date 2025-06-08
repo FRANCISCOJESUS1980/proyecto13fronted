@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../../../../../components/Header/Header'
 import Button from '../../../../../components/Button/Button'
+import Loading from '../../../../../components/Loading/loading'
 import PersonalRecordForm from '../components/PersonalRecords/PersonalRecordForm/PersonalRecordForm'
 import PersonalRecordsList from '../components/PersonalRecords/PersonalRecordList/PersonalRecordList'
 import PersonalRecordsChart from '../components/PersonalRecords/PersonalRecordChart/PersonalRecordChart'
@@ -257,6 +258,16 @@ const PersonalRecordsPage = () => {
     return acc
   }, {})
 
+  if (isLoading) {
+    return (
+      <Loading
+        isVisible={isLoading}
+        loadingText='CARGANDO MARCAS PERSONALES...'
+        onComplete={() => setIsLoading(false)}
+      />
+    )
+  }
+
   return (
     <div className='cf-marcas-container'>
       <div className='cf-marcas-animation-wrapper'>
@@ -333,14 +344,7 @@ const PersonalRecordsPage = () => {
         </div>
 
         <div className='cf-marcas-content'>
-          {isLoading ? (
-            <div className='cf-marcas-loading'>
-              <div className='cf-marcas-spinner'></div>
-              <div className='cf-marcas-loading-text'>
-                Cargando marcas personales...
-              </div>
-            </div>
-          ) : error ? (
+          {error ? (
             <div className='cf-marcas-error'>
               <div className='cf-marcas-error-icon'></div>
               <p>Error: {error}</p>

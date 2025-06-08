@@ -2,10 +2,13 @@ import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../../components/Header/Header'
 import Button from '../../components/Button/Button'
+import Loading from '../../components/Loading/loading'
 import './Videos.css'
 
 const Videos = () => {
   const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState(true)
+  const [videosReady, setVideosReady] = useState(false)
   const [videos] = useState([
     {
       id: 1,
@@ -82,6 +85,15 @@ const Videos = () => {
   const videoRefs = useRef([])
 
   useEffect(() => {
+    const timer = setTimeout(() => {
+      setVideosReady(true)
+      setIsLoading(false)
+    }, 0)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
     const options = {
       root: null,
       rootMargin: '0px',
@@ -96,19 +108,31 @@ const Videos = () => {
       })
     }, options)
 
-    videoRefs.current.forEach((el) => {
-      if (el) observer.observe(el)
-    })
+    if (!isLoading) {
+      videoRefs.current.forEach((el) => {
+        if (el) observer.observe(el)
+      })
+    }
 
     return () => {
       videoRefs.current.forEach((el) => {
         if (el) observer.unobserve(el)
       })
     }
-  }, [])
+  }, [isLoading])
 
   const handleBackNavigation = () => {
     navigate('/dashboard')
+  }
+
+  if (isLoading) {
+    return (
+      <Loading
+        isVisible={isLoading}
+        loadingText='CARGANDO VIDEOS...'
+        onComplete={() => setIsLoading(false)}
+      />
+    )
   }
 
   return (

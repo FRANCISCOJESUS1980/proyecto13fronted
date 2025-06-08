@@ -6,7 +6,11 @@
   opacity: 0;
   transition: opacity var(--transition-normal);
 }
-
+.precios-back-button {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
 .precios-container.fade-in {
   opacity: 1;
   animation: cf-fade-in var(--transition-normal);

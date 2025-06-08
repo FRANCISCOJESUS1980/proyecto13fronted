@@ -1,14 +1,36 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Header from '../../components/Header/Header'
+import Button from '../../components/Button/Button'
+import Loading from '../../components/Loading/loading'
 import './Tarifas.css'
 
 const Tarifas = () => {
+  const navigate = useNavigate()
   const [selectedPlan, setSelectedPlan] = useState('mensual')
   const [fadeIn, setFadeIn] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    setTimeout(() => setFadeIn(true), 100)
+    const loadTarifasData = async () => {
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 0))
+
+        setLoading(false)
+        setTimeout(() => setFadeIn(true), 100)
+      } catch (error) {
+        console.error('Error al cargar datos de tarifas:', error)
+        setLoading(false)
+        setTimeout(() => setFadeIn(true), 100)
+      }
+    }
+
+    loadTarifasData()
   }, [])
+
+  const handleBackNavigation = () => {
+    navigate('/dashboard')
+  }
 
   const planes = [
     {
@@ -134,9 +156,29 @@ const Tarifas = () => {
     }
   ]
 
+  if (loading) {
+    return (
+      <Loading
+        isVisible={loading}
+        loadingText='CARGANDO TARIFAS...'
+        onComplete={() => setLoading(false)}
+      />
+    )
+  }
+
   return (
     <div className={`precios-container ${fadeIn ? 'fade-in' : ''}`}>
       <Header />
+
+      <div className='precios-back-button'>
+        <Button
+          variant='secondary'
+          onClick={handleBackNavigation}
+          leftIcon={<span>←</span>}
+        >
+          Volver al Dashboard
+        </Button>
+      </div>
 
       <main className='precios-main'>
         <section className='precios-hero'>

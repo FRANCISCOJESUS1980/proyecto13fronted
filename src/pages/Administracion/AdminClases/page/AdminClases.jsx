@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Plus, ArrowLeft } from 'lucide-react'
 import Header from '../../../../components/Header/Header'
+import Loading from '../../../../components/Loading/loading'
 import ClaseModal from '../components/ClaseModal/ClaseModal'
 import { useClases } from '../hooks/useClases'
 import { useFiltros } from '../hooks/useFiltros'
@@ -354,6 +355,16 @@ const AdminClases = () => {
     })
   }
 
+  if (loading && !isModalOpen) {
+    return (
+      <Loading
+        isVisible={loading}
+        loadingText='CARGANDO ADMINISTRACIÓN DE CLASES...'
+        onComplete={() => {}}
+      />
+    )
+  }
+
   return (
     <div className='cf-admin-clases-container'>
       <Header />
@@ -427,12 +438,7 @@ const AdminClases = () => {
           </div>
         </div>
 
-        {loading && !isModalOpen ? (
-          <div className='cf-admin-clases-loading'>
-            <div className='cf-admin-clases-spinner'></div>
-            <p className='cf-admin-clases-loading-text'>Cargando clases...</p>
-          </div>
-        ) : Object.keys(clasesPorDia).length > 0 ? (
+        {Object.keys(clasesPorDia).length > 0 ? (
           <div className='cf-admin-clases-content-wrapper'>
             {renderClasesPorDia()}
           </div>

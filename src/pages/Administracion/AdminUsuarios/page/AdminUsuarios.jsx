@@ -9,6 +9,7 @@ import {
   CreditCard
 } from 'lucide-react'
 import Header from '../../../../components/Header/Header'
+import Loading from '../../../../components/Loading/loading'
 import { obtenerTodosUsuarios } from '../../../../services/Api/index'
 import Button from '../../../../components/Button/Button'
 import './AdminUsuarios.css'
@@ -36,7 +37,6 @@ const AdminUsuarios = () => {
         setError(error.message)
       } finally {
         setLoading(false)
-
         setTimeout(() => setFadeIn(true), 100)
       }
     }
@@ -101,20 +101,15 @@ const AdminUsuarios = () => {
     return `${index * 0.05}s`
   }
 
-  if (loading)
+  if (loading) {
     return (
-      <div className='cf-admin-usuarios-container'>
-        <Header />
-        <div className='cf-admin-usuarios-content'>
-          <div className='cf-admin-usuarios-loading'>
-            <div className='cf-admin-usuarios-spinner'></div>
-            <p className='cf-admin-usuarios-loading-text'>
-              Cargando usuarios...
-            </p>
-          </div>
-        </div>
-      </div>
+      <Loading
+        isVisible={loading}
+        loadingText='CARGANDO ADMINISTRACIÓN DE USUARIOS...'
+        onComplete={() => setLoading(false)}
+      />
     )
+  }
 
   if (error)
     return (

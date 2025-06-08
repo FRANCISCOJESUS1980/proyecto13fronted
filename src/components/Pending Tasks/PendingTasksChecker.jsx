@@ -86,21 +86,17 @@ const PendingTasksChecker = ({ children }) => {
       }
 
       if (!userId) {
-        console.log('No hay usuario identificado')
         setIsLoading(false)
         return
       }
 
       const token = localStorage.getItem('token')
       if (!token) {
-        console.log('No hay token disponible')
         setIsLoading(false)
         return
       }
 
       const response = await verificarConsentimiento(userId, token)
-
-      console.log('Respuesta de verificación:', response)
 
       if (response && response.success) {
         setNeedsConsent(!response.consentimientoFirmado)

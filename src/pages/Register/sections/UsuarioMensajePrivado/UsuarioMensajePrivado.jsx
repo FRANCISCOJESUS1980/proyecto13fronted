@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../../../../components/Header/Header'
 import Button from '../../../../components/Button/Button'
+import Loading from '../../../../components/Loading/loading'
 import {
   obtenerMensajesPrivados,
   obtenerMensajesConversacion,
@@ -169,7 +170,6 @@ const UsuarioMensajePrivado = () => {
   }
 
   const handleDeleteMessage = async (messageId) => {
-    // Usar SweetAlert2 para la confirmación
     alertService
       .confirm('¿Estás seguro?', '¿Quieres eliminar este mensaje?', {
         icon: 'warning',
@@ -274,6 +274,16 @@ const UsuarioMensajePrivado = () => {
     }
   }, [error])
 
+  if (loading) {
+    return (
+      <Loading
+        isVisible={loading}
+        loadingText='CARGANDO MENSAJES PRIVADOS...'
+        onComplete={() => setLoading(false)}
+      />
+    )
+  }
+
   return (
     <div className='cf-mensajes-container'>
       <div className='cf-mensajes-animation-wrapper'>
@@ -330,12 +340,7 @@ const UsuarioMensajePrivado = () => {
           )}
 
           <div className='cf-mensajes-messages-container' ref={mensajesRef}>
-            {loading ? (
-              <div className='cf-mensajes-loading'>
-                <div className='cf-mensajes-spinner'></div>
-                <p>Cargando mensajes...</p>
-              </div>
-            ) : mensajes.length === 0 ? (
+            {mensajes.length === 0 ? (
               <div className='cf-mensajes-empty'>
                 <div className='cf-mensajes-empty-icon'></div>
                 <p>No hay mensajes previos.</p>

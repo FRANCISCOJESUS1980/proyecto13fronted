@@ -1,6 +1,7 @@
 import { Plus, ArrowLeft } from 'lucide-react'
 import { useProductOperations } from '../hooks/use-product-operations'
 import Header from '../../../../components/Header/Header'
+import Loading from '../../../../components/Loading/loading'
 import ProductoCard from '../components/ProductCard/ProductCard'
 import ProductoForm from '../components/ProductoForm/ProductoForm'
 import ProductoFilters from '../components/ProductoFilters/ProductoFilters'
@@ -142,6 +143,16 @@ const AdminProductos = () => {
     setHasUnsavedChanges(true)
   }
 
+  if (state.loading && !state.modalOpen) {
+    return (
+      <Loading
+        isVisible={state.loading}
+        loadingText='CARGANDO ADMINISTRACIÓN DE PRODUCTOS...'
+        onComplete={() => {}}
+      />
+    )
+  }
+
   return (
     <div
       className={`cf-admin-productos-container ${
@@ -201,63 +212,51 @@ const AdminProductos = () => {
           />
         </div>
 
-        {state.loading && !state.modalOpen ? (
-          <div className='cf-admin-productos-loading'>
-            <div className='cf-admin-productos-spinner'></div>
-            <p className='cf-admin-productos-loading-text'>
-              Cargando productos...
-            </p>
-          </div>
-        ) : (
-          <>
-            <div className='cf-admin-productos-grid'>
-              {state.productos.length === 0 ? (
-                <div className='cf-admin-productos-empty'>
-                  <div className='cf-admin-productos-empty-icon'></div>
-                  <h3 className='cf-admin-productos-empty-title'>
-                    No se encontraron productos
-                  </h3>
-                  <p className='cf-admin-productos-empty-text'>
-                    No hay productos que coincidan con los criterios de
-                    búsqueda.
-                  </p>
-                  <p className='cf-admin-productos-empty-action'>
-                    Intenta con otros filtros o crea un nuevo producto.
-                  </p>
-                </div>
-              ) : (
-                state.productos.map((producto, index) => (
-                  <div
-                    key={producto._id}
-                    className='cf-admin-productos-card-wrapper'
-                    style={{ animationDelay: `${index * 0.1}s` }}
-                  >
-                    <ProductoCard
-                      producto={producto}
-                      onEdit={(producto) => {
-                        setHasUnsavedChanges(false)
-                        handleEdit(producto)
-                      }}
-                      onDelete={() =>
-                        handleDeleteConfirm(producto._id, producto.nombre)
-                      }
-                      onToggleEstado={toggleEstado}
-                    />
-                  </div>
-                ))
-              )}
+        <div className='cf-admin-productos-grid'>
+          {state.productos.length === 0 ? (
+            <div className='cf-admin-productos-empty'>
+              <div className='cf-admin-productos-empty-icon'></div>
+              <h3 className='cf-admin-productos-empty-title'>
+                No se encontraron productos
+              </h3>
+              <p className='cf-admin-productos-empty-text'>
+                No hay productos que coincidan con los criterios de búsqueda.
+              </p>
+              <p className='cf-admin-productos-empty-action'>
+                Intenta con otros filtros o crea un nuevo producto.
+              </p>
             </div>
-
-            {state.productos.length > 0 && (
-              <div className='cf-admin-productos-pagination-container'>
-                <Pagination
-                  currentPage={state.currentPage}
-                  totalPages={state.totalPages}
-                  onPageChange={setCurrentPage}
+          ) : (
+            state.productos.map((producto, index) => (
+              <div
+                key={producto._id}
+                className='cf-admin-productos-card-wrapper'
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <ProductoCard
+                  producto={producto}
+                  onEdit={(producto) => {
+                    setHasUnsavedChanges(false)
+                    handleEdit(producto)
+                  }}
+                  onDelete={() =>
+                    handleDeleteConfirm(producto._id, producto.nombre)
+                  }
+                  onToggleEstado={toggleEstado}
                 />
               </div>
-            )}
-          </>
+            ))
+          )}
+        </div>
+
+        {state.productos.length > 0 && (
+          <div className='cf-admin-productos-pagination-container'>
+            <Pagination
+              currentPage={state.currentPage}
+              totalPages={state.totalPages}
+              onPageChange={setCurrentPage}
+            />
+          </div>
         )}
       </div>
 

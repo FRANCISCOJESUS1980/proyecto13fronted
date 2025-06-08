@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   Search,
   Filter,
@@ -7,6 +8,8 @@ import {
   ChevronRight
 } from 'lucide-react'
 import Header from '../../components/Header/Header'
+import Button from '../../components/Button/Button'
+import Loading from '../../components/Loading/loading'
 import { obtenerProductos, buscarProductos } from '../../services/Api/index'
 import { useCart } from '../Productos/context/CartContext'
 import alertService from '../../components/sweealert2/sweealert2'
@@ -22,8 +25,9 @@ const CATEGORIAS = [
 const ITEMS_PER_PAGE = 12
 
 const Productos = () => {
+  const navigate = useNavigate()
   const [productos, setProductos] = useState([])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [categoriaFiltro, setCategoriaFiltro] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
@@ -95,8 +99,22 @@ const Productos = () => {
     )
   }
 
+  const handleBackNavigation = () => {
+    navigate('/dashboard')
+  }
+
   const getAnimationDelay = (index) => {
     return `${index * 0.05}s`
+  }
+
+  if (loading) {
+    return (
+      <Loading
+        isVisible={loading}
+        loadingText='CARGANDO PRODUCTOS...'
+        onComplete={() => setLoading(false)}
+      />
+    )
   }
 
   return (
@@ -106,6 +124,17 @@ const Productos = () => {
       }`}
     >
       <Header />
+
+      <div className='cf-productos-back-button'>
+        <Button
+          variant='secondary'
+          onClick={handleBackNavigation}
+          leftIcon={<span>←</span>}
+        >
+          Volver al Dashboard
+        </Button>
+      </div>
+
       <div className='cf-productos-content'>
         <div className='cf-productos-header'>
           <h1 className='cf-productos-title'>Nuestros Productos</h1>
@@ -172,111 +201,100 @@ const Productos = () => {
           </div>
         </div>
 
-        {loading ? (
-          <div className='cf-productos-loading'>
-            <div className='cf-productos-spinner'></div>
-            <p className='cf-productos-loading-text'>Cargando productos...</p>
-          </div>
-        ) : (
-          <>
-            {productos.length > 0 ? (
-              <div className='cf-productos-grid'>
-                {productos.map((producto, index) => (
-                  <div
-                    key={producto._id}
-                    className='cf-productos-card'
-                    style={{ animationDelay: getAnimationDelay(index) }}
-                  >
-                    <div className='cf-productos-imagen-container'>
-                      <img
-                        src={producto.imagen || '/placeholder.svg'}
-                        alt={producto.nombre}
-                        className='cf-productos-imagen'
-                        onError={(e) => {
-                          e.target.onerror = null
-                          e.target.src = '/placeholder.svg'
-                        }}
-                      />
-                      {producto.destacado && (
-                        <span className='cf-productos-destacado'>
-                          Destacado
-                        </span>
-                      )}
-                    </div>
-                    <div className='cf-productos-info'>
-                      <h3 className='cf-productos-nombre'>{producto.nombre}</h3>
-                      <p className='cf-productos-marca'>{producto.marca}</p>
-                      <div className='cf-productos-precio-container'>
-                        <span className='cf-productos-precio'>
-                          ${producto.precio.toFixed(2)}
-                        </span>
-                        {producto.stock > 0 ? (
-                          <button
-                            className='cf-productos-btn-agregar'
-                            onClick={() => handleAddToCart(producto)}
-                          >
-                            <ShoppingCart size={16} />
-                            <span>Agregar</span>
-                          </button>
-                        ) : (
-                          <span className='cf-productos-agotado'>Agotado</span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className='cf-productos-empty'>
-                <div className='cf-productos-empty-icon'></div>
-                <h3 className='cf-productos-empty-title'>
-                  No se encontraron productos
-                </h3>
-                <p className='cf-productos-empty-text'>
-                  No hay productos que coincidan con tu búsqueda. Intenta con
-                  otros términos o categorías.
-                </p>
-              </div>
-            )}
-
-            {totalPages > 1 && (
-              <div className='cf-productos-pagination'>
-                <button
-                  className='cf-productos-pagination-arrow'
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                >
-                  <ChevronLeft size={20} />
-                </button>
-
-                <div className='cf-productos-pagination-numbers'>
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                    (page) => (
-                      <button
-                        key={page}
-                        onClick={() => handlePageChange(page)}
-                        className={`cf-productos-pagination-number ${
-                          currentPage === page
-                            ? 'cf-productos-pagination-active'
-                            : ''
-                        }`}
-                      >
-                        {page}
-                      </button>
-                    )
+        {productos.length > 0 ? (
+          <div className='cf-productos-grid'>
+            {productos.map((producto, index) => (
+              <div
+                key={producto._id}
+                className='cf-productos-card'
+                style={{ animationDelay: getAnimationDelay(index) }}
+              >
+                <div className='cf-productos-imagen-container'>
+                  <img
+                    src={producto.imagen || '/placeholder.svg'}
+                    alt={producto.nombre}
+                    className='cf-productos-imagen'
+                    onError={(e) => {
+                      e.target.onerror = null
+                      e.target.src = '/placeholder.svg'
+                    }}
+                  />
+                  {producto.destacado && (
+                    <span className='cf-productos-destacado'>Destacado</span>
                   )}
                 </div>
-
-                <button
-                  className='cf-productos-pagination-arrow'
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                >
-                  <ChevronRight size={20} />
-                </button>
+                <div className='cf-productos-info'>
+                  <h3 className='cf-productos-nombre'>{producto.nombre}</h3>
+                  <p className='cf-productos-marca'>{producto.marca}</p>
+                  <div className='cf-productos-precio-container'>
+                    <span className='cf-productos-precio'>
+                      ${producto.precio.toFixed(2)}
+                    </span>
+                    {producto.stock > 0 ? (
+                      <button
+                        className='cf-productos-btn-agregar'
+                        onClick={() => handleAddToCart(producto)}
+                      >
+                        <ShoppingCart size={16} />
+                        <span>Agregar</span>
+                      </button>
+                    ) : (
+                      <span className='cf-productos-agotado'>Agotado</span>
+                    )}
+                  </div>
+                </div>
               </div>
-            )}
-          </>
+            ))}
+          </div>
+        ) : (
+          <div className='cf-productos-empty'>
+            <div className='cf-productos-empty-icon'></div>
+            <h3 className='cf-productos-empty-title'>
+              No se encontraron productos
+            </h3>
+            <p className='cf-productos-empty-text'>
+              No hay productos que coincidan con tu búsqueda. Intenta con otros
+              términos o categorías.
+            </p>
+          </div>
+        )}
+
+        {totalPages > 1 && (
+          <div className='cf-productos-pagination'>
+            <button
+              className='cf-productos-pagination-arrow'
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              <ChevronLeft size={20} />
+            </button>
+
+            <div className='cf-productos-pagination-numbers'>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <button
+                    key={page}
+                    onClick={() => handlePageChange(page)}
+                    className={`cf-productos-pagination-number ${
+                      currentPage === page
+                        ? 'cf-productos-pagination-active'
+                        : ''
+                    }`}
+                  >
+                    {page}
+                  </button>
+                )
+              )}
+            </div>
+
+            <button
+              className='cf-productos-pagination-arrow'
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              <ChevronRight size={20} />
+            </button>
+          </div>
         )}
       </div>
     </div>

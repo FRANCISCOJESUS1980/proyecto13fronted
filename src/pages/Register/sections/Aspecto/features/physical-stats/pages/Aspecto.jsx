@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../../../../../../../components/Header/Header'
+import Loading from '../../../../../../../components/Loading/loading'
 import MedidasTab from '../components/Medidas/MedidasTab'
 import ProgresoTab from '../components/Progreso/ProgresoTab'
 import ObjetivosTab from '../components/Objetivos/ObjetivosTab'
@@ -14,6 +15,8 @@ const Aspecto = () => {
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('medidas')
   const [message, setMessage] = useState({ text: '', type: '' })
+  const [initialLoading, setInitialLoading] = useState(true)
+  const [tabLoading, setTabLoading] = useState(false)
   const medidasTabRef = useRef(null)
 
   const {
@@ -27,7 +30,13 @@ const Aspecto = () => {
 
   useEffect(() => {
     const loadInitialData = async () => {
-      await fetchLatestStats()
+      try {
+        await fetchLatestStats()
+      } catch (error) {
+        console.error('Error al cargar datos iniciales:', error)
+      } finally {
+        setInitialLoading(false)
+      }
     }
 
     loadInitialData()
@@ -35,23 +44,41 @@ const Aspecto = () => {
 
   useEffect(() => {
     const loadTabData = async () => {
-      switch (activeTab) {
-        case 'medidas':
-          await fetchLatestStats()
-          break
-        case 'progreso':
-          await fetchStatsHistory()
-          break
-        case 'objetivos':
-          await fetchObjetivos()
-          break
-        default:
-          break
+      if (!initialLoading) {
+        setTabLoading(true)
+      }
+
+      try {
+        switch (activeTab) {
+          case 'medidas':
+            await fetchLatestStats()
+            break
+          case 'progreso':
+            await fetchStatsHistory()
+            break
+          case 'objetivos':
+            await fetchObjetivos()
+            break
+          default:
+            break
+        }
+      } catch (error) {
+        console.error('Error al cargar datos del tab:', error)
+      } finally {
+        setTabLoading(false)
       }
     }
 
-    loadTabData()
-  }, [activeTab, fetchLatestStats, fetchStatsHistory, fetchObjetivos])
+    if (!initialLoading) {
+      loadTabData()
+    }
+  }, [
+    activeTab,
+    fetchLatestStats,
+    fetchStatsHistory,
+    fetchObjetivos,
+    initialLoading
+  ])
 
   useEffect(() => {
     if (error) {
@@ -76,6 +103,19 @@ const Aspecto = () => {
     setTimeout(() => {
       setMessage({ text: '', type: '' })
     }, 5000)
+  }
+
+  const getLoadingTextForTab = (tab) => {
+    switch (tab) {
+      case 'medidas':
+        return 'CARGANDO MEDIDAS...'
+      case 'progreso':
+        return 'CARGANDO PROGRESO...'
+      case 'objetivos':
+        return 'CARGANDO OBJETIVOS...'
+      default:
+        return 'CARGANDO...'
+    }
   }
 
   const handleTabChange = (tabId) => {
@@ -152,6 +192,26 @@ const Aspecto = () => {
     }
   }
 
+  if (initialLoading) {
+    return (
+      <Loading
+        isVisible={initialLoading}
+        loadingText='CARGANDO ESTADÍSTICAS FÍSICAS...'
+        onComplete={() => setInitialLoading(false)}
+      />
+    )
+  }
+
+  if (tabLoading) {
+    return (
+      <Loading
+        isVisible={tabLoading}
+        loadingText={getLoadingTextForTab(activeTab)}
+        onComplete={() => setTabLoading(false)}
+      />
+    )
+  }
+
   return (
     <div className='stats-container'>
       <Header />
@@ -176,8 +236,6 @@ const Aspecto = () => {
       )}
 
       <Tabs tabs={tabs} activeTab={activeTab} onChange={handleTabChange} />
-
-      {loading && <div className='loading-spinner'>Cargando...</div>}
 
       <div className='tab-content'>
         {activeTab === 'medidas' && <MedidasTab onMessage={handleMessage} />}

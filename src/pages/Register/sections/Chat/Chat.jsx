@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../../../../components/Header/Header'
+import Loading from '../../../../components/Loading/loading'
 import {
   loadChatMessages,
   createSocketConnection,
@@ -254,6 +255,16 @@ const Chat = () => {
     return msg.userId === currentUserId || userRole === 'admin'
   }
 
+  if (isLoading) {
+    return (
+      <Loading
+        isVisible={isLoading}
+        loadingText='CARGANDO CHAT...'
+        onComplete={() => setIsLoading(false)}
+      />
+    )
+  }
+
   return (
     <div
       className={`cf-chat-container ${
@@ -291,12 +302,7 @@ const Chat = () => {
           </div>
 
           <div className='cf-chat-box' ref={chatBoxRef}>
-            {isLoading ? (
-              <div className='cf-chat-loading'>
-                <div className='cf-chat-spinner'></div>
-                <p>Cargando mensajes...</p>
-              </div>
-            ) : messages.length === 0 ? (
+            {messages.length === 0 ? (
               <div className='cf-chat-no-messages'>
                 <div className='cf-chat-empty-icon'></div>
                 <p>No hay mensajes aún</p>
