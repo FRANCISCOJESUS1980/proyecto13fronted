@@ -1,7 +1,7 @@
 import React from 'react'
 import ChatTitle from './ChatTitle'
 import ChatMessages from './ChatMessages'
-import ChatInput from './Chatinput'
+import ChatInput from './ChatInput'
 
 const ChatContent = React.memo(() => {
   return (
