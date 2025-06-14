@@ -764,14 +764,14 @@ export default Header*/
 
 import { useLocation } from 'react-router-dom'
 import { useEffect, useState, useCallback, useRef } from 'react'
-import { useAuth } from './hooks/useAuth'
-import { useScrollPosition } from './hooks/useScrollPosition'
-import { useMouseEffects } from './hooks/useMouseEffects'
-import { useReducedMotion } from './hooks/useReduceMotion'
-import Logo from './components/logo/logo'
-import MenuIndicator from './components/MenuIndicator/MenuIndicator'
-import NavigationCurtain from './components/NavigationCurtain/NavigationCurtain'
-import ParticlesCanvas from './components/ParticlesCanvas/ParticlesCanvas'
+import { useAuth } from '../hooks/useAuth'
+import { useScrollPosition } from '../hooks/useScrollPosition'
+import { useMouseEffects } from '../hooks/useMouseEffects'
+import { useReducedMotion } from '../hooks/useReduceMotion'
+import Logo from '../components/logo/logo'
+import MenuIndicator from '../components/MenuIndicator/MenuIndicator'
+import NavigationCurtain from '../components/NavigationCurtain/NavigationCurtain'
+import ParticlesCanvas from '../components/ParticlesCanvas/ParticlesCanvas'
 import './Header.css'
 
 const Header = () => {

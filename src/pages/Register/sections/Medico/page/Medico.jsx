@@ -6,7 +6,7 @@ import {
   handleBackNavigationWithChanges
 } from '../utils/medicalFormHelpers'
 import { FORM_SECTIONS } from '../constants/medicalConfig'
-import Header from '../../../../../components/Header/Header'
+import Header from '../../../../../components/Header/page/Header'
 import Button from '../../../../../components/Button/Button'
 import Loading from '../../../../../components/Loading/loading'
 import handleSubmitHelper from '../../../../../utils/HandleSubmit'

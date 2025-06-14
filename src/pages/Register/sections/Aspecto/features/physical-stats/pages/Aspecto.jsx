@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Header from '../../../../../../../components/Header/Header'
+import Header from '../../../../../../../components/Header/page/Header'
 import Loading from '../../../../../../../components/Loading/loading'
 import MedidasTab from '../components/Medidas/MedidasTab'
 import ProgresoTab from '../components/Progreso/ProgresoTab'

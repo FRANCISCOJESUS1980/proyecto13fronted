@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
-import Header from '../../../../components/Header/Header'
+import Header from '../../../../components/Header/page/Header'
 import Button from '../../../../components/Button/Button'
 import Loading from '../../../../components/Loading/loading'
 import './AdminFacturacion.css'

@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSocialMediaState } from '../hooks/useRedesSocialesState'
-import Header from '../../../components/Header/Header'
+import Header from '../../../components/Header/page/Header'
 import Button from '../../../components/Button/Button'
 import Loading from '../../../components/Loading/loading'
 import HeroSection from '../components/HeroSection'

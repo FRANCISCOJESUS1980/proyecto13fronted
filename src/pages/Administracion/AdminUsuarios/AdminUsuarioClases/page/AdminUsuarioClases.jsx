@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, User } from 'lucide-react'
-import Header from '../../../../../components/Header/Header'
+import Header from '../../../../../components/Header/page/Header'
 import CalendarioDias from '../../../../Clases/components/CalendarioDias/CalendarioDias'
 import ClasesTimeline from '../../../../Clases/components/ClaseTimeline/ClasesTimeline'
 import MensajeEstado from '../../../../Clases/components/MensajeEstado/MensajeEstado'

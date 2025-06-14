@@ -1,6 +1,6 @@
 import { Plus, ArrowLeft } from 'lucide-react'
 import { useProductOperations } from '../hooks/use-product-operations'
-import Header from '../../../../components/Header/Header'
+import Header from '../../../../components/Header/page/Header'
 import Loading from '../../../../components/Loading/loading'
 import ProductoCard from '../components/ProductCard/ProductCard'
 import ProductoForm from '../components/ProductoForm/ProductoForm'

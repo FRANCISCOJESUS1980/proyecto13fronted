@@ -7,7 +7,7 @@ import {
   ChevronLeft,
   ChevronRight
 } from 'lucide-react'
-import Header from '../../components/Header/Header'
+import Header from '../../components/Header/page/Header'
 import Button from '../../components/Button/Button'
 import Loading from '../../components/Loading/loading'
 import { obtenerProductos, buscarProductos } from '../../services/Api/index'

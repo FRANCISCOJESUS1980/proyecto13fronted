@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import Header from '../../../../components/Header/Header'
+import Header from '../../../../components/Header/page/Header'
 
 export const RegisterHeader = memo(() => {
   return <Header />

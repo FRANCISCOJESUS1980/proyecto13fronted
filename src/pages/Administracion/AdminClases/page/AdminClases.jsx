@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Plus, ArrowLeft } from 'lucide-react'
-import Header from '../../../../components/Header/Header'
+import Header from '../../../../components/Header/page/Header'
 import Loading from '../../../../components/Loading/loading'
 import ClaseModal from '../components/ClaseModal/ClaseModal'
 import { useClases } from '../hooks/useClases'

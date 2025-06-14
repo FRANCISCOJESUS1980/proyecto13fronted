@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import Header from '../../../components/Header/Header'
+import Header from '../../../components/Header/page/Header'
 import Loading from '../../../components/Loading/loading'
 import CalendarioDias from '../components/CalendarioDias/CalendarioDias'
 import ClasesTimeline from '../components/ClaseTimeline/ClasesTimeline'

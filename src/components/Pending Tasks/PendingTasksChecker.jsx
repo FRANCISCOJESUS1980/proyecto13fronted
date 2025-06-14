@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
-import Consentimiento from '../../pages/Register/sections/Consentimiento/Consentimiento'
+import Consentimiento from '../../pages/Register/sections/Consentimiento/page/Consentimiento'
 import { verificarConsentimiento } from '../../services/Api/index'
 
 const PendingTasksChecker = ({ children }) => {

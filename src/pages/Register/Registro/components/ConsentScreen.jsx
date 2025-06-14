@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import PropTypes from 'prop-types'
-import Consentimiento from '../../sections/Consentimiento/Consentimiento'
+import Consentimiento from '../../sections/Consentimiento/page/Consentimiento'
 
 export const ConsentScreen = memo(({ onConsentAccepted }) => {
   return <Consentimiento onConsentAccepted={onConsentAccepted} />

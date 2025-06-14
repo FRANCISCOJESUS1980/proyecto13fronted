@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Plus } from 'lucide-react'
-import Header from '../../../../components/Header/Header'
+import Header from '../../../../components/Header/page/Header'
 import Button from '../../../../components/Button/Button'
 import { useGestionBonos } from '../hooks/useGestionBonos'
 import BonoActivo from '../components/BonoActivo'

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './Administracion.css'
-import Header from '../../../../components/Header/Header'
+import Header from '../../../../components/Header/page/Header'
 import Loading from '../../../../components/Loading/loading'
 import AdminHeader from '../components/AdminHeader'
 import AdminSections from '../components/AdminSections'

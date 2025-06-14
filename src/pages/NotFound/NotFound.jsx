@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { memo } from 'react'
-import Header from '../../components/Header/Header'
+import Header from '../../components/Header/page/Header'
 import './NotFound.css'
 
 const NotFound = () => {

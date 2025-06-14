@@ -1,7 +1,7 @@
 import { useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './Adminconsentimientos.css'
-import Header from '../../../../components/Header/Header'
+import Header from '../../../../components/Header/page/Header'
 import Button from '../../../../components/Button/Button'
 import Loading from '../../../../components/Loading/loading'
 import { useAuthGuard } from '../hooks/use-auth-guard'

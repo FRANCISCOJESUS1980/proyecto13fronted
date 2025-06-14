@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Send } from 'lucide-react'
-import Header from '../../../../../components/Header/Header'
+import Header from '../../../../../components/Header/page/Header'
 import Button from '../../../../../components/Button/Button'
 import { getImageUrl } from '../../../../Clases/utils/imageUtils'
 import alertService from '../../../../../components/sweealert2/sweealert2'

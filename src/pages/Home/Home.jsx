@@ -1,4 +1,4 @@
-import Header from '../../components/Header/Header'
+import Header from '../../components/Header/page/Header'
 import './Home.css'
 import { motion } from 'framer-motion'
 import crossfitVideo from '../../assets/videos/videocrossfit.mp4'
