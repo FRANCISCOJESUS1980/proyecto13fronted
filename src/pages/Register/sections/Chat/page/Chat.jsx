@@ -431,12 +431,12 @@ export default Chat*/
 
 import React from 'react'
 import './Chat.css'
-import Header from '../../../../components/Header/page/Header'
-import Loading from '../../../../components/Loading/loading'
-import ChatHeader from './components/ChatHeader'
-import ChatMainContent from './components/ChatContent'
-import { ChatProvider } from './context/ChatContext'
-import { useChatOptimized } from './hooks/useChatOptimized'
+import Header from '../../../../../components/Header/page/Header'
+import Loading from '../../../../../components/Loading/loading'
+import ChatHeader from '../components/ChatHeader'
+import ChatMainContent from '../components/ChatContent'
+import { ChatProvider } from '../context/ChatContext'
+import { useChatOptimized } from '../hooks/useChatOptimized'
 
 const ChatInner = React.memo(() => {
   const { isLoading, animationComplete } = useChatOptimized()

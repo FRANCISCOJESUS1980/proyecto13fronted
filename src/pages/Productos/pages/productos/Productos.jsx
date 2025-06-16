@@ -7,12 +7,15 @@ import {
   ChevronLeft,
   ChevronRight
 } from 'lucide-react'
-import Header from '../../components/Header/page/Header'
-import Button from '../../components/Button/Button'
-import Loading from '../../components/Loading/loading'
-import { obtenerProductos, buscarProductos } from '../../services/Api/index'
-import { useCart } from '../Productos/context/CartContext'
-import alertService from '../../components/sweealert2/sweealert2'
+import Header from '../../../../components/Header/page/Header'
+import Button from '../../../../components/Button/Button'
+import Loading from '../../../../components/Loading/loading'
+import {
+  obtenerProductos,
+  buscarProductos
+} from '../../../../services/Api/index'
+import { useCart } from '../../context/CartContext'
+import alertService from '../../../../components/sweealert2/sweealert2'
 import './Productos.css'
 
 const CATEGORIAS = [
