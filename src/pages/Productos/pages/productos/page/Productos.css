@@ -397,6 +397,12 @@
   margin: 0;
   line-height: 1.5;
 }
+.cf-productos-search-input-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
 
 .cf-productos-pagination {
   display: flex;
