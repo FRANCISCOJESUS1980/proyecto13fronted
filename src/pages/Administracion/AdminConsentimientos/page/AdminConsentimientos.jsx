@@ -1,13 +1,13 @@
-import { useMemo, useCallback } from 'react'
+import { useMemo, useCallback, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './Adminconsentimientos.css'
 import Header from '../../../../components/Header/page/Header'
 import Button from '../../../../components/Button/Button'
 import Loading from '../../../../components/Loading/loading'
+import Pagination from '../../../../components/Pagination/Pagination'
 import { useAuthGuard } from '../hooks/use-auth-guard'
 import { useConsentimientos } from '../hooks/use-consentimientos'
 import { useSearch } from '../hooks/use-search'
-import { usePagination } from '../hooks/use-pagination'
 import {
   enrichConsentimientosWithUsers,
   calculateStats
@@ -17,10 +17,11 @@ import ConsentimientosStats from '../components/ConsentimientosStats'
 import ConsentimientosTable from '../components/ConsentimientosTable'
 import ErrorMessage from '../components/ErrorMessage'
 
-const ITEMS_PER_PAGE = 5
+const ITEMS_PER_PAGE = 10
 
 const AdminConsentimientos = () => {
   const navigate = useNavigate()
+  const [currentPage, setCurrentPage] = useState(1)
 
   const { token } = useAuthGuard(['administrador', 'admin', 'creador'])
 
@@ -40,7 +41,7 @@ const AdminConsentimientos = () => {
   )
 
   const handleSearchChange = useCallback(() => {
-    resetPagination()
+    setCurrentPage(1)
   }, [])
 
   const {
@@ -53,16 +54,25 @@ const AdminConsentimientos = () => {
     handleSearchChange
   )
 
-  const {
-    currentPage,
-    totalPages,
-    paginatedItems,
-    goToPage,
-    resetPagination,
-    totalItems,
-    startIndex,
-    endIndex
-  } = usePagination(filteredConsentimientos, ITEMS_PER_PAGE)
+  const totalPages = Math.ceil(filteredConsentimientos.length / ITEMS_PER_PAGE)
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
+  const endIndex = startIndex + ITEMS_PER_PAGE
+  const paginatedItems = filteredConsentimientos.slice(startIndex, endIndex)
+
+  useEffect(() => {
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(1)
+    }
+  }, [currentPage, totalPages])
+
+  const handlePageChange = useCallback(
+    (page) => {
+      if (page >= 1 && page <= totalPages) {
+        setCurrentPage(page)
+      }
+    },
+    [totalPages]
+  )
 
   const stats = useMemo(
     () => calculateStats(filteredConsentimientos),
@@ -72,9 +82,9 @@ const AdminConsentimientos = () => {
   const paginationInfo = {
     currentPage,
     totalPages,
-    totalItems,
-    startIndex,
-    endIndex
+    totalItems: filteredConsentimientos.length,
+    startIndex: startIndex + 1,
+    endIndex: Math.min(endIndex, filteredConsentimientos.length)
   }
 
   if (loading) {
@@ -114,9 +124,18 @@ const AdminConsentimientos = () => {
           consentimientos={paginatedItems}
           deleteLoading={deleteLoading}
           onDelete={deleteConsentimiento}
-          paginationInfo={paginationInfo}
-          onPageChange={goToPage}
+          totalItems={filteredConsentimientos.length}
         />
+
+        <div className='cf-consentimientos-pagination-container'>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            showPagination={paginatedItems.length > 0}
+            className='cf-pagination'
+          />
+        </div>
       </div>
     </div>
   )

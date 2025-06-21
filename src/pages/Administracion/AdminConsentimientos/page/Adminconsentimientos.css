@@ -140,7 +140,6 @@
   align-items: center;
   gap: 1.5rem;
   margin-bottom: 2rem;
-
   flex-wrap: wrap;
 }
 
@@ -355,130 +354,11 @@
   margin: 0;
 }
 
-.cf-consentimientos-dialog-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.75);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 1rem;
-}
-
-.cf-consentimientos-dialog {
-  background-color: #1e1e1e;
-  border-radius: 12px;
-  width: 100%;
-  max-width: 500px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  animation: cf-consentimientos-dialog-appear 0.3s ease-out forwards;
-}
-
-@keyframes cf-consentimientos-dialog-appear {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.cf-consentimientos-dialog-header {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1.25rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.cf-consentimientos-dialog-icon {
-  color: #ef4444;
-}
-
-.cf-consentimientos-dialog-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #fff;
-  margin: 0;
-}
-
-.cf-consentimientos-dialog-content {
-  padding: 1.25rem;
-}
-
-.cf-consentimientos-dialog-content p {
-  margin: 0 0 1rem 0;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.9375rem;
-  line-height: 1.5;
-}
-
-.cf-consentimientos-dialog-warning {
-  color: #ef4444;
-  font-weight: 600;
-}
-
-.cf-consentimientos-dialog-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  padding: 1.25rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.cf-consentimientos-dialog-cancel {
-  background-color: rgba(100, 100, 100, 0.2);
-  color: #fff;
-  border: 1px solid rgba(100, 100, 100, 0.3);
-  border-radius: 8px;
-  padding: 0.75rem 1.25rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.cf-consentimientos-dialog-cancel:hover:not(:disabled) {
-  background-color: rgba(100, 100, 100, 0.3);
-}
-
-.cf-consentimientos-dialog-confirm {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(239, 68, 68, 0.2);
-  color: #ef4444;
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  border-radius: 8px;
-  padding: 0.75rem 1.25rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.cf-consentimientos-dialog-confirm:hover:not(:disabled) {
-  background-color: rgba(239, 68, 68, 0.3);
-}
-
-.cf-consentimientos-dialog-cancel:disabled,
-.cf-consentimientos-dialog-confirm:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-.cf-consentimientos-pagination-wrapper {
+.cf-consentimientos-pagination-container {
   display: flex;
   justify-content: center;
-  margin-top: 20px;
-  padding: 20px 0;
-  border-top: 1px solid #e5e7eb;
+  margin-top: 2rem;
+  animation: cf-consentimientos-fade-in-animation 0.5s ease-out forwards;
 }
 
 .cf-consentimientos-pagination-info {
@@ -497,7 +377,22 @@
   font-weight: 500;
 }
 
-@keyframes cf-consentimientos-fade-in {
+@keyframes cf-consentimientos-fade-in-animation {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cf-consentimientos-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
   from {
     opacity: 0;
     transform: translateY(10px);
@@ -543,16 +438,8 @@
   .cf-consentimientos-title {
     font-size: 1.5rem;
   }
-
-  .cf-consentimientos-dialog-actions {
-    flex-direction: column;
-  }
-
-  .cf-consentimientos-dialog-cancel,
-  .cf-consentimientos-dialog-confirm {
-    width: 100%;
-  }
 }
+
 @media (min-width: 1000px) {
   .cf-consentimientos-header {
     margin-top: 50px;

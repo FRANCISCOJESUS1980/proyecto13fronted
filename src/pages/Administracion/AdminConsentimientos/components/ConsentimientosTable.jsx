@@ -2,7 +2,6 @@ import React from 'react'
 import { Check, XCircle } from 'lucide-react'
 import { formatDate } from '../utils/consentimientos-utils'
 import alertService from '../../../../components/sweealert2/sweealert2'
-import Pagination from '../../AdminProductos/components/Pagination/Pagination'
 
 const AuthorizationBadge = React.memo(({ autorizaImagen }) => (
   <span
@@ -79,14 +78,8 @@ const DeleteButton = React.memo(({ consentimiento, isLoading, onDelete }) => {
 DeleteButton.displayName = 'DeleteButton'
 
 const ConsentimientosTable = React.memo(
-  ({
-    consentimientos,
-    deleteLoading,
-    onDelete,
-    paginationInfo,
-    onPageChange
-  }) => {
-    if (consentimientos.length === 0 && paginationInfo?.totalItems === 0) {
+  ({ consentimientos, deleteLoading, onDelete, totalItems }) => {
+    if (consentimientos.length === 0 && totalItems === 0) {
       return (
         <div className='cf-consentimientos-no-results'>
           <div className='cf-consentimientos-no-results-icon'></div>
@@ -136,16 +129,6 @@ const ConsentimientosTable = React.memo(
             ))}
           </tbody>
         </table>
-
-        {paginationInfo && paginationInfo.totalPages > 1 && (
-          <div className='cf-consentimientos-pagination-wrapper'>
-            <Pagination
-              currentPage={paginationInfo.currentPage}
-              totalPages={paginationInfo.totalPages}
-              onPageChange={onPageChange}
-            />
-          </div>
-        )}
       </div>
     )
   }

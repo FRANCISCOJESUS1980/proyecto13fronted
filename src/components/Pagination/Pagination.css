@@ -1,0 +1,274 @@
+.cf-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.cf-pagination-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #dee2e6;
+  background-color: #fff;
+  color: #495057;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cf-pagination-arrow:hover:not(:disabled) {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.cf-pagination-arrow:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cf-pagination-numbers {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 12px;
+}
+
+.cf-pagination-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 8px;
+  background-color: rgb(48, 43, 43);
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.cf-pagination-number:hover {
+  background-color: #4a4f54;
+  border-color: #adb5bd;
+}
+
+.cf-pagination-active {
+  background-color: #3b82f6 !important;
+  border-color: #3b82f6 !important;
+  color: #fff !important;
+}
+
+.cf-pagination-active:hover {
+  background-color: #2563eb !important;
+  border-color: #2563eb !important;
+}
+
+.cf-productos-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.cf-productos-pagination-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #dee2e6;
+  background-color: #fff;
+  color: #495057;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cf-productos-pagination-arrow:hover:not(:disabled) {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.cf-productos-pagination-arrow:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cf-productos-pagination-numbers {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 12px;
+}
+
+.cf-productos-pagination-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 8px;
+  background-color: rgb(48, 43, 43);
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.cf-productos-pagination-active {
+  background-color: #3b82f6 !important;
+  border-color: #3b82f6 !important;
+  color: #fff !important;
+}
+
+.cf-productos-pagination-active:hover {
+  background-color: #2563eb !important;
+  border-color: #2563eb !important;
+}
+
+.cf-usuarios-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.cf-usuarios-pagination-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #dee2e6;
+  background-color: #fff;
+  color: #495057;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cf-usuarios-pagination-arrow:hover:not(:disabled) {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.cf-usuarios-pagination-arrow:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cf-usuarios-pagination-numbers {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 12px;
+}
+
+.cf-usuarios-pagination-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 8px;
+  background-color: rgb(48, 43, 43);
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.cf-usuarios-pagination-number:hover {
+  background-color: #4a4f54;
+  border-color: #adb5bd;
+}
+
+.cf-usuarios-pagination-active {
+  background-color: #3b82f6 !important;
+  border-color: #3b82f6 !important;
+  color: #fff !important;
+}
+
+.cf-usuarios-pagination-active:hover {
+  background-color: #2563eb !important;
+  border-color: #2563eb !important;
+}
+
+.cf-consentimientos-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.cf-consentimientos-pagination-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #dee2e6;
+  background-color: #fff;
+  color: #495057;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cf-consentimientos-pagination-arrow:hover:not(:disabled) {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.cf-consentimientos-pagination-arrow:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cf-consentimientos-pagination-numbers {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 12px;
+}
+
+.cf-consentimientos-pagination-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 8px;
+  background-color: rgb(48, 43, 43);
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.cf-consentimientos-pagination-number:hover {
+  background-color: #4a4f54;
+  border-color: #adb5bd;
+}
+
+.cf-consentimientos-pagination-active {
+  background-color: #3b82f6 !important;
+  border-color: #3b82f6 !important;
+  color: #fff !important;
+}
+
+.cf-consentimientos-pagination-active:hover {
+  background-color: #2563eb !important;
+  border-color: #2563eb !important;
+}

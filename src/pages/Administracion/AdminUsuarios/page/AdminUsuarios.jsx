@@ -6,11 +6,20 @@ import UsuariosHeader from '../components/UsuariosHeader'
 import UsuariosSearch from '../components/UsuariosSearch'
 import UsuariosGrid from '../components/UsuariosGrid'
 import ErrorState from '../components/ErrorState'
+import Pagination from '../../../../components/Pagination/Pagination'
 import { UsuariosProvider } from '../context/UsuariosContext'
 import { useUsuariosOptimized } from '../hooks/useUsuariosOptimized'
 
 const AdminUsuariosContent = React.memo(() => {
-  const { loading, error, fadeIn } = useUsuariosOptimized()
+  const {
+    loading,
+    error,
+    fadeIn,
+    currentPage,
+    totalPages,
+    handlePageChange,
+    paginatedUsers
+  } = useUsuariosOptimized()
 
   if (loading) {
     return (
@@ -37,6 +46,15 @@ const AdminUsuariosContent = React.memo(() => {
         <UsuariosHeader />
         <UsuariosSearch />
         <UsuariosGrid />
+        <div className='cf-admin-usuarios-pagination-container'>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            showPagination={paginatedUsers.length > 0}
+            className='cf-pagination'
+          />
+        </div>
       </div>
     </div>
   )

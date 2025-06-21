@@ -8,13 +8,18 @@ import {
 } from 'react'
 import { obtenerTodosUsuarios } from '../../../../services/Api/index'
 
+const USERS_PER_PAGE = 10
+
 const initialState = {
   usuarios: [],
   filteredUsuarios: [],
+  paginatedUsers: [],
   searchTerm: '',
   loading: true,
   error: '',
-  fadeIn: false
+  fadeIn: false,
+  currentPage: 1,
+  totalPages: 1
 }
 
 const ACTIONS = {
@@ -24,17 +29,27 @@ const ACTIONS = {
   SET_LOADING: 'SET_LOADING',
   SET_ERROR: 'SET_ERROR',
   SET_FADE_IN: 'SET_FADE_IN',
-  FILTER_USUARIOS: 'FILTER_USUARIOS'
+  FILTER_USUARIOS: 'FILTER_USUARIOS',
+  SET_CURRENT_PAGE: 'SET_CURRENT_PAGE',
+  UPDATE_PAGINATION: 'UPDATE_PAGINATION'
 }
 
 function usuariosReducer(state, action) {
   switch (action.type) {
-    case ACTIONS.SET_USUARIOS:
+    case ACTIONS.SET_USUARIOS: {
+      const usuarios = action.payload
+      const totalPages = Math.ceil(usuarios.length / USERS_PER_PAGE)
+      const paginatedUsers = usuarios.slice(0, USERS_PER_PAGE)
+
       return {
         ...state,
-        usuarios: action.payload,
-        filteredUsuarios: action.payload
+        usuarios,
+        filteredUsuarios: usuarios,
+        paginatedUsers,
+        totalPages,
+        currentPage: 1
       }
+    }
 
     case ACTIONS.SET_FILTERED_USUARIOS:
       return { ...state, filteredUsuarios: action.payload }
@@ -51,10 +66,29 @@ function usuariosReducer(state, action) {
         )
       }
 
+      const totalPages = Math.ceil(filteredUsuarios.length / USERS_PER_PAGE)
+      const paginatedUsers = filteredUsuarios.slice(0, USERS_PER_PAGE)
+
       return {
         ...state,
         searchTerm,
-        filteredUsuarios
+        filteredUsuarios,
+        paginatedUsers,
+        totalPages,
+        currentPage: 1
+      }
+    }
+
+    case ACTIONS.SET_CURRENT_PAGE: {
+      const newPage = action.payload
+      const startIndex = (newPage - 1) * USERS_PER_PAGE
+      const endIndex = startIndex + USERS_PER_PAGE
+      const paginatedUsers = state.filteredUsuarios.slice(startIndex, endIndex)
+
+      return {
+        ...state,
+        currentPage: newPage,
+        paginatedUsers
       }
     }
 
@@ -100,7 +134,9 @@ export const UsuariosProvider = ({ children }) => {
       setError: (error) =>
         dispatch({ type: ACTIONS.SET_ERROR, payload: error }),
       setFadeIn: (fadeIn) =>
-        dispatch({ type: ACTIONS.SET_FADE_IN, payload: fadeIn })
+        dispatch({ type: ACTIONS.SET_FADE_IN, payload: fadeIn }),
+      setCurrentPage: (page) =>
+        dispatch({ type: ACTIONS.SET_CURRENT_PAGE, payload: page })
     }),
     []
   )

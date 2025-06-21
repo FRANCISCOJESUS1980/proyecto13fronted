@@ -17,17 +17,17 @@ const EmptyState = React.memo(() => (
 EmptyState.displayName = 'EmptyState'
 
 const UsuariosGrid = React.memo(() => {
-  const { filteredUsuarios } = useUsuariosOptimized()
+  const { paginatedUsers, filteredUsuarios } = useUsuariosOptimized()
 
   return (
     <div className='cf-admin-usuarios-grid'>
-      {filteredUsuarios.length > 0 ? (
-        filteredUsuarios.map((usuario, index) => (
+      {paginatedUsers.length > 0 ? (
+        paginatedUsers.map((usuario, index) => (
           <UsuarioCard key={usuario._id} usuario={usuario} index={index} />
         ))
-      ) : (
+      ) : filteredUsuarios.length === 0 ? (
         <EmptyState />
-      )}
+      ) : null}
     </div>
   )
 })

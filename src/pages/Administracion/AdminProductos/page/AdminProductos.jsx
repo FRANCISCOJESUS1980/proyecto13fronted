@@ -5,7 +5,7 @@ import Loading from '../../../../components/Loading/loading'
 import ProductoCard from '../components/ProductCard/ProductCard'
 import ProductoForm from '../components/ProductoForm/ProductoForm'
 import ProductoFilters from '../components/ProductoFilters/ProductoFilters'
-import Pagination from '../components/Pagination/Pagination'
+import Pagination from '../../../../components/Pagination/Pagination'
 import Button from '../../../../components/Button/Button'
 import { useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
@@ -249,15 +249,15 @@ const AdminProductos = () => {
           )}
         </div>
 
-        {state.productos.length > 0 && (
-          <div className='cf-admin-productos-pagination-container'>
-            <Pagination
-              currentPage={state.currentPage}
-              totalPages={state.totalPages}
-              onPageChange={setCurrentPage}
-            />
-          </div>
-        )}
+        <div className='cf-admin-productos-pagination-container'>
+          <Pagination
+            currentPage={state.currentPage}
+            totalPages={state.totalPages}
+            onPageChange={setCurrentPage}
+            showPagination={state.productos.length > 0}
+            className='cf-pagination'
+          />
+        </div>
       </div>
 
       {state.modalOpen && (
