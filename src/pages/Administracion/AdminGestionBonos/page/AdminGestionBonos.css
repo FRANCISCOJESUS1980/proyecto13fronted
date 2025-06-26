@@ -410,7 +410,7 @@
   background-color: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
-  color: #fff;
+  color: gray;
   font-size: 1rem;
   transition: all 0.3s ease;
 }
@@ -521,6 +521,8 @@
 
   .cf-gestion-bonos-form-actions {
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
 
   .cf-gestion-bonos-form-actions button {

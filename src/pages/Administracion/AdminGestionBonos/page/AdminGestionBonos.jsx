@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Plus } from 'lucide-react'
 import Header from '../../../../components/Header/page/Header'
@@ -6,9 +6,12 @@ import Button from '../../../../components/Button/Button'
 import { useGestionBonos } from '../hooks/useGestionBonos'
 import BonoActivo from '../components/BonoActivo'
 import HistorialBonos from '../components/HistorialBonos'
+import SesionesLibres from '../components/SesionesLibres'
 import NuevoBonoModal from '../components/modals/NuevoBonoModal'
 import PausarBonoModal from '../components/modals/PausarBonoModal'
 import AñadirSesionesModal from '../components/modals/AñadirSesionesModal'
+import AñadirSesionesLibresModal from '../components/modals/AñadirSesionesLibresModal'
+import QuitarSesionesLibresModal from '../components/modals/QuitarSesionesLibresModal'
 import './AdminGestionBonos.css'
 
 const LoadingState = () => (
@@ -54,11 +57,17 @@ const GestionBonos = () => {
     usuario,
     bonoActivo,
     historialBonos,
+    sesionesLibres,
+    historialSesionesLibres,
+
     loading,
     error,
     showNuevoBonoModal,
     showPausarBonoModal,
     showAñadirSesionesModal,
+    showAñadirSesionesLibresModal,
+    showQuitarSesionesLibresModal,
+
     nuevoBonoForm,
     pausarBonoForm,
     sesionesForm,
@@ -69,16 +78,25 @@ const GestionBonos = () => {
     closePausarBonoModal,
     openAñadirSesionesModal,
     closeAñadirSesionesModal,
+    openAñadirSesionesLibresModal,
+    closeAñadirSesionesLibresModal,
+    openQuitarSesionesLibresModal,
+    closeQuitarSesionesLibresModal,
 
     handleNuevoBonoChange,
     handleCrearBono,
     handlePausarBono,
     handleReactivarBono,
     handleAñadirSesiones,
+    handleAñadirSesionesLibres,
+    handleQuitarSesionesLibres,
+
     updatePausarBonoForm,
     updateSesionesForm,
 
-    formatFecha
+    formatFecha,
+    obtenerInfoPausa,
+    calcularDiasPausa
   } = useGestionBonos(userId)
 
   if (loading && !usuario) {
@@ -104,7 +122,7 @@ const GestionBonos = () => {
 
           <div className='cf-gestion-bonos-title-container'>
             <h1 className='cf-gestion-bonos-title'>
-              Gestión de Bonos - {usuario?.nombre}
+              Gestión de Bonos - {usuario?.nombre} {usuario?.apellidos}
             </h1>
           </div>
 
@@ -134,6 +152,22 @@ const GestionBonos = () => {
             onPausar={openPausarBonoModal}
             onReactivar={handleReactivarBono}
             onAñadirSesiones={openAñadirSesionesModal}
+            obtenerInfoPausa={obtenerInfoPausa}
+            calcularDiasPausa={calcularDiasPausa}
+          />
+        </div>
+
+        <div className='cf-gestion-bonos-section'>
+          <h2 className='cf-gestion-bonos-section-title'>Sesiones Libres</h2>
+
+          <SesionesLibres
+            usuario={usuario}
+            sesionesLibres={sesionesLibres}
+            historialSesionesLibres={historialSesionesLibres}
+            loading={loading}
+            onAñadirSesiones={openAñadirSesionesLibresModal}
+            onQuitarSesiones={openQuitarSesionesLibresModal}
+            formatFecha={formatFecha}
           />
         </div>
 
@@ -142,7 +176,6 @@ const GestionBonos = () => {
           formatFecha={formatFecha}
         />
 
-        {/* Modales */}
         <NuevoBonoModal
           show={showNuevoBonoModal}
           onClose={closeNuevoBonoModal}
@@ -168,6 +201,23 @@ const GestionBonos = () => {
           onChange={updateSesionesForm}
           onSubmit={handleAñadirSesiones}
           loading={loading}
+        />
+
+        <AñadirSesionesLibresModal
+          show={showAñadirSesionesLibresModal}
+          onClose={closeAñadirSesionesLibresModal}
+          onSubmit={handleAñadirSesionesLibres}
+          loading={loading}
+          usuario={usuario}
+        />
+
+        <QuitarSesionesLibresModal
+          show={showQuitarSesionesLibresModal}
+          onClose={closeQuitarSesionesLibresModal}
+          onSubmit={handleQuitarSesionesLibres}
+          loading={loading}
+          usuario={usuario}
+          sesionesLibres={sesionesLibres}
         />
       </div>
     </div>

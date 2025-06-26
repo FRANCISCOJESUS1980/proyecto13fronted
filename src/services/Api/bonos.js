@@ -118,6 +118,18 @@ export const reactivarBono = async (token, bonoId, reactivacionData) => {
 
 export const añadirSesiones = async (token, bonoId, sesionesData) => {
   try {
+    console.log('=== FRONTEND - añadirSesiones ===')
+    console.log('bonoId:', bonoId)
+    console.log('sesionesData:', sesionesData)
+
+    if (!bonoId) {
+      throw new Error('ID del bono es requerido')
+    }
+
+    if (!sesionesData || !sesionesData.sesionesAdicionales) {
+      throw new Error('Datos de sesiones son requeridos')
+    }
+
     const response = await fetch(
       `${API_BASE_URL}/bonos/${bonoId}/agregar-sesiones`,
       {
@@ -130,17 +142,25 @@ export const añadirSesiones = async (token, bonoId, sesionesData) => {
       }
     )
 
+    console.log('Response status:', response.status)
+
     if (!response.ok) {
       const errorData = await response.json()
+      console.error('Error response:', errorData)
       throw new Error(errorData.message || 'Error al añadir sesiones')
     }
 
-    return await response.json()
+    const result = await response.json()
+    console.log('Success response:', result)
+    return result
   } catch (error) {
+    console.error('=== FRONTEND ERROR - añadirSesiones ===')
+    console.error('Error:', error)
     handleApiError(error, 'Error al añadir sesiones:')
     throw error
   }
 }
+
 export const obtenerBonos = async (token) => {
   try {
     const response = await fetch(`${API_BASE_URL}/bonos`, {
@@ -164,8 +184,17 @@ export const obtenerBonos = async (token) => {
 
 export const obtenerBonoActivo = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/bonos/activo`, {
-      credentials: 'include'
+    const token = localStorage.getItem('token')
+
+    if (!token) {
+      throw new Error('No autorizado, no hay token')
+    }
+
+    const response = await fetch(`${API_BASE_URL}/bonos/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
     })
 
     if (!response.ok) {
@@ -191,6 +220,6 @@ export const obtenerBonoActivo = async () => {
     }
   } catch (error) {
     handleApiError(error, 'Error al obtener bono activo:')
-    return null
+    throw error
   }
 }

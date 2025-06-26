@@ -6,7 +6,10 @@ import {
   pausarBono,
   reactivarBono,
   añadirSesiones,
-  obtenerHistorialBonos
+  obtenerHistorialBonos,
+  obtenerSesionesLibresUsuario,
+  añadirSesionesLibres,
+  quitarSesionesLibres
 } from '../../../../services/Api/index'
 
 const TIPOS_BONO = {
@@ -25,12 +28,19 @@ export const useGestionBonos = (userId) => {
   const [usuario, setUsuario] = useState(null)
   const [bonoActivo, setBonoActivo] = useState(null)
   const [historialBonos, setHistorialBonos] = useState([])
+  const [sesionesLibres, setSesionesLibres] = useState(0)
+  const [historialSesionesLibres, setHistorialSesionesLibres] = useState([])
+
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
   const [showNuevoBonoModal, setShowNuevoBonoModal] = useState(false)
   const [showPausarBonoModal, setShowPausarBonoModal] = useState(false)
   const [showAñadirSesionesModal, setShowAñadirSesionesModal] = useState(false)
+  const [showAñadirSesionesLibresModal, setShowAñadirSesionesLibresModal] =
+    useState(false)
+  const [showQuitarSesionesLibresModal, setShowQuitarSesionesLibresModal] =
+    useState(false)
 
   const [nuevoBonoForm, setNuevoBonoForm] = useState(() => ({
     tipo: '8 Sesiones',
@@ -53,6 +63,19 @@ export const useGestionBonos = (userId) => {
     return token
   }, [])
 
+  const calcularDiasPausa = useCallback((fechaPausa) => {
+    if (!fechaPausa) return 0
+
+    const fechaPausaDate = new Date(fechaPausa)
+    const fechaActual = new Date()
+
+    const diferenciaMilisegundos =
+      fechaActual.getTime() - fechaPausaDate.getTime()
+    const diasPausa = Math.ceil(diferenciaMilisegundos / (1000 * 60 * 60 * 24))
+
+    return Math.max(0, diasPausa)
+  }, [])
+
   const cargarDatos = useCallback(async () => {
     setLoading(true)
     try {
@@ -63,8 +86,11 @@ export const useGestionBonos = (userId) => {
 
       try {
         const bonoData = await obtenerBonoUsuario(token, userId)
+        console.log('=== DATOS DEL BONO CARGADOS ===')
+        console.log('Bono data:', bonoData.data)
         setBonoActivo(bonoData.data)
       } catch (err) {
+        console.warn('No se pudo cargar el bono:', err.message)
         setBonoActivo(null)
       }
 
@@ -74,6 +100,19 @@ export const useGestionBonos = (userId) => {
       } catch (err) {
         console.error('Error al cargar historial de bonos:', err)
         setHistorialBonos([])
+      }
+
+      try {
+        const sesionesLibresData = await obtenerSesionesLibresUsuario(
+          token,
+          userId
+        )
+        setSesionesLibres(sesionesLibresData.data.sesionesLibres)
+        setHistorialSesionesLibres(sesionesLibresData.data.historial || [])
+      } catch (err) {
+        console.error('Error al cargar sesiones libres:', err)
+        setSesionesLibres(0)
+        setHistorialSesionesLibres([])
       }
 
       setError(null)
@@ -108,7 +147,7 @@ export const useGestionBonos = (userId) => {
           name === 'duracionMeses' ||
           name === 'sesionesTotal' ||
           name === 'precio'
-            ? parseInt(value)
+            ? Number.parseInt(value)
             : value
       }
     })
@@ -152,10 +191,18 @@ export const useGestionBonos = (userId) => {
       try {
         const token = getToken()
 
-        await pausarBono(token, bonoActivo._id, pausarBonoForm)
+        const pausaData = {
+          ...pausarBonoForm,
+          fechaPausa: new Date().toISOString()
+        }
 
-        const bonoData = await obtenerBonoUsuario(token, userId)
-        setBonoActivo(bonoData.data)
+        console.log('=== PAUSANDO BONO ===')
+        console.log('Bono ID:', bonoActivo._id)
+        console.log('Pausa data:', pausaData)
+
+        await pausarBono(token, bonoActivo._id, pausaData)
+
+        await cargarDatos()
 
         setShowPausarBonoModal(false)
         setPausarBonoForm({ motivo: '' })
@@ -167,7 +214,7 @@ export const useGestionBonos = (userId) => {
         setLoading(false)
       }
     },
-    [userId, bonoActivo, pausarBonoForm, getToken]
+    [bonoActivo, pausarBonoForm, getToken, cargarDatos]
   )
 
   const handleReactivarBono = useCallback(async () => {
@@ -178,10 +225,20 @@ export const useGestionBonos = (userId) => {
     try {
       const token = getToken()
 
-      await reactivarBono(token, bonoActivo._id, { diasExtension: 0 })
+      const diasExtension = calcularDiasPausa(bonoActivo.fechaPausa)
 
-      const bonoData = await obtenerBonoUsuario(token, userId)
-      setBonoActivo(bonoData.data)
+      console.log('=== REACTIVANDO BONO ===')
+      console.log(`Bono ID: ${bonoActivo._id}`)
+      console.log(`Estado actual: ${bonoActivo.estado}`)
+      console.log(`Bono pausado desde: ${bonoActivo.fechaPausa}`)
+      console.log(`Días de extensión calculados: ${diasExtension}`)
+
+      await reactivarBono(token, bonoActivo._id, {
+        diasExtension,
+        fechaReactivacion: new Date().toISOString()
+      })
+
+      await cargarDatos()
 
       setError(null)
     } catch (err) {
@@ -190,7 +247,7 @@ export const useGestionBonos = (userId) => {
     } finally {
       setLoading(false)
     }
-  }, [userId, bonoActivo, getToken])
+  }, [bonoActivo, getToken, calcularDiasPausa, cargarDatos])
 
   const handleAñadirSesiones = useCallback(
     async (e) => {
@@ -218,6 +275,62 @@ export const useGestionBonos = (userId) => {
       }
     },
     [userId, bonoActivo, sesionesForm, getToken]
+  )
+
+  const handleAñadirSesionesLibres = useCallback(
+    async (formData) => {
+      setLoading(true)
+
+      try {
+        const token = getToken()
+
+        await añadirSesionesLibres(token, userId, formData)
+
+        const sesionesLibresData = await obtenerSesionesLibresUsuario(
+          token,
+          userId
+        )
+        setSesionesLibres(sesionesLibresData.data.sesionesLibres)
+        setHistorialSesionesLibres(sesionesLibresData.data.historial || [])
+
+        setShowAñadirSesionesLibresModal(false)
+        setError(null)
+      } catch (err) {
+        console.error('Error al añadir sesiones libres:', err)
+        setError(err.message || 'Error al añadir sesiones libres')
+      } finally {
+        setLoading(false)
+      }
+    },
+    [userId, getToken]
+  )
+
+  const handleQuitarSesionesLibres = useCallback(
+    async (formData) => {
+      setLoading(true)
+
+      try {
+        const token = getToken()
+
+        await quitarSesionesLibres(token, userId, formData)
+
+        const sesionesLibresData = await obtenerSesionesLibresUsuario(
+          token,
+          userId
+        )
+        setSesionesLibres(sesionesLibresData.data.sesionesLibres)
+        setHistorialSesionesLibres(sesionesLibresData.data.historial || [])
+
+        setShowQuitarSesionesLibresModal(false)
+        setError(null)
+      } catch (err) {
+        console.error('Error al quitar sesiones libres:', err)
+        setError(err.message || 'Error al quitar sesiones libres')
+      } finally {
+        setLoading(false)
+      }
+    },
+    [userId, getToken]
   )
 
   const formatFecha = useCallback((fechaStr) => {
@@ -263,16 +376,57 @@ export const useGestionBonos = (userId) => {
     []
   )
 
+  const openAñadirSesionesLibresModal = useCallback(
+    () => setShowAñadirSesionesLibresModal(true),
+    []
+  )
+  const closeAñadirSesionesLibresModal = useCallback(
+    () => setShowAñadirSesionesLibresModal(false),
+    []
+  )
+
+  const openQuitarSesionesLibresModal = useCallback(
+    () => setShowQuitarSesionesLibresModal(true),
+    []
+  )
+  const closeQuitarSesionesLibresModal = useCallback(
+    () => setShowQuitarSesionesLibresModal(false),
+    []
+  )
+
+  const obtenerInfoPausa = useCallback(() => {
+    if (
+      !bonoActivo ||
+      bonoActivo.estado !== 'pausado' ||
+      !bonoActivo.fechaPausa
+    ) {
+      return null
+    }
+
+    const diasPausado = calcularDiasPausa(bonoActivo.fechaPausa)
+    return {
+      diasPausado,
+      fechaPausa: bonoActivo.fechaPausa,
+      motivoPausa: bonoActivo.motivoPausa
+    }
+  }, [bonoActivo, calcularDiasPausa])
+
   return useMemo(
     () => ({
       usuario,
       bonoActivo,
       historialBonos,
+      sesionesLibres,
+      historialSesionesLibres,
+
       loading,
       error,
       showNuevoBonoModal,
       showPausarBonoModal,
       showAñadirSesionesModal,
+      showAñadirSesionesLibresModal,
+      showQuitarSesionesLibresModal,
+
       nuevoBonoForm,
       pausarBonoForm,
       sesionesForm,
@@ -283,16 +437,25 @@ export const useGestionBonos = (userId) => {
       closePausarBonoModal,
       openAñadirSesionesModal,
       closeAñadirSesionesModal,
+      openAñadirSesionesLibresModal,
+      closeAñadirSesionesLibresModal,
+      openQuitarSesionesLibresModal,
+      closeQuitarSesionesLibresModal,
 
       handleNuevoBonoChange,
       handleCrearBono,
       handlePausarBono,
       handleReactivarBono,
       handleAñadirSesiones,
+      handleAñadirSesionesLibres,
+      handleQuitarSesionesLibres,
+
       updatePausarBonoForm,
       updateSesionesForm,
 
       formatFecha,
+      obtenerInfoPausa,
+      calcularDiasPausa,
 
       recargarDatos: cargarDatos
     }),
@@ -300,11 +463,15 @@ export const useGestionBonos = (userId) => {
       usuario,
       bonoActivo,
       historialBonos,
+      sesionesLibres,
+      historialSesionesLibres,
       loading,
       error,
       showNuevoBonoModal,
       showPausarBonoModal,
       showAñadirSesionesModal,
+      showAñadirSesionesLibresModal,
+      showQuitarSesionesLibresModal,
       nuevoBonoForm,
       pausarBonoForm,
       sesionesForm,
@@ -314,14 +481,22 @@ export const useGestionBonos = (userId) => {
       closePausarBonoModal,
       openAñadirSesionesModal,
       closeAñadirSesionesModal,
+      openAñadirSesionesLibresModal,
+      closeAñadirSesionesLibresModal,
+      openQuitarSesionesLibresModal,
+      closeQuitarSesionesLibresModal,
       handleNuevoBonoChange,
       handleCrearBono,
       handlePausarBono,
       handleReactivarBono,
       handleAñadirSesiones,
+      handleAñadirSesionesLibres,
+      handleQuitarSesionesLibres,
       updatePausarBonoForm,
       updateSesionesForm,
       formatFecha,
+      obtenerInfoPausa,
+      calcularDiasPausa,
       cargarDatos
     ]
   )

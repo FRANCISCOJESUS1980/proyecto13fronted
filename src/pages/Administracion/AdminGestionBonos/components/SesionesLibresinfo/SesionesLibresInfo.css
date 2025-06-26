@@ -1,0 +1,184 @@
+.cf-sesiones-libres-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cf-sesiones-libres-info {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.cf-sesiones-libres-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.cf-sesiones-libres-icon {
+  color: #28a745;
+}
+
+.cf-sesiones-libres-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #495057;
+  margin: 0;
+}
+
+.cf-sesiones-libres-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cf-sesiones-libres-count {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #28a745;
+  font-weight: 500;
+}
+
+.cf-sesiones-libres-number {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.cf-sesiones-libres-text {
+  font-size: 14px;
+}
+
+.cf-sesiones-libres-description {
+  font-size: 12px;
+  color: #6c757d;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.cf-sesiones-libres-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 20px;
+  color: #6c757d;
+}
+
+.cf-sesiones-libres-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #28a745;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Resumen de sesiones */
+.cf-resumen-sesiones {
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.cf-resumen-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.cf-resumen-header h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #495057;
+  margin: 0;
+}
+
+.cf-estado-disponible {
+  font-size: 12px;
+  color: #28a745;
+  font-weight: 500;
+}
+
+.cf-estado-no-disponible {
+  font-size: 12px;
+  color: #dc3545;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cf-resumen-detalles {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cf-resumen-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}
+
+.cf-resumen-label {
+  color: #6c757d;
+}
+
+.cf-resumen-valor {
+  color: #495057;
+  font-weight: 500;
+}
+
+.cf-resumen-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 600;
+  padding-top: 8px;
+  border-top: 1px solid #e9ecef;
+  margin-top: 4px;
+}
+
+.cf-resumen-valor-total {
+  color: #007bff;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .cf-sesiones-libres-info {
+    padding: 12px;
+  }
+
+  .cf-sesiones-libres-title {
+    font-size: 14px;
+  }
+
+  .cf-sesiones-libres-number {
+    font-size: 16px;
+  }
+
+  .cf-resumen-sesiones {
+    padding: 12px;
+  }
+}

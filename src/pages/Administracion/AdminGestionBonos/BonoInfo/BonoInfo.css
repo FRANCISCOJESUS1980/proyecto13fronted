@@ -118,3 +118,10 @@
   font-size: 12px;
   color: #856404;
 }
+.bono-sesiones-libres {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-top: 1px solid #dee2e6;
+}

@@ -1,5 +1,13 @@
-import React, { memo } from 'react'
-import { Clock, Calendar, Pause, Play, Plus } from 'lucide-react'
+import { memo } from 'react'
+import {
+  Clock,
+  Calendar,
+  Pause,
+  Play,
+  Plus,
+  Info,
+  AlertTriangle
+} from 'lucide-react'
 import Button from '../../../../components/Button/Button'
 
 const BonoActivo = memo(
@@ -9,7 +17,9 @@ const BonoActivo = memo(
     formatFecha,
     onPausar,
     onReactivar,
-    onAñadirSesiones
+    onAñadirSesiones,
+    obtenerInfoPausa,
+    calcularDiasPausa
   }) => {
     if (!bonoActivo) {
       return (
@@ -27,6 +37,17 @@ const BonoActivo = memo(
     }
 
     const isActivo = bonoActivo.estado === 'activo'
+    const isPausado = bonoActivo.estado === 'pausado'
+    const isAgotado = bonoActivo.estado === 'agotado'
+    const isExpirado = bonoActivo.estado === 'expirado'
+    const infoPausa = obtenerInfoPausa()
+
+    console.log('=== BONO ACTIVO COMPONENT ===')
+    console.log('Estado del bono:', bonoActivo.estado)
+    console.log('Es activo:', isActivo)
+    console.log('Es pausado:', isPausado)
+    console.log('Es agotado:', isAgotado)
+    console.log('Es expirado:', isExpirado)
 
     return (
       <div className='cf-gestion-bonos-card'>
@@ -34,10 +55,26 @@ const BonoActivo = memo(
           <h3 className='cf-gestion-bonos-card-title'>{bonoActivo.tipo}</h3>
           <span
             className={`cf-gestion-bonos-badge ${
-              isActivo ? 'activo' : 'pausado'
+              isActivo
+                ? 'activo'
+                : isPausado
+                ? 'pausado'
+                : isAgotado
+                ? 'agotado'
+                : isExpirado
+                ? 'expirado'
+                : 'inactivo'
             }`}
           >
-            {isActivo ? 'Activo' : 'Pausado'}
+            {isActivo
+              ? 'Activo'
+              : isPausado
+              ? 'Pausado'
+              : isAgotado
+              ? 'Agotado'
+              : isExpirado
+              ? 'Expirado'
+              : bonoActivo.estado}
           </span>
         </div>
 
@@ -63,17 +100,65 @@ const BonoActivo = memo(
             </div>
           </div>
 
-          {!isActivo && bonoActivo.motivoPausa && (
+          {isPausado && infoPausa && (
             <div className='cf-gestion-bonos-pausa-info'>
-              <p>
-                <strong>Motivo de pausa:</strong> {bonoActivo.motivoPausa}
-              </p>
-              {bonoActivo.fechaPausa && (
+              <div className='cf-gestion-bonos-pausa-header'>
+                <Info size={16} />
+                <strong>Información de Pausa</strong>
+              </div>
+
+              <div className='cf-gestion-bonos-pausa-details'>
+                <p>
+                  <strong>Motivo:</strong> {infoPausa.motivoPausa}
+                </p>
                 <p>
                   <strong>Fecha de pausa:</strong>{' '}
-                  {formatFecha(bonoActivo.fechaPausa)}
+                  {formatFecha(infoPausa.fechaPausa)}
                 </p>
-              )}
+                <p>
+                  <strong>Días pausado:</strong>{' '}
+                  <span className='cf-gestion-bonos-dias-pausado'>
+                    {infoPausa.diasPausado} días
+                  </span>
+                </p>
+                <p className='cf-gestion-bonos-extension-info'>
+                  <strong>Extensión al reactivar:</strong> +
+                  {infoPausa.diasPausado} días
+                </p>
+              </div>
+            </div>
+          )}
+
+          {isAgotado && (
+            <div className='cf-gestion-bonos-agotado-info'>
+              <div className='cf-gestion-bonos-agotado-header'>
+                <AlertTriangle size={16} />
+                <strong>Bono Agotado</strong>
+              </div>
+              <div className='cf-gestion-bonos-agotado-details'>
+                <p>
+                  El bono se ha quedado sin sesiones, pero aún está dentro del
+                  período de validez.
+                </p>
+                <p>
+                  Puedes añadir más sesiones para reactivarlo automáticamente.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {isExpirado && (
+            <div className='cf-gestion-bonos-expirado-info'>
+              <div className='cf-gestion-bonos-expirado-header'>
+                <AlertTriangle size={16} />
+                <strong>Bono Expirado</strong>
+              </div>
+              <div className='cf-gestion-bonos-expirado-details'>
+                <p>
+                  El bono ha superado su fecha de validez y no puede ser
+                  utilizado.
+                </p>
+              </div>
             </div>
           )}
         </div>
@@ -85,6 +170,7 @@ const BonoActivo = memo(
                 variant='secondary'
                 onClick={onPausar}
                 leftIcon={<Pause size={16} />}
+                disabled={loading}
               >
                 Pausar Bono
               </Button>
@@ -94,20 +180,43 @@ const BonoActivo = memo(
                   variant='secondary'
                   onClick={onAñadirSesiones}
                   leftIcon={<Plus size={16} />}
+                  disabled={loading}
                 >
                   Añadir Sesiones
                 </Button>
               )}
             </>
-          ) : (
+          ) : isPausado ? (
             <Button
               variant='primary'
               onClick={onReactivar}
               leftIcon={<Play size={16} />}
               disabled={loading}
+              title={
+                infoPausa ? `Se extenderá ${infoPausa.diasPausado} días` : ''
+              }
             >
-              {loading ? 'Reactivando...' : 'Reactivar Bono'}
+              {loading
+                ? 'Reactivando...'
+                : `Reactivar (+${infoPausa?.diasPausado || 0} días)`}
             </Button>
+          ) : isAgotado ? (
+            <Button
+              variant='primary'
+              onClick={onAñadirSesiones}
+              leftIcon={<Plus size={16} />}
+              disabled={loading}
+            >
+              Añadir Sesiones para Reactivar
+            </Button>
+          ) : isExpirado ? (
+            <div className='cf-gestion-bonos-estado-info'>
+              <p>Bono expirado. No se pueden realizar acciones.</p>
+            </div>
+          ) : (
+            <div className='cf-gestion-bonos-estado-info'>
+              <p>Estado: {bonoActivo.estado}. Contacta con administración.</p>
+            </div>
           )}
         </div>
       </div>

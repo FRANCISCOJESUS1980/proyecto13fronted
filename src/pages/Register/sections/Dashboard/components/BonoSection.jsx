@@ -11,7 +11,7 @@ const BonoSection = React.memo(() => {
 
   return (
     <div className='cf-dash-bono-section'>
-      <h2 className='cf-dash-section-title'>Tu Bono Actual</h2>
+      <h2 className='cf-dash-section-title'>Tu Bono y Sesiones</h2>
       <div className='cf-dash-bono-container'>
         <BonoInfo userId={userId} />
       </div>

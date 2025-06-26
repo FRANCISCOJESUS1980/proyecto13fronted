@@ -1,13 +1,62 @@
-import { useState, useEffect } from 'react'
-import { obtenerBonoActivo } from '../services/bonosService'
+import { useState, useEffect, useCallback } from 'react'
+import {
+  obtenerBonoActivo,
+  obtenerMisSesiones
+} from '../../../../services/Api/index'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import './BonoInfo.css'
 
 const BonoInfo = ({ userId }) => {
   const [bono, setBono] = useState(null)
+  const [sesionesLibres, setSesionesLibres] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [isAdmin, setIsAdmin] = useState(false)
+
+  const fetchBonoInfo = useCallback(async () => {
+    try {
+      setLoading(true)
+      const token = localStorage.getItem('token')
+
+      if (!token) {
+        setError('No hay sesión activa')
+        setLoading(false)
+        return
+      }
+
+      console.log('=== BONO INFO: Cargando información ===')
+
+      try {
+        const data = await obtenerBonoActivo()
+        setBono(data)
+        console.log('=== BONO INFO: Bono cargado ===', data)
+      } catch (err) {
+        console.error('=== BONO INFO: Error al obtener bono ===', err)
+        setBono(null)
+      }
+
+      try {
+        const sesionesData = await obtenerMisSesiones(token)
+        setSesionesLibres(sesionesData.data.sesionesLibres || 0)
+        console.log(
+          '=== BONO INFO: Sesiones libres cargadas ===',
+          sesionesData.data.sesionesLibres
+        )
+      } catch (err) {
+        console.error('=== BONO INFO: Error al cargar sesiones libres ===', err)
+        setSesionesLibres(0)
+      }
+
+      setError(null)
+    } catch (err) {
+      console.error('=== BONO INFO: Error general ===', err)
+      setError('No se pudo cargar la información de tu bono')
+      setBono(null)
+    } finally {
+      setLoading(false)
+    }
+  }, [])
 
   useEffect(() => {
     const userRole = localStorage.getItem('rol')
@@ -20,28 +69,22 @@ const BonoInfo = ({ userId }) => {
     } else {
       setLoading(false)
     }
-  }, [userId])
+  }, [fetchBonoInfo])
 
-  const fetchBonoInfo = async () => {
-    try {
-      setLoading(true)
-      const data = await obtenerBonoActivo()
-      setBono(data)
-      setError(null)
-    } catch (err) {
-      console.error('Error al obtener información del bono:', err)
-      setError('No se pudo cargar la información de tu bono')
-      setBono(null)
-    } finally {
-      setLoading(false)
+  useEffect(() => {
+    window.updateBonoInfo = () => {
+      console.log('=== BONO INFO: Actualización solicitada externamente ===')
+      fetchBonoInfo()
     }
-  }
+    return () => {
+      delete window.updateBonoInfo
+    }
+  }, [fetchBonoInfo])
 
   const formatFecha = (fechaStr) => {
     if (!fechaStr) return 'No disponible'
     try {
       const fecha = new Date(fechaStr)
-
       return format(fecha, 'dd MMM yyyy', { locale: es })
     } catch (error) {
       console.error('Error al formatear fecha:', error)
@@ -86,6 +129,12 @@ const BonoInfo = ({ userId }) => {
       <div className='bono-no-data'>
         <p>No tienes un bono activo actualmente.</p>
         <p>Contacta con administración para adquirir un bono.</p>
+        {sesionesLibres > 0 && (
+          <div className='bono-sesiones-libres'>
+            <span className='bono-label'>Sesiones libres:</span>
+            <span className='bono-value'>{sesionesLibres}</span>
+          </div>
+        )}
       </div>
     )
   }
@@ -101,6 +150,8 @@ const BonoInfo = ({ userId }) => {
             ? 'Pausado'
             : bono.estado === 'expirado'
             ? 'Expirado'
+            : bono.estado === 'agotado'
+            ? 'Agotado'
             : bono.estado}
         </span>
       </div>
@@ -136,6 +187,11 @@ const BonoInfo = ({ userId }) => {
             <span className='bono-label'>Fin:</span>
             <span className='bono-value'>{formatFecha(bono.fechaFin)}</span>
           </div>
+        </div>
+
+        <div className='bono-sesiones-libres'>
+          <span className='bono-label'>Sesiones libres:</span>
+          <span className='bono-value'>{sesionesLibres}</span>
         </div>
 
         {bono.estado === 'pausado' && bono.motivoPausa && (
