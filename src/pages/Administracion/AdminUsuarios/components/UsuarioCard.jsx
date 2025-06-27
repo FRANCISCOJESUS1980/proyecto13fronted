@@ -1,10 +1,13 @@
 import React from 'react'
-import { UserCog, MessageSquare, CreditCard } from 'lucide-react'
+import { UserCog, MessageSquare, CreditCard, Trash2 } from 'lucide-react'
 import { useNavigationUsuarios } from '../hooks/useNavigationUsuarios'
+import { useEliminarUsuario } from '../hooks/useEliminarUsuario'
 
 const UsuarioCard = React.memo(({ usuario, index }) => {
   const { goToGestionarUsuario, goToMensajePrivado, goToGestionarBonos } =
     useNavigationUsuarios()
+
+  const { eliminarUsuarioHandler } = useEliminarUsuario()
 
   const getRoleBadgeClass = React.useCallback((rol) => {
     const rolLower = rol?.toLowerCase() || ''
@@ -41,6 +44,10 @@ const UsuarioCard = React.memo(({ usuario, index }) => {
   const handleGestionarBonos = React.useCallback(() => {
     goToGestionarBonos(usuario._id)
   }, [goToGestionarBonos, usuario._id])
+
+  const handleEliminarUsuario = React.useCallback(() => {
+    eliminarUsuarioHandler(usuario._id, usuario.nombre)
+  }, [eliminarUsuarioHandler, usuario._id, usuario.nombre])
 
   return (
     <div
@@ -131,6 +138,13 @@ const UsuarioCard = React.memo(({ usuario, index }) => {
         >
           <CreditCard size={16} />
           <span>Gestionar Bonos</span>
+        </button>
+        <button
+          className='cf-admin-usuarios-btn cf-admin-usuarios-btn-eliminar'
+          onClick={handleEliminarUsuario}
+        >
+          <Trash2 size={16} />
+          <span>Eliminar Usuario</span>
         </button>
       </div>
     </div>

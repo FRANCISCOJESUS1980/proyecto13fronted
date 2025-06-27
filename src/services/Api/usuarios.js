@@ -67,6 +67,7 @@ export const obtenerTodosUsuarios = async (token) => {
     handleApiError(error, 'Error al obtener todos los usuarios:')
   }
 }
+
 export const obtenerUsuarioPorId = async (userId, token) => {
   try {
     const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
@@ -90,5 +91,22 @@ export const fetchEntrenadores = async () => {
     return await checkResponse(response)
   } catch (error) {
     handleApiError(error, 'Error al obtener entrenadores:')
+  }
+}
+
+export const eliminarUsuario = async (userId, token) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+      method: 'DELETE',
+      credentials: 'include',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    })
+
+    return await checkResponse(response)
+  } catch (error) {
+    handleApiError(error, `Error al eliminar usuario con ID ${userId}:`)
   }
 }

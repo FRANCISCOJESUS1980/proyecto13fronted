@@ -23,8 +23,7 @@
 
 .cf-admin-usuarios-header {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
   padding-bottom: 1.5rem;
@@ -58,7 +57,7 @@
   align-items: center;
   margin-bottom: 2rem;
   flex-wrap: wrap;
-  gap: 5rem;
+  gap: 1rem;
 }
 
 .cf-admin-usuarios-search {
@@ -99,43 +98,6 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
-.cf-admin-usuarios-loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1.5rem;
-  min-height: 300px;
-  background-color: rgba(30, 30, 30, 0.5);
-  border-radius: 12px;
-  padding: 2rem;
-  border: 1px solid rgba(100, 100, 100, 0.3);
-}
-
-.cf-admin-usuarios-spinner {
-  border: 4px solid rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-  border-top: 4px solid #3b82f6;
-  width: 50px;
-  height: 50px;
-  animation: cf-admin-usuarios-spin 1s linear infinite;
-}
-
-@keyframes cf-admin-usuarios-spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.cf-admin-usuarios-loading-text {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 1.125rem;
-  margin: 0;
-}
-
 .cf-admin-usuarios-error {
   display: flex;
   align-items: center;
@@ -160,7 +122,7 @@
 
 .cf-admin-usuarios-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 1.5rem;
 }
 
@@ -176,13 +138,6 @@
   animation: cf-admin-usuarios-card-appear 0.5s ease-out forwards;
   opacity: 0;
   transform: translateY(20px);
-}
-
-@keyframes cf-admin-usuarios-card-appear {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .cf-admin-usuarios-card:hover {
@@ -343,11 +298,11 @@
 }
 
 .cf-admin-usuarios-card-footer {
-  padding: 1.25rem;
+  padding: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  display: flex;
-  justify-content: center;
-  gap: 0.75rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
 }
 
 .cf-admin-usuarios-btn {
@@ -355,13 +310,19 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
+  padding: 0.75rem 0.5rem;
   border-radius: 6px;
   font-size: 0.75rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+  min-height: 40px;
+}
+
+.cf-admin-usuarios-btn span {
+  display: block;
 }
 
 .cf-admin-usuarios-btn-gestionar {
@@ -372,6 +333,7 @@
 
 .cf-admin-usuarios-btn-gestionar:hover {
   background-color: rgba(59, 130, 246, 0.25);
+  transform: translateY(-1px);
 }
 
 .cf-admin-usuarios-btn-mensaje {
@@ -382,6 +344,29 @@
 
 .cf-admin-usuarios-btn-mensaje:hover {
   background-color: rgba(16, 185, 129, 0.25);
+  transform: translateY(-1px);
+}
+
+.cf-admin-usuarios-btn-bonos {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.cf-admin-usuarios-btn-bonos:hover {
+  background-color: rgba(245, 158, 11, 0.25);
+  transform: translateY(-1px);
+}
+
+.cf-admin-usuarios-btn-eliminar {
+  background-color: rgba(220, 53, 69, 0.15);
+  color: #dc3545;
+  border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.cf-admin-usuarios-btn-eliminar:hover {
+  background-color: rgba(220, 53, 69, 0.25);
+  transform: translateY(-1px);
 }
 
 .cf-admin-usuarios-empty {
@@ -421,6 +406,7 @@
   font-size: 0.875rem;
   margin: 0;
 }
+
 .cf-admin-usuarios-pagination-container {
   display: flex;
   justify-content: center;
@@ -428,26 +414,7 @@
   animation: cf-admin-usuarios-fade-in 0.5s ease-out forwards;
 }
 
-@keyframes cf-admin-usuarios-fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.cf-admin-usuarios-fade-in {
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
+@keyframes cf-admin-usuarios-card-appear {
   to {
     opacity: 1;
     transform: translateY(0);
@@ -465,14 +432,59 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (min-width: 1200px) {
+  .cf-admin-usuarios-card-footer {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+  }
+
+  .cf-admin-usuarios-btn {
+    font-size: 0.8rem;
+    padding: 0.75rem 1rem;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1599px) {
+  .cf-admin-usuarios-card-footer {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+    margin-right: 3px;
+  }
+
+  .cf-admin-usuarios-btn {
+    font-size: 0.75rem;
+  }
+
+  .cf-admin-usuarios-header {
+    margin-top: 50px;
+  }
+}
+
+@media (max-width: 767px) {
+  .cf-admin-usuarios-content {
+    padding: 1rem;
+  }
+
+  .cf-admin-usuarios-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .cf-admin-usuarios-card-footer {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+    padding: 1rem;
+  }
+
+  .cf-admin-usuarios-btn {
+    font-size: 0.7rem;
+    padding: 0.6rem 0.4rem;
+    gap: 0.25rem;
+  }
+
   .cf-admin-usuarios-header {
     flex-direction: column;
     align-items: center;
-  }
-
-  .cf-admin-usuarios-title {
-    margin: 1rem 0;
   }
 
   .cf-admin-usuarios-search-container {
@@ -481,66 +493,22 @@
   }
 
   .cf-admin-usuarios-search {
-    width: 90%;
-    display: flex;
-    align-self: center;
+    width: 100%;
   }
 }
 
 @media (max-width: 480px) {
-  .cf-admin-usuarios-content {
-    padding: 1rem;
-  }
-
-  .cf-admin-usuarios-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .cf-admin-usuarios-card-header {
-    padding: 1rem;
-  }
-
-  .cf-admin-usuarios-card-content {
-    padding: 1rem;
-  }
-
-  .cf-admin-usuarios-card-footer {
-    padding: 1rem;
-  }
-
-  .cf-admin-usuarios-btn {
-    padding: 0.5rem;
-  }
-
   .cf-admin-usuarios-btn span {
     display: none;
   }
 
-  .cf-admin-usuarios-empty {
-    padding: 2rem 1rem;
-  }
-}
-@media (min-width: 1000px) {
-  .cf-admin-usuarios-header {
-    margin-top: 50px;
-  }
-}
-.cf-admin-usuarios-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-@media (max-width: 768px) {
-  .cf-admin-usuarios-header {
-    flex-direction: column;
-    align-items: center;
+  .cf-admin-usuarios-btn {
+    padding: 0.75rem;
+    min-width: 44px;
+    justify-content: center;
   }
 
-  .cf-admin-usuarios-mensaje-masivo-btn {
-    align-self: stretch;
+  .cf-admin-usuarios-card-footer {
+    gap: 0.25rem;
   }
 }
