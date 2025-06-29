@@ -1,4 +1,18 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback
+} from 'react'
+import {
+  obtenerCarrito,
+  guardarCarrito,
+  agregarProductoCarrito,
+  actualizarCantidadProducto,
+  eliminarProductoCarrito,
+  limpiarCarrito
+} from '../../../services/Api/index'
 
 const CartContext = createContext()
 
@@ -14,46 +28,93 @@ export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([])
   const [isLoaded, setIsLoaded] = useState(false)
   const [currentUserId, setCurrentUserId] = useState(null)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
 
-  useEffect(() => {
-    try {
-      const savedCart = localStorage.getItem('cart')
-      const userId = localStorage.getItem('userId')
-
-      if (savedCart) {
-        const parsedCart = JSON.parse(savedCart)
-        console.log('Carrito cargado desde localStorage:', parsedCart)
-        setCartItems(parsedCart)
-      }
-
-      setCurrentUserId(userId)
-    } catch (error) {
-      console.error('Error al cargar el carrito:', error)
-      setCartItems([])
-    } finally {
-      setIsLoaded(true)
-    }
+  const getAuthToken = useCallback(() => {
+    return localStorage.getItem('token')
   }, [])
 
-  useEffect(() => {
-    const checkUserChange = () => {
-      const userId = localStorage.getItem('userId')
+  const checkAuthentication = useCallback(() => {
+    const token = getAuthToken()
+    const userId = localStorage.getItem('userId')
+    return !!(token && userId)
+  }, [getAuthToken])
 
-      if (userId !== currentUserId) {
-        console.log(
-          `Cambio de usuario detectado: ${currentUserId} -> ${userId}`
-        )
+  useEffect(() => {
+    const loadInitialCart = async () => {
+      try {
+        const token = getAuthToken()
+        const userId = localStorage.getItem('userId')
+        const authenticated = checkAuthentication()
+
+        setIsAuthenticated(authenticated)
+        setCurrentUserId(userId)
+
+        if (authenticated && token) {
+          console.log('Usuario autenticado, cargando carrito desde MongoDB...')
+          try {
+            const response = await obtenerCarrito(token)
+            const mongoItems = response.data?.items || []
+            console.log('Carrito cargado desde MongoDB:', mongoItems)
+            setCartItems(mongoItems)
+          } catch (error) {
+            console.error('Error al cargar carrito desde MongoDB:', error)
+
+            const savedCart = localStorage.getItem('cart')
+            if (savedCart) {
+              const parsedCart = JSON.parse(savedCart)
+              setCartItems(parsedCart)
+            }
+          }
+        } else {
+          console.log('Usuario no autenticado, usando localStorage...')
+          const savedCart = localStorage.getItem('cart')
+          if (savedCart) {
+            const parsedCart = JSON.parse(savedCart)
+            console.log('Carrito cargado desde localStorage:', parsedCart)
+            setCartItems(parsedCart)
+          }
+        }
+      } catch (error) {
+        console.error('Error al cargar el carrito inicial:', error)
+        setCartItems([])
+      } finally {
+        setIsLoaded(true)
+      }
+    }
+
+    loadInitialCart()
+  }, [getAuthToken, checkAuthentication])
+
+  useEffect(() => {
+    const checkUserChange = async () => {
+      const userId = localStorage.getItem('userId')
+      const authenticated = checkAuthentication()
+
+      if (userId !== currentUserId || authenticated !== isAuthenticated) {
+        console.log(`Cambio de usuario/autenticación detectado`)
         console.log('Limpiando carrito por cambio de usuario')
 
         setCartItems([])
         localStorage.removeItem('cart')
-
         setCurrentUserId(userId)
+        setIsAuthenticated(authenticated)
+
+        if (authenticated && userId) {
+          try {
+            const token = getAuthToken()
+            const response = await obtenerCarrito(token)
+            const mongoItems = response.data?.items || []
+            console.log('Carrito del nuevo usuario cargado:', mongoItems)
+            setCartItems(mongoItems)
+          } catch (error) {
+            console.error('Error al cargar carrito del nuevo usuario:', error)
+          }
+        }
       }
     }
 
     const interval = setInterval(checkUserChange, 1000)
-
     const handleStorageChange = (e) => {
       if (e.key === 'userId' || e.key === 'token') {
         checkUserChange()
@@ -61,103 +122,218 @@ export const CartProvider = ({ children }) => {
     }
 
     window.addEventListener('storage', handleStorageChange)
-
     return () => {
       clearInterval(interval)
       window.removeEventListener('storage', handleStorageChange)
     }
-  }, [currentUserId])
+  }, [currentUserId, isAuthenticated, checkAuthentication, getAuthToken])
 
   useEffect(() => {
-    if (isLoaded) {
+    if (isLoaded && !isAuthenticated) {
       try {
-        console.log('Guardando carrito en localStorage:', cartItems)
+        console.log(
+          'Guardando carrito en localStorage (usuario no autenticado):',
+          cartItems
+        )
         localStorage.setItem('cart', JSON.stringify(cartItems))
       } catch (error) {
-        console.error('Error al guardar el carrito:', error)
+        console.error('Error al guardar el carrito en localStorage:', error)
       }
     }
-  }, [cartItems, isLoaded])
+  }, [cartItems, isLoaded, isAuthenticated])
 
-  const addToCart = (product) => {
-    console.log('Agregando producto al carrito:', product)
-    setCartItems((prevItems) => {
-      const existingItemIndex = prevItems.findIndex(
-        (item) => item._id === product._id
-      )
+  const syncWithMongoDB = useCallback(
+    async (items) => {
+      if (!isAuthenticated) return
 
-      if (existingItemIndex >= 0) {
-        const updatedItems = [...prevItems]
-        updatedItems[existingItemIndex] = {
-          ...updatedItems[existingItemIndex],
-          quantity: updatedItems[existingItemIndex].quantity + 1
+      try {
+        const token = getAuthToken()
+        if (token) {
+          await guardarCarrito(token, { items })
+          console.log('Carrito sincronizado con MongoDB')
         }
-        console.log(
-          'Producto existente, nueva cantidad:',
-          updatedItems[existingItemIndex].quantity
-        )
-        return updatedItems
-      } else {
-        const newItems = [...prevItems, { ...product, quantity: 1 }]
-        console.log('Producto nuevo agregado, total items:', newItems.length)
-        return newItems
+      } catch (error) {
+        console.error('Error al sincronizar carrito con MongoDB:', error)
       }
-    })
-  }
+    },
+    [isAuthenticated, getAuthToken]
+  )
 
-  const removeFromCart = (productId) => {
-    console.log('Eliminando producto del carrito:', productId)
-    setCartItems((prevItems) =>
-      prevItems.filter((item) => item._id !== productId)
-    )
-  }
+  const addToCart = useCallback(
+    async (product) => {
+      console.log('Agregando producto al carrito:', product)
 
-  const updateQuantity = (productId, quantity) => {
-    console.log(
-      'Actualizando cantidad:',
-      productId,
-      'nueva cantidad:',
-      quantity
-    )
+      if (isAuthenticated) {
+        try {
+          const token = getAuthToken()
+          const response = await agregarProductoCarrito(token, product._id, 1)
+          setCartItems(response.data.items)
+          console.log('Producto agregado via MongoDB:', response.data.items)
+        } catch (error) {
+          console.error('Error al agregar producto via MongoDB:', error)
 
-    if (quantity <= 0) {
-      removeFromCart(productId)
-      return
-    }
+          setCartItems((prevItems) => {
+            const existingItemIndex = prevItems.findIndex(
+              (item) => item._id === product._id
+            )
+            if (existingItemIndex >= 0) {
+              const updatedItems = [...prevItems]
+              updatedItems[existingItemIndex] = {
+                ...updatedItems[existingItemIndex],
+                quantity: updatedItems[existingItemIndex].quantity + 1
+              }
+              return updatedItems
+            } else {
+              return [...prevItems, { ...product, quantity: 1 }]
+            }
+          })
+        }
+      } else {
+        setCartItems((prevItems) => {
+          const existingItemIndex = prevItems.findIndex(
+            (item) => item._id === product._id
+          )
+          if (existingItemIndex >= 0) {
+            const updatedItems = [...prevItems]
+            updatedItems[existingItemIndex] = {
+              ...updatedItems[existingItemIndex],
+              quantity: updatedItems[existingItemIndex].quantity + 1
+            }
+            console.log(
+              'Producto existente, nueva cantidad:',
+              updatedItems[existingItemIndex].quantity
+            )
+            return updatedItems
+          } else {
+            const newItems = [...prevItems, { ...product, quantity: 1 }]
+            console.log(
+              'Producto nuevo agregado, total items:',
+              newItems.length
+            )
+            return newItems
+          }
+        })
+      }
+    },
+    [isAuthenticated, getAuthToken]
+  )
 
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item._id === productId ? { ...item, quantity } : item
+  const removeFromCart = useCallback(
+    async (productId) => {
+      console.log('Eliminando producto del carrito:', productId)
+
+      if (isAuthenticated) {
+        try {
+          const token = getAuthToken()
+          const response = await eliminarProductoCarrito(token, productId)
+          setCartItems(response.data.items)
+          console.log('Producto eliminado via MongoDB')
+        } catch (error) {
+          console.error('Error al eliminar producto via MongoDB:', error)
+
+          setCartItems((prevItems) =>
+            prevItems.filter((item) => item._id !== productId)
+          )
+        }
+      } else {
+        setCartItems((prevItems) =>
+          prevItems.filter((item) => item._id !== productId)
+        )
+      }
+    },
+    [isAuthenticated, getAuthToken]
+  )
+
+  const updateQuantity = useCallback(
+    async (productId, quantity) => {
+      console.log(
+        'Actualizando cantidad:',
+        productId,
+        'nueva cantidad:',
+        quantity
       )
-    )
-  }
 
-  const clearCart = () => {
+      if (quantity <= 0) {
+        removeFromCart(productId)
+        return
+      }
+
+      if (isAuthenticated) {
+        try {
+          const token = getAuthToken()
+          const response = await actualizarCantidadProducto(
+            token,
+            productId,
+            quantity
+          )
+          setCartItems(response.data.items)
+          console.log('Cantidad actualizada via MongoDB')
+        } catch (error) {
+          console.error('Error al actualizar cantidad via MongoDB:', error)
+
+          setCartItems((prevItems) =>
+            prevItems.map((item) =>
+              item._id === productId ? { ...item, quantity } : item
+            )
+          )
+        }
+      } else {
+        setCartItems((prevItems) =>
+          prevItems.map((item) =>
+            item._id === productId ? { ...item, quantity } : item
+          )
+        )
+      }
+    },
+    [isAuthenticated, getAuthToken, removeFromCart]
+  )
+
+  const clearCart = useCallback(async () => {
     console.log('Limpiando carrito completo')
-    setCartItems([])
-  }
 
-  const getCartTotal = () => {
+    if (isAuthenticated) {
+      try {
+        const token = getAuthToken()
+        await limpiarCarrito(token)
+        setCartItems([])
+        console.log('Carrito limpiado via MongoDB')
+      } catch (error) {
+        console.error('Error al limpiar carrito via MongoDB:', error)
+
+        setCartItems([])
+      }
+    } else {
+      setCartItems([])
+    }
+  }, [isAuthenticated, getAuthToken])
+
+  const getCartTotal = useCallback(() => {
     const total = cartItems.reduce(
       (total, item) => total + item.precio * item.quantity,
       0
     )
     return total
-  }
+  }, [cartItems])
 
-  const getCartItemsCount = () => {
+  const getCartItemsCount = useCallback(() => {
     const count = cartItems.reduce((count, item) => count + item.quantity, 0)
     return count
-  }
+  }, [cartItems])
 
-  const isInCart = (productId) => {
-    return cartItems.some((item) => item._id === productId)
-  }
+  const isInCart = useCallback(
+    (productId) => {
+      return cartItems.some((item) => item._id === productId)
+    },
+    [cartItems]
+  )
 
-  const getItemQuantity = (productId) => {
-    const item = cartItems.find((item) => item._id === productId)
-    return item ? item.quantity : 0
-  }
+  const getItemQuantity = useCallback(
+    (productId) => {
+      const item = cartItems.find((item) => item._id === productId)
+      return item ? item.quantity : 0
+    },
+    [cartItems]
+  )
 
   const value = {
     cartItems,
@@ -169,7 +345,8 @@ export const CartProvider = ({ children }) => {
     getCartTotal,
     getCartItemsCount,
     isInCart,
-    getItemQuantity
+    getItemQuantity,
+    isAuthenticated
   }
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>

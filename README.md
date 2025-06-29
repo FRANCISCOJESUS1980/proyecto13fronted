@@ -96,7 +96,8 @@ Git >= 2.30.0
 
 ```shellscript
 # 1. Clonar el repositorio
-git clone https://github.com/tu-usuario/adercrossfit.git
+git clone fronted https://github.com/FRANCISCOJESUS1980/proyecto13fronted
+git clone backend https://github.com/FRANCISCOJESUS1980/proyecto13backend
 cd adercrossfit
 
 # 2. Instalar dependencias
@@ -117,7 +118,7 @@ npm run dev
 
 ```plaintext
 # Base de datos
-MONGODB_URI=mongodb://localhost:27017/adercrossfit
+MONGODB_URI=mongodb://localhost:5000/adercrossfit
 DB_NAME=adercrossfit
 
 # Autenticación
@@ -137,7 +138,7 @@ CLOUDINARY_API_SECRET=tu_api_secret
 
 # WebSocket
 SOCKET_PORT=3001
-CORS_ORIGIN=http://localhost:3000
+CORS_ORIGIN=http://localhost:5000
 ```
 
 ---
@@ -156,7 +157,7 @@ CORS_ORIGIN=http://localhost:3000
 #### 📝 **Registro y Autenticación**
 
 ```javascript
-// Características del sistema de auth
+
 - Registro con validación de email
 - Login con JWT tokens
 - Recuperación de contraseña
@@ -184,7 +185,7 @@ CORS_ORIGIN=http://localhost:3000
 #### 📅 **Reservas Inteligentes**
 
 ```javascript
-// Funcionalidades avanzadas
+
 - Calendario interactivo
 - Reservas en tiempo real
 - Lista de espera automática
@@ -221,7 +222,7 @@ CORS_ORIGIN=http://localhost:3000
 #### 🗨️ **Chat en Tiempo Real**
 
 ```javascript
-// Características del chat
+
 - Mensajes instantáneos con WebSocket
 - Emojis y reacciones
 - Historial persistente
@@ -260,7 +261,7 @@ CORS_ORIGIN=http://localhost:3000
 const ROLES = {
   SUPER_ADMIN: {
     level: 5,
-    permissions: ['*'], // Acceso total
+    permissions: ['*'],
     description: 'Creador del sistema'
   },
   ADMIN: {
@@ -295,7 +296,6 @@ const ROLES = {
 ### 🛡️ **Control de Acceso**
 
 ```javascript
-// Middleware de autorización
 const requireRole = (minLevel) => {
   return (req, res, next) => {
     const userRole = req.user.role
@@ -353,50 +353,120 @@ const requireRole = (minLevel) => {
 
 ## 📊 Estructura del Proyecto
 
-```plaintext
-adercrossfit/
-├── 📁 src/
-│   ├── 📁 components/          # Componentes reutilizables
-│   │   ├── 📁 Button/
-│   │   ├── 📁 Header/
-│   │   ├── 📁 Loading/
-│   │   └── 📁 Modal/
-│   ├── 📁 pages/              # Páginas principales
-│   │   ├── 📁 Home/
-│   │   ├── 📁 Register/
-│   │   │   └── 📁 sections/   # Secciones del dashboard
-│   │   │       ├── 📁 Dashboard/
-│   │   │       ├── 📁 Medico/
-│   │   │       ├── 📁 Aspecto/
-│   │   │       │   └── 📁 features/
-│   │   │       │       └── 📁 physical-stats/
-│   │   │       ├── 📁 Chat/
-│   │   │       └── 📁 Timer/
-│   │   ├── 📁 Administracion/
-│   │   │   ├── 📁 AdminClases/
-│   │   │   ├── 📁 AdminUsuarios/
-│   │   │   └── 📁 AdminProductos/
-│   │   ├── 📁 Clases/
-│   │   ├── 📁 Productos/
-│   │   └── 📁 Videos/
-│   ├── 📁 context/            # Contextos globales
-│   │   ├── ConsentContext.jsx
-│   │   └── CartContext.jsx
-│   ├── 📁 services/           # Servicios API
-│   │   └── 📁 Api/
-│   ├── 📁 utils/              # Utilidades
-│   ├── 📁 hooks/              # Custom hooks
-│   └── 📁 styles/             # Estilos globales
-├── 📁 public/                 # Assets estáticos
-├── 📁 server/                 # Backend Node.js
-│   ├── 📁 models/
-│   ├── 📁 routes/
-│   ├── 📁 middleware/
-│   └── 📁 controllers/
-├── 📄 package.json
-├── 📄 vite.config.js
-└── 📄 README.md
-```
+proyecto13fronted/
+├── 📁 .git/ # Control de versiones Git
+├── 📁 node_modules/ # Dependencias npm
+├── 📁 public/ # Assets estáticos
+│ ├── 🖼️ favicon.ico
+│ ├── 📄 index.html
+│ └── 🖼️ manifest.json
+├── 📁 src/ # Código fuente principal
+│ ├── 📁 assets/ # Recursos estáticos
+│ │ ├── 🖼️ images/
+│ │ ├── 🎵 sounds/
+│ │ └── 🎨 icons/
+│ ├── 📁 components/ # Componentes reutilizables
+│ │ ├── 📁 Button/
+│ │ │ ├── 📄 Button.jsx
+│ │ │ └── 🎨 Button.css
+│ │ ├── 📁 Header/
+│ │ │ ├── 📁 page/
+│ │ │ │ ├── 📄 Header.jsx
+│ │ │ │ └── 🎨 Header.css
+│ │ │ └── 📁 hooks/
+│ │ │ └── 📄 useAuth.js
+│ │ ├── 📁 Loading/
+│ │ │ ├── 📄 loading.jsx
+│ │ │ └── 🎨 loading.css
+│ │ ├── 📁 Modal/
+│ │ ├── 📁 sweealert2/
+│ │ └── 📁 Timer/
+│ ├── 📁 context/ # Contextos globales
+│ │ ├── 📄 ConsentContext.jsx
+│ │ ├── 📄 CartContext.jsx
+│ │ └── 📄 AuthContext.jsx
+│ ├── 📁 pages/ # Páginas principales
+│ │ ├── 📁 Administracion/ # Panel de administración
+│ │ │ ├── 📁 AdminClases/
+│ │ │ │ ├── 📄 AdminClases.jsx
+│ │ │ │ └── 🎨 AdminClases.css
+│ │ │ ├── 📁 AdminConsentimientos/
+│ │ │ ├── 📁 AdminFacturacion/
+│ │ │ ├── 📁 AdminGestionBonos/
+│ │ │ │ ├── 📁 components/
+│ │ │ │ ├── 📁 hooks/
+│ │ │ │ ├── 📁 BonoInfo/
+│ │ │ │ └── 📄 AdminGestionBonos.jsx
+│ │ │ ├── 📁 Administracion/
+│ │ │ ├── 📁 AdministracionMedico/
+│ │ │ ├── 📁 AdminMensajeMasivo/
+│ │ │ ├── 📁 AdminProductos/
+│ │ │ ├── 📁 AdminUsuarios/
+│ │ │ │ ├── 📁 AdminUsuarioClases/
+│ │ │ │ │ ├── 📁 page/
+│ │ │ │ │ │ ├── 🎨 AdminUsuarioClases.css
+│ │ │ │ │ │ └── 📄 AdminUsuarioClases.jsx
+│ │ │ │ │ └── 📁 components/
+│ │ │ │ └── 📁 AdminUsuarioMensajePrivado/
+│ │ │ └── 📁 components/
+│ │ ├── 📁 Clases/ # Sistema de clases
+│ │ │ ├── 📄 Clases.jsx
+│ │ │ ├── 🎨 Clases.css
+│ │ │ ├── 📁 components/
+│ │ │ └── 📁 hooks/
+│ │ ├── 📁 Contactos/ # Página de contacto
+│ │ ├── 📁 EditUser/ # Edición de perfil
+│ │ ├── 📁 Home/ # Página principal
+│ │ │ ├── 📄 Home.jsx
+│ │ │ ├── 🎨 Home.css
+│ │ │ └── 📁 components/
+│ │ ├── 📁 IniciarSesion/ # Login
+│ │ ├── 📁 NotFound/ # Página 404
+│ │ ├── 📁 Productos/ # E-commerce
+│ │ ├── 📁 Redessociales/ # Redes sociales
+│ │ ├── 📁 Register/ # Registro y dashboard
+│ │ │ ├── 📁 sections/
+│ │ │ │ ├── 📁 Dashboard/
+│ │ │ │ ├── 📁 Medico/
+│ │ │ │ ├── 📁 Aspecto/
+│ │ │ │ │ └── 📁 features/
+│ │ │ │ │ └── 📁 physical-stats/
+│ │ │ │ ├── 📁 Chat/
+│ │ │ │ ├── 📁 Timer/
+│ │ │ │ └── 📁 MensajesPrivados/
+│ │ │ └── 📄 Register.jsx
+│ │ ├── 📁 Tarifas/ # Planes y precios
+│ │ └── 📁 Videos/ # Biblioteca de videos
+│ ├── 📁 routes/ # Configuración de rutas
+│ │ └── 📄 AppRoutes.jsx
+│ ├── 📁 services/ # Servicios y API
+│ │ └── 📁 Api/
+│ │ ├── 📄 index.js
+│ │ ├── 📄 auth.js
+│ │ ├── 📄 users.js
+│ │ ├── 📄 classes.js
+│ │ ├── 📄 products.js
+│ │ ├── 📄 bonos.js
+│ │ └── 📄 sesionesLibres.js
+│ ├── 📁 utils/ # Utilidades
+│ │ ├── 📄 formatters.js
+│ │ ├── 📄 validators.js
+│ │ └── 📄 constants.js
+│ ├── 📁 hooks/ # Custom hooks
+│ │ ├── 📄 useAuth.js
+│ │ ├── 📄 useLocalStorage.js
+│ │ └── 📄 useSocket.js
+│ ├── 📄 App.jsx # Componente principal
+│ ├── 🎨 index.css # Estilos globales
+│ └── 📄 main.jsx # Punto de entrada
+├── 📄 .gitignore # Archivos ignorados por Git
+├── 📄 index.html # HTML principal
+├── 📄 package-lock.json # Lock de dependencias
+├── 📄 package.json # Configuración del proyecto
+├── 📄 README.md # Documentación
+├── 📄 render.yaml # Configuración de Render
+├── 📄 vercel.json # Configuración de Vercel
+└── 📄 vite.config.js # Configuración de Vite
 
 ### 🏗️ **Arquitectura Feature-Based**
 
@@ -422,7 +492,6 @@ features/
 ### 🛡️ **Sistema de Autenticación JWT**
 
 ```javascript
-// Flujo de autenticación
 const authFlow = {
   1: 'Usuario envía credenciales',
   2: 'Servidor valida y genera JWT',
@@ -444,7 +513,6 @@ const authFlow = {
 ### 📋 **Gestión de Consentimientos GDPR**
 
 ```javascript
-// Sistema de consentimientos
 const consentTypes = {
   DATA_PROCESSING: 'Procesamiento de datos personales',
   IMAGE_RIGHTS: 'Derechos de imagen',
@@ -460,28 +528,22 @@ const consentTypes = {
 ### 🔌 **Endpoints Principales**
 
 ```javascript
-// Estructura de la API REST
 const API_ROUTES = {
-  // Autenticación
   'POST /api/auth/login': 'Iniciar sesión',
   'POST /api/auth/register': 'Registro de usuario',
   'POST /api/auth/refresh': 'Renovar token',
 
-  // Usuarios
   'GET /api/users': 'Listar usuarios',
   'GET /api/users/:id': 'Obtener usuario',
   'PUT /api/users/:id': 'Actualizar usuario',
 
-  // Clases
   'GET /api/classes': 'Listar clases',
   'POST /api/classes/:id/book': 'Reservar clase',
   'DELETE /api/classes/:id/cancel': 'Cancelar reserva',
 
-  // Productos
   'GET /api/products': 'Catálogo de productos',
   'POST /api/orders': 'Crear pedido',
 
-  // Comunicación
   'GET /api/messages/private': 'Mensajes privados',
   'POST /api/messages/send': 'Enviar mensaje'
 }
@@ -490,18 +552,14 @@ const API_ROUTES = {
 ### ⚡ **WebSocket Events**
 
 ```javascript
-// Eventos en tiempo real
 const SOCKET_EVENTS = {
-  // Chat
   chatMessage: 'Nuevo mensaje en chat grupal',
   messageUpdated: 'Mensaje editado',
   messageDeleted: 'Mensaje eliminado',
 
-  // Clases
   classBooked: 'Nueva reserva de clase',
   classUpdated: 'Clase modificada',
 
-  // Notificaciones
   notification: 'Notificación general',
   privateMessage: 'Mensaje privado recibido'
 }
@@ -523,18 +581,15 @@ const SOCKET_EVENTS = {
 
 ```css
 :root {
-  /* Colores principales */
-  --primary-color: #3b82f6; /* Azul principal */
-  --secondary-color: #10b981; /* Verde éxito */
-  --accent-color: #f59e0b; /* Amarillo acento */
-  --danger-color: #ef4444; /* Rojo peligro */
+  --primary-color: #3b82f6;
+  --secondary-color: #ff5a1f;
+  --accent-color: #f59e0b;
+  --danger-color: #ef4444;
 
-  /* Colores neutros */
   --gray-50: #f9fafb;
   --gray-100: #f3f4f6;
   --gray-900: #111827;
 
-  /* Modo oscuro */
   --dark-bg: #121212;
   --dark-surface: #1e1e1e;
   --dark-text: #ffffff;
@@ -544,7 +599,6 @@ const SOCKET_EVENTS = {
 ### 📐 **Tipografía y Espaciado**
 
 ```css
-/* Sistema tipográfico */
 .text-xs {
   font-size: 0.75rem;
 }
@@ -561,7 +615,6 @@ const SOCKET_EVENTS = {
   font-size: 1.25rem;
 }
 
-/* Sistema de espaciado */
 .space-1 {
   margin: 0.25rem;
 }
@@ -585,12 +638,10 @@ const SOCKET_EVENTS = {
 #### 🔄 **React Optimizations**
 
 ```javascript
-// Memoización de componentes
 const OptimizedComponent = React.memo(({ data }) => {
   return <div>{data.name}</div>
 })
 
-// Custom hooks optimizados
 const useOptimizedData = () => {
   const context = useContext(DataContext)
 
@@ -609,11 +660,9 @@ const useOptimizedData = () => {
 #### 📦 **Code Splitting**
 
 ```javascript
-// Lazy loading de rutas
 const AdminPanel = lazy(() => import('./pages/Admin/AdminPanel'))
 const UserDashboard = lazy(() => import('./pages/Dashboard/UserDashboard'))
 
-// Suspense boundaries
 ;<Suspense fallback={<Loading />}>
   <AdminPanel />
 </Suspense>
@@ -642,7 +691,6 @@ const UserDashboard = lazy(() => import('./pages/Dashboard/UserDashboard'))
 ### 🔬 **Estrategia de Testing**
 
 ```javascript
-// Estructura de tests
 src/
 ├── __tests__/
 │   ├── components/
@@ -656,7 +704,6 @@ src/
 #### 🧩 **Unit Tests**
 
 ```javascript
-// Ejemplo de test de componente
 import { render, screen } from '@testing-library/react'
 import { Button } from '../components/Button/Button'
 
@@ -679,23 +726,18 @@ describe('Button Component', () => {
 #### 🔗 **Integration Tests**
 
 ```javascript
-// Test de flujo completo
 describe('User Registration Flow', () => {
   test('complete registration process', async () => {
     render(<App />)
 
-    // Navegar a registro
     fireEvent.click(screen.getByText('Registrarse'))
 
-    // Llenar formulario
     fireEvent.change(screen.getByLabelText('Email'), {
       target: { value: 'test@example.com' }
     })
 
-    // Enviar formulario
     fireEvent.click(screen.getByText('Crear cuenta'))
 
-    // Verificar redirección
     await waitFor(() => {
       expect(screen.getByText('Dashboard')).toBeInTheDocument()
     })
@@ -884,10 +926,10 @@ chore: tareas de mantenimiento
 
 ### 👥 **Equipo de Desarrollo**
 
-- **🏗️ Arquitecto Principal**: [Tu Nombre](#)
-- **🎨 UI/UX Designer**: [Nombre](#)
-- **⚙️ Backend Developer**: [Nombre](#)
-- **📱 Mobile Developer**: [Nombre](#)
+- **🏗️ Arquitecto Principal**: [Fº Jesus Gonzalez](#)
+- **🎨 UI/UX Designer**: [Fº Jesus Gonzalez](#)
+- **⚙️ Backend Developer**: [Fº Jesus Gonzalez](#)
+- **📱 Mobile Developer**: [Fº Jesus Gonzalez](#)
 
 ---
 
@@ -898,7 +940,7 @@ Este proyecto está licenciado bajo la **MIT License** - ver el archivo [LICENSE
 ```plaintext
 MIT License
 
-Copyright (c) 2024 AderCrossFit
+Copyright (c) 2025 AderCrossFit
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
