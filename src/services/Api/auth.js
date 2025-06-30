@@ -107,7 +107,6 @@ export const obtenerUsuarioActualConInfo = async (token) => {
   }
 }*/
 import { API_BASE_URL, handleApiError } from './config'
-
 export const verificarCodigoAutorizacion = async (codigo) => {
   try {
     const codigoNormalizado = codigo
@@ -126,8 +125,20 @@ export const verificarCodigoAutorizacion = async (codigo) => {
       'DEBUG - Código normalizado:',
       JSON.stringify(codigoNormalizado)
     )
-    console.log('DEBUG - Longitud original:', codigo?.length)
-    console.log('DEBUG - Longitud normalizada:', codigoNormalizado.length)
+
+    const requestBody = {
+      codigo: codigoNormalizado,
+      codigoOriginal: codigo,
+      debug: {
+        original: codigo,
+        normalizado: codigoNormalizado,
+        userAgent: navigator.userAgent,
+        timestamp: new Date().toISOString(),
+        url: window.location.href
+      }
+    }
+
+    console.log('DEBUG - Request body:', JSON.stringify(requestBody))
 
     const response = await fetch(`${API_BASE_URL}/users/verificar-codigo`, {
       method: 'POST',
@@ -135,20 +146,18 @@ export const verificarCodigoAutorizacion = async (codigo) => {
         'Content-Type': 'application/json',
         Accept: 'application/json'
       },
-      body: JSON.stringify({
-        codigo: codigoNormalizado,
-        codigoOriginal: codigo,
-        debug: {
-          original: codigo,
-          normalizado: codigoNormalizado,
-          longitudOriginal: codigo?.length,
-          longitudNormalizada: codigoNormalizado.length
-        }
-      })
+      body: JSON.stringify(requestBody)
     })
 
-    return await response.json()
+    console.log('DEBUG - Response status:', response.status)
+    console.log('DEBUG - Response ok:', response.ok)
+
+    const responseData = await response.json()
+    console.log('DEBUG - Response data:', JSON.stringify(responseData))
+
+    return responseData
   } catch (error) {
+    console.error('DEBUG - Error completo:', error)
     handleApiError(error, 'Error al verificar código:')
   }
 }
