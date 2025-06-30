@@ -58,6 +58,10 @@ export const FormFields = memo(
             onChange={handleChange}
             className='cf-text-input'
             autoComplete='off'
+            autoCorrect='off'
+            autoCapitalize='off'
+            spellCheck='false'
+            inputMode='text'
           />
           {isVerifyingCode && (
             <div className='cf-verifying-indicator'>

@@ -2,13 +2,25 @@ import { API_BASE_URL, handleApiError } from './config'
 
 export const verificarCodigoAutorizacion = async (codigo) => {
   try {
+    const codigoNormalizado = codigo
+      ? String(codigo)
+          .trim()
+          .toLowerCase()
+          .replace(/\s+/g, '')
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+      : ''
+
+    console.log('Código original:', JSON.stringify(codigo))
+    console.log('Código normalizado:', JSON.stringify(codigoNormalizado))
+
     const response = await fetch(`${API_BASE_URL}/users/verificar-codigo`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json'
       },
-      body: JSON.stringify({ codigo: codigo.trim() })
+      body: JSON.stringify({ codigo: codigoNormalizado })
     })
 
     return await response.json()
