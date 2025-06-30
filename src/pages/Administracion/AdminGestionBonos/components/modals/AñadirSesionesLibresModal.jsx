@@ -28,6 +28,19 @@ const AñadirSesionesLibresModal = ({
     setFormData({ cantidad: 1, motivo: '', detalles: '' })
   }
 
+  const getUserDisplayName = () => {
+    if (!usuario) return 'Cargando usuario...'
+
+    const userData = usuario.data || usuario
+
+    const nombre = userData.nombre || ''
+    const apellidos = userData.apellidos || ''
+
+    const fullName = `${nombre} ${apellidos}`.trim()
+
+    return fullName || userData.email || 'Usuario sin nombre'
+  }
+
   if (!show) return null
 
   return (
@@ -43,11 +56,7 @@ const AñadirSesionesLibresModal = ({
         <form onSubmit={handleSubmit}>
           <div className='cf-gestion-bonos-form-group'>
             <label htmlFor='usuario'>Usuario</label>
-            <input
-              type='text'
-              value={`${usuario?.nombre || ''} ${usuario?.apellidos || ''}`}
-              disabled
-            />
+            <input type='text' value={getUserDisplayName()} disabled />
           </div>
 
           <div className='cf-gestion-bonos-form-group'>

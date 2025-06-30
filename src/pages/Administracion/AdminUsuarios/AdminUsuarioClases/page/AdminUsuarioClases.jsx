@@ -1,17 +1,25 @@
 import { useParams, useNavigate } from 'react-router-dom'
-import { ArrowLeft, User } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import Header from '../../../../../components/Header/page/Header'
-import CalendarioDias from '../../../../Clases/components/CalendarioDias/CalendarioDias'
-import ClasesTimeline from '../../../../Clases/components/ClaseTimeline/ClasesTimeline'
-import MensajeEstado from '../../../../Clases/components/MensajeEstado/MensajeEstado'
-import { useCalendario } from '../../../../Clases/hooks/useCalendario'
-import { useUsuarioClases } from '../hooks/useUsuarioClases'
 import Button from '../../../../../components/Button/Button'
+import Loading from '../../../../../components/Loading/loading'
+import ErrorMessage from '../components/ErrorMessage'
+import UserHeader from '../components/UserHeader'
+import NotificationMessages from '../components/NotificationMessages'
+import CalendarSection from '../components/CalendarSection'
+import ClassesSection from '../components/ClassesSection'
+import { useCalendario } from '../../../../Clases/hooks/useCalendario'
+import { useUserInfo } from '../hooks/useUserinfo'
+import { useUserClasses } from '../hooks/useUserClasses'
+import { useClassActions } from '../hooks/useClassActions'
+import { useNotifications } from '../hooks/useNotifications'
+import { isUserEnrolled } from '../utils/classUtils'
 import './AdminUsuarioClases.css'
 
 const AdminUsuarioClases = () => {
   const { userId } = useParams()
   const navigate = useNavigate()
+
   const {
     selectedDate,
     visibleDates,
@@ -24,54 +32,82 @@ const AdminUsuarioClases = () => {
 
   const {
     userInfo,
+    loading: loadingUser,
+    error: userError
+  } = useUserInfo(userId)
+
+  const {
     clasesOrdenadas,
-    loading,
-    loadingClases,
-    error,
-    claseSeleccionada,
+    loading: loadingClases,
+    error: clasesError,
+    updateClasses
+  } = useUserClasses(selectedDate)
+
+  const {
     inscripcionExitosa,
     cancelacionExitosa,
-    handleInscribir,
-    handleCancelar,
-    estaInscrito,
-    clasesInscritasTotal
-  } = useUsuarioClases(userId, selectedDate)
+    showInscripcionExitosa,
+    showCancelacionExitosa
+  } = useNotifications()
 
-  const puedeInscribirse = () => true
-  const puedeCancelar = () => true
+  const {
+    claseSeleccionada,
+    error: actionError,
+    handleInscribir,
+    handleCancelar
+  } = useClassActions(userId, userInfo, updateClasses)
+
+  const handleInscribirWithNotification = async (claseId) => {
+    const result = await handleInscribir(claseId)
+    if (result.success) {
+      showInscripcionExitosa(result.message)
+    }
+  }
+
+  const handleCancelarWithNotification = async (claseId) => {
+    const result = await handleCancelar(claseId)
+    if (result.success) {
+      showCancelacionExitosa(result.message)
+    }
+  }
 
   const handleVolver = () => {
     navigate('/administracion/usuarios')
   }
 
-  if (loading && !userInfo) {
+  const handleVolverAdmin = () => {
+    navigate('/administracion')
+  }
+
+  const estaInscrito = (clase) => isUserEnrolled(clase, userId)
+
+  const clasesInscritasTotal = clasesOrdenadas.filter((clase) =>
+    estaInscrito(clase)
+  ).length
+
+  if (loadingUser && !userInfo) {
     return (
       <div className='cf-admin-usuario-clases-container'>
         <Header />
         <div className='cf-admin-usuario-clases-content'>
-          <div className='cf-admin-usuario-clases-loading'>
-            <div className='cf-admin-usuario-clases-spinner'></div>
-            <p className='cf-admin-usuario-clases-loading-text'>
-              Cargando información del usuario...
-            </p>
-          </div>
+          <Loading
+            isVisible={true}
+            loadingText='CARGANDO INFORMACIÓN DEL USUARIO...'
+          />
         </div>
       </div>
     )
   }
 
-  if (error && !userInfo) {
+  if (userError && !userInfo) {
     return (
       <div className='cf-admin-usuario-clases-container'>
         <Header />
         <div className='cf-admin-usuario-clases-content'>
-          <div className='cf-admin-usuario-clases-error'>
-            <div className='cf-admin-usuario-clases-error-icon'></div>
-            <p>Error: {error}</p>
-          </div>
+          <ErrorMessage error={userError} />
           <Button
             variant='secondary'
-            onClick={() => navigate('/administracion')}
+            onClick={handleVolverAdmin}
             leftIcon={<ArrowLeft size={18} />}
             className='cf-admin-usuarios-back-btn'
           >
@@ -85,6 +121,7 @@ const AdminUsuarioClases = () => {
   return (
     <div className='cf-admin-usuario-clases-container'>
       <Header />
+
       <div className='cf-admin-usuario-clases-content'>
         <div className='cf-admin-usuario-clases-header'>
           <Button
@@ -96,94 +133,37 @@ const AdminUsuarioClases = () => {
             Volver a AdminUsuarios
           </Button>
 
-          <div className='cf-admin-usuario-clases-info'>
-            <div className='cf-admin-usuario-clases-avatar-container'>
-              {userInfo?.avatar ? (
-                <img
-                  src={userInfo.avatar || '/default-avatar.png'}
-                  alt={userInfo.nombre}
-                  className='cf-admin-usuario-clases-avatar'
-                  onError={(e) => {
-                    e.target.onerror = null
-                    e.target.src = '/default-avatar.png'
-                  }}
-                />
-              ) : (
-                <div className='cf-admin-usuario-clases-avatar-placeholder'>
-                  <User size={24} />
-                </div>
-              )}
-            </div>
-            <div className='cf-admin-usuario-clases-details'>
-              <h1 className='cf-admin-usuario-clases-title'>
-                Gestionar clases de {userInfo?.nombre}
-              </h1>
-              <div className='cf-admin-usuario-clases-stats'>
-                <span className='cf-admin-usuario-clases-stat'>
-                  <span className='cf-admin-usuario-clases-stat-value'>
-                    {clasesInscritasTotal}
-                  </span>
-                  <span className='cf-admin-usuario-clases-stat-label'>
-                    clases inscritas
-                  </span>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className='cf-admin-usuario-clases-notifications'>
-          {inscripcionExitosa && (
-            <MensajeEstado tipo='exito' mensaje={inscripcionExitosa} />
-          )}
-          {cancelacionExitosa && (
-            <MensajeEstado tipo='info' mensaje={cancelacionExitosa} />
-          )}
-        </div>
-
-        <div className='cf-admin-usuario-clases-calendar-section'>
-          <div className='cf-admin-usuario-clases-calendar-header'>
-            <h2 className='cf-admin-usuario-clases-calendar-title'>
-              Calendario de {currentMonth}
-            </h2>
-          </div>
-
-          <CalendarioDias
-            selectedDate={selectedDate}
-            visibleDates={visibleDates}
-            calendarRef={calendarRef}
-            handlePrevWeek={handlePrevWeek}
-            handleNextWeek={handleNextWeek}
-            setSelectedDate={setSelectedDate}
+          <UserHeader
+            userInfo={userInfo}
+            clasesInscritasTotal={clasesInscritasTotal}
           />
         </div>
 
-        {loadingClases && !claseSeleccionada && (
-          <div className='cf-admin-usuario-clases-loading'>
-            <div className='cf-admin-usuario-clases-spinner'></div>
-            <p className='cf-admin-usuario-clases-loading-text'>
-              Cargando clases...
-            </p>
-          </div>
-        )}
+        <NotificationMessages
+          inscripcionExitosa={inscripcionExitosa}
+          cancelacionExitosa={cancelacionExitosa}
+        />
 
-        {error ? (
-          <MensajeEstado tipo='error' mensaje={error} />
-        ) : (
-          <div className='cf-admin-usuario-clases-timeline-section'>
-            <ClasesTimeline
-              selectedDate={selectedDate}
-              clasesOrdenadas={clasesOrdenadas}
-              handleInscribir={handleInscribir}
-              handleCancelar={handleCancelar}
-              estaInscrito={estaInscrito}
-              loading={loadingClases}
-              claseSeleccionada={claseSeleccionada}
-              puedeInscribirse={puedeInscribirse}
-              puedeCancelar={puedeCancelar}
-            />
-          </div>
-        )}
+        <CalendarSection
+          currentMonth={currentMonth}
+          selectedDate={selectedDate}
+          visibleDates={visibleDates}
+          calendarRef={calendarRef}
+          handlePrevWeek={handlePrevWeek}
+          handleNextWeek={handleNextWeek}
+          setSelectedDate={setSelectedDate}
+        />
+
+        <ClassesSection
+          selectedDate={selectedDate}
+          clasesOrdenadas={clasesOrdenadas}
+          handleInscribir={handleInscribirWithNotification}
+          handleCancelar={handleCancelarWithNotification}
+          estaInscrito={estaInscrito}
+          loading={loadingClases}
+          claseSeleccionada={claseSeleccionada}
+          error={clasesError || actionError}
+        />
       </div>
     </div>
   )

@@ -7,7 +7,7 @@ import {
   useEffect
 } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useCart } from '../../../context/CartContext' // Ajustamos la ruta
+import { useCart } from '../../../context/CartContext'
 import alertService from '../../../../../components/sweealert2/sweealert2'
 
 const initialState = {
