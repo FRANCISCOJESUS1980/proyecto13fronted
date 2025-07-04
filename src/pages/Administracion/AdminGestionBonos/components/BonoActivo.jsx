@@ -42,13 +42,6 @@ const BonoActivo = memo(
     const isExpirado = bonoActivo.estado === 'expirado'
     const infoPausa = obtenerInfoPausa()
 
-    console.log('=== BONO ACTIVO COMPONENT ===')
-    console.log('Estado del bono:', bonoActivo.estado)
-    console.log('Es activo:', isActivo)
-    console.log('Es pausado:', isPausado)
-    console.log('Es agotado:', isAgotado)
-    console.log('Es expirado:', isExpirado)
-
     return (
       <div className='cf-gestion-bonos-card'>
         <div className='cf-gestion-bonos-card-header'>

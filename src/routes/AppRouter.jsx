@@ -33,7 +33,7 @@ import {
   PhysicalStatsPage
 } from '../pages/Register/sections/Aspecto/features/physical-stats'
 import { CartProvider } from '../pages/Productos/context/CartContext'
-import { ConsentProvider } from '../context/ConssentContext'
+import { ConsentimientoProvider } from '../pages/Register/sections/Consentimiento/context/ConsentimientoContext'
 import PendingTasksChecker from '../components/Pending Tasks/PendingTasksChecker'
 import AdminMensajeMasivo from '../pages/Administracion/AdminMensajeMasivo/page/AdminMensajeMasivo'
 import AdminFacturacion from '../pages/Administracion/AdminFacturacion/page/AdminFacturacion'
@@ -42,7 +42,7 @@ const AppRouter = () => {
   return (
     <Router>
       <CartProvider>
-        <ConsentProvider>
+        <ConsentimientoProvider>
           <PhysicalStatsProvider>
             <PendingTasksChecker>
               <Routes>
@@ -57,7 +57,6 @@ const AppRouter = () => {
                 <Route path='/redessociales' element={<RedesSociales />} />
                 <Route path='/administracion' element={<Administracion />} />
                 <Route path='/videos' element={<Videos />} />
-
                 <Route
                   path='/administracion/clases'
                   element={<AdminClases />}
@@ -94,12 +93,10 @@ const AppRouter = () => {
                   path='/admin/usuario/:userId/bonos'
                   element={<GestionBonos />}
                 />
-
                 <Route
                   path='/administracion/facturacion'
                   element={<AdminFacturacion />}
                 />
-
                 <Route path='/dashboard' element={<UserDashboard />} />
                 <Route path='/dashboard/medico' element={<Medico />} />
                 <Route path='/dashboard/aspecto' element={<Aspecto />} />
@@ -112,12 +109,11 @@ const AppRouter = () => {
                   path='/dashboard/editar-perfil/:id'
                   element={<EditarPerfil />}
                 />
-
                 <Route path='*' element={<NotFound />} />
               </Routes>
             </PendingTasksChecker>
           </PhysicalStatsProvider>
-        </ConsentProvider>
+        </ConsentimientoProvider>
       </CartProvider>
     </Router>
   )

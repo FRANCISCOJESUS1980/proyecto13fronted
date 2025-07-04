@@ -22,8 +22,6 @@ const Contacto = () => {
   useEffect(() => {
     const loadContactData = async () => {
       try {
-        //await new Promise((resolve) => setTimeout(resolve, 0))
-
         setLoading(false)
         setTimeout(() => setFadeIn(true), 100)
       } catch (error) {

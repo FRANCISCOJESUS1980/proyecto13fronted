@@ -2,11 +2,12 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../../../../../../../components/Header/page/Header'
 import Loading from '../../../../../../../components/Loading/loading'
-import MedidasTab from '../components/Medidas/MedidasTab'
-import ProgresoTab from '../components/Progreso/ProgresoTab'
-import ObjetivosTab from '../components/Objetivos/ObjetivosTab'
+import MedidasTab from '../components/Medidas/page/MedidasTab'
+import ProgresoTab from '../components/Progreso/page/ProgresoTab'
+import ObjetivosTab from '../components/Objetivos/page/ObjetivosTab'
 import alertService from '../../../../../../../components/sweealert2/sweealert2'
 import Tabs from '../components/ui/Tabs/Tabs'
+import Message from '../components/ui/Message/Message'
 import usePhysicalStats from '../hooks/usePhysicalStats'
 import Button from '../../../../../../../components/Button/Button'
 import './Aspecto.css'
@@ -47,7 +48,6 @@ const Aspecto = () => {
       if (!initialLoading) {
         setTabLoading(true)
       }
-
       try {
         switch (activeTab) {
           case 'medidas':
@@ -83,7 +83,6 @@ const Aspecto = () => {
   useEffect(() => {
     if (error) {
       setMessage({ text: error, type: 'error' })
-
       setTimeout(() => {
         clearError()
         setMessage({ text: '', type: '' })
@@ -99,7 +98,6 @@ const Aspecto = () => {
 
   const handleMessage = (msg) => {
     setMessage(msg)
-
     setTimeout(() => {
       setMessage({ text: '', type: '' })
     }, 5000)
@@ -120,7 +118,6 @@ const Aspecto = () => {
 
   const handleTabChange = (tabId) => {
     console.log('Cambiando a pestaña:', tabId)
-
     if (activeTab === 'medidas' && window.medidasHasUnsavedChanges) {
       alertService
         .confirm(
@@ -215,6 +212,7 @@ const Aspecto = () => {
   return (
     <div className='stats-container'>
       <Header />
+
       <div className='stats-header'>
         <Button
           variant='secondary'
@@ -226,22 +224,17 @@ const Aspecto = () => {
         <h2 className='tituloaspecto'>Estadísticas Físicas</h2>
       </div>
 
-      {message.text && (
-        <alertService
-          type={message.type}
-          onClose={() => setMessage({ text: '', type: '' })}
-        >
-          {message.text}
-        </alertService>
-      )}
+      <Message
+        text={message.text}
+        type={message.type}
+        onClose={() => setMessage({ text: '', type: '' })}
+      />
 
       <Tabs tabs={tabs} activeTab={activeTab} onChange={handleTabChange} />
 
       <div className='tab-content'>
         {activeTab === 'medidas' && <MedidasTab onMessage={handleMessage} />}
-
         {activeTab === 'progreso' && <ProgresoTab />}
-
         {activeTab === 'objetivos' && (
           <ObjetivosTab onMessage={handleMessage} />
         )}

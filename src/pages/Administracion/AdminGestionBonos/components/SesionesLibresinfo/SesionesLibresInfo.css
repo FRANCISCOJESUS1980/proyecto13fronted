@@ -78,7 +78,6 @@
   animation: spin 1s linear infinite;
 }
 
-/* Resumen de sesiones */
 .cf-resumen-sesiones {
   background: #ffffff;
   border: 1px solid #e9ecef;
@@ -164,7 +163,6 @@
   }
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .cf-sesiones-libres-info {
     padding: 12px;

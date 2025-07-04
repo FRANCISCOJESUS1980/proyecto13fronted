@@ -86,11 +86,8 @@ export const useGestionBonos = (userId) => {
 
       try {
         const bonoData = await obtenerBonoUsuario(token, userId)
-        console.log('=== DATOS DEL BONO CARGADOS ===')
-        console.log('Bono data:', bonoData.data)
         setBonoActivo(bonoData.data)
       } catch (err) {
-        console.warn('No se pudo cargar el bono:', err.message)
         setBonoActivo(null)
       }
 
