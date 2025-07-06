@@ -49,15 +49,6 @@
   }
 }
 
-@keyframes progress {
-  0% {
-    width: 0%;
-  }
-  100% {
-    width: 100%;
-  }
-}
-
 .cf-marcas-dumbbell-anim {
   position: absolute;
   width: 80px;
@@ -309,6 +300,8 @@
   border-radius: 8px;
   padding: 1.5rem;
   border: 1px solid rgba(100, 100, 100, 0.3);
+  height: auto;
+  min-height: 400px;
 }
 
 .cf-marcas-modal-overlay {
@@ -351,32 +344,32 @@
     max-width: 90%;
     padding: 1.5rem;
   }
-
   .cf-marcas-header {
     flex-direction: column;
     gap: 1rem;
     align-items: center;
   }
-
   .cf-marcas-back-button {
     max-width: 90%;
   }
-
   .cf-marcas-tabs {
     overflow-x: auto;
     padding-bottom: 0.5rem;
   }
-
   .cf-marcas-tab-btn {
     white-space: nowrap;
   }
-
   .cf-marcas-dumbbell-anim,
   .cf-marcas-trophy-anim {
     width: 60px;
     height: 60px;
   }
+  .cf-marcas-chart-container {
+    padding: 0.5rem;
+    min-height: calc(100vh - 600px);
+  }
 }
+
 @media (min-width: 1000px) {
   .cf-marcas-back-button {
     margin-top: 50px;

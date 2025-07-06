@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState } from 'react'
+import { memo, useMemo, useReducer, useEffect, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import {
   LineChart,
@@ -14,115 +15,119 @@ import {
   ReferenceLine,
   Label
 } from 'recharts'
+import {
+  chartReducer,
+  initialChartState
+} from '../../../reducers/chartReducer.js'
+import {
+  CHART_ACTION_TYPES,
+  CHART_TYPES,
+  CHART_COLORS
+} from '../../../constants/personalRecordsConstants.js'
+import {
+  prepareChartData,
+  calculateChartStats
+} from '../../../utils/chartUtils.js'
+import ChartControls from '../../ChartControls.jsx'
+import ChartStats from '../../ChartStats.jsx'
+import CustomTooltip from '../../CustomTooltip.jsx'
 import './PersonalRecordChart.css'
 
-const PersonalRecordsChart = ({ records, uniqueExercises }) => {
-  const [selectedExercise, setSelectedExercise] = useState('')
-  const [chartType, setChartType] = useState('line')
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState(null)
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString)
-    return `${date.getDate()}/${date.getMonth() + 1}/${date
-      .getFullYear()
-      .toString()
-      .substr(-2)}`
-  }
+const PersonalRecordsChart = memo(({ records, uniqueExercises }) => {
+  const [state, dispatch] = useReducer(chartReducer, initialChartState)
 
   useEffect(() => {
-    if (uniqueExercises.length > 0 && !selectedExercise) {
-      setSelectedExercise(uniqueExercises[0])
+    if (uniqueExercises.length > 0 && !state.selectedExercise) {
+      dispatch({
+        type: CHART_ACTION_TYPES.SET_SELECTED_EXERCISE,
+        payload: uniqueExercises[0]
+      })
     }
-  }, [uniqueExercises, selectedExercise])
+  }, [uniqueExercises, state.selectedExercise])
 
-  const chartData = useMemo(() => {
-    if (!selectedExercise) return []
+  const chartData = useMemo(
+    () => prepareChartData(records, state.selectedExercise),
+    [records, state.selectedExercise]
+  )
 
-    const filteredRecords = records
-      .filter((record) => record.ejercicio === selectedExercise)
-      .map((record) => ({
-        ...record,
-        dateObj: new Date(record.fecha),
-        peso: Number.parseFloat(record.peso),
-        repeticiones: Number.parseInt(record.repeticiones || '1')
-      }))
-      .sort((a, b) => a.dateObj - b.dateObj)
+  const chartStats = useMemo(() => calculateChartStats(chartData), [chartData])
 
-    return filteredRecords.map((record) => ({
-      _id: record._id,
-      fecha: formatDate(record.fecha),
-      fechaCompleta: new Date(record.fecha).toLocaleDateString('es-ES', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric'
-      }),
-      peso: record.peso,
-      repeticiones: record.repeticiones
-    }))
-  }, [records, selectedExercise])
+  const [isMobile, setIsMobile] = useState(false)
 
-  const maxWeight = useMemo(() => {
-    if (chartData.length === 0) return 100
-    return Math.ceil(Math.max(...chartData.map((item) => item.peso)) * 1.1)
-  }, [chartData])
-
-  const maxReps = useMemo(() => {
-    if (chartData.length === 0) return 10
-    return Math.ceil(
-      Math.max(...chartData.map((item) => item.repeticiones)) * 1.2
-    )
-  }, [chartData])
-
-  const avgWeight = useMemo(() => {
-    if (chartData.length === 0) return 0
-    const sum = chartData.reduce((acc, item) => acc + item.peso, 0)
-    return Math.round((sum / chartData.length) * 10) / 10
-  }, [chartData])
-
-  const progressPercentage = useMemo(() => {
-    if (chartData.length <= 1) return null
-    const firstWeight = chartData[0].peso
-    const lastWeight = chartData[chartData.length - 1].peso
-    return ((lastWeight / firstWeight - 1) * 100).toFixed(1)
-  }, [chartData])
-
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className='cf-custom-tooltip'>
-          <p className='cf-tooltip-date'>{payload[0]?.payload.fechaCompleta}</p>
-          <p className='cf-tooltip-weight'>
-            <span className='cf-tooltip-label'>Peso:</span>
-            <span className='cf-tooltip-value'>{payload[0]?.value} kg</span>
-          </p>
-          {payload[1] && (
-            <p className='cf-tooltip-reps'>
-              <span className='cf-tooltip-label'>Repeticiones:</span>
-              <span className='cf-tooltip-value'>{payload[1]?.value}</span>
-            </p>
-          )}
-        </div>
-      )
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
     }
-    return null
-  }
 
-  const chartColors = {
-    weight: '#3366cc',
-    reps: '#ff9933',
-    avgLine: '#e53935',
-    grid: '#e0e0e0',
-    axis: '#9e9e9e'
-  }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
-  const handleExerciseChange = (e) => {
-    setSelectedExercise(e.target.value)
-  }
+  const getChartConfig = useCallback(() => {
+    if (isMobile) {
+      return {
+        margin: { top: 5, right: 5, left: 5, bottom: 35 },
+        height: window.innerHeight * 0.35,
+        xAxisProps: {
+          angle: -90,
+          textAnchor: 'end',
+          height: 60,
+          tick: { fill: CHART_COLORS.axis, fontSize: 9 },
+          tickMargin: 2,
+          interval: 0
+        },
+        yAxisProps: {
+          tick: { fill: CHART_COLORS.axis, fontSize: 9 },
+          width: 35
+        },
+        legendProps: {
+          verticalAlign: 'bottom',
+          height: 30,
+          wrapperStyle: {
+            fontSize: '11px',
+            paddingTop: '5px',
+            lineHeight: '1.2'
+          }
+        }
+      }
+    }
 
-  const handleChartTypeChange = (type) => {
-    setChartType(type)
-  }
+    return {
+      margin: { top: 20, right: 30, left: 20, bottom: 60 },
+      height: 400,
+      xAxisProps: {
+        angle: -45,
+        textAnchor: 'end',
+        height: 70,
+        tick: { fill: CHART_COLORS.axis, fontSize: 12 },
+        tickMargin: 10
+      },
+      yAxisProps: {
+        tick: { fill: CHART_COLORS.axis }
+      },
+      legendProps: {
+        verticalAlign: 'top',
+        height: 36
+      }
+    }
+  }, [isMobile])
+
+  const chartConfig = getChartConfig()
+
+  const handleExerciseChange = useCallback((exercise) => {
+    dispatch({
+      type: CHART_ACTION_TYPES.SET_SELECTED_EXERCISE,
+      payload: exercise
+    })
+  }, [])
+
+  const handleChartTypeChange = useCallback((type) => {
+    dispatch({
+      type: CHART_ACTION_TYPES.SET_CHART_TYPE,
+      payload: type
+    })
+  }, [])
 
   if (records.length === 0) {
     return (
@@ -137,54 +142,25 @@ const PersonalRecordsChart = ({ records, uniqueExercises }) => {
     <div className='cf-chart-container'>
       <div className='cf-chart-header'>
         <h3>Progreso de Marcas Personales</h3>
-
-        <div className='cf-chart-controls'>
-          <div className='cf-chart-select-container'>
-            <label htmlFor='exercise-select'>Ejercicio:</label>
-            <select
-              id='exercise-select'
-              value={selectedExercise}
-              onChange={handleExerciseChange}
-              className='cf-chart-select'
-            >
-              {uniqueExercises.map((exercise) => (
-                <option key={exercise} value={exercise}>
-                  {exercise}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className='cf-chart-type-selector'>
-            <button
-              className={`cf-chart-type-btn ${
-                chartType === 'line' ? 'cf-active' : ''
-              }`}
-              onClick={() => handleChartTypeChange('line')}
-            >
-              Línea
-            </button>
-            <button
-              className={`cf-chart-type-btn ${
-                chartType === 'bar' ? 'cf-active' : ''
-              }`}
-              onClick={() => handleChartTypeChange('bar')}
-            >
-              Barras
-            </button>
-          </div>
-        </div>
+        <ChartControls
+          selectedExercise={state.selectedExercise}
+          chartType={state.chartType}
+          uniqueExercises={uniqueExercises}
+          onExerciseChange={handleExerciseChange}
+          onChartTypeChange={handleChartTypeChange}
+          isMobile={isMobile}
+        />
       </div>
 
       <div className='cf-chart-content'>
-        {isLoading ? (
+        {state.loading ? (
           <div className='cf-chart-loading'>
             <div className='cf-loading-spinner'></div>
             <p>Cargando datos...</p>
           </div>
-        ) : error ? (
+        ) : state.error ? (
           <div className='cf-chart-error'>
-            <p>Error: {error}</p>
+            <p>Error: {state.error}</p>
           </div>
         ) : chartData.length === 0 ? (
           <div className='cf-chart-empty'>
@@ -192,98 +168,77 @@ const PersonalRecordsChart = ({ records, uniqueExercises }) => {
           </div>
         ) : (
           <>
-            <div className='cf-chart-stats'>
-              <div className='cf-stat-card'>
-                <div className='cf-stat-label'>Promedio</div>
-                <div className='cf-stat-value'>{avgWeight} kg</div>
-              </div>
-              <div className='cf-stat-card'>
-                <div className='cf-stat-label'>Máximo</div>
-                <div className='cf-stat-value'>
-                  {Math.max(...chartData.map((item) => item.peso))} kg
-                </div>
-              </div>
-              <div className='cf-stat-card'>
-                <div className='cf-stat-label'>Progreso</div>
-                <div
-                  className={`cf-stat-value ${
-                    progressPercentage >= 0 ? 'cf-positive' : 'cf-negative'
-                  }`}
-                >
-                  {progressPercentage !== null
-                    ? `${progressPercentage}%`
-                    : 'N/A'}
-                </div>
-              </div>
-            </div>
-
+            <ChartStats
+              chartData={chartData}
+              chartStats={chartStats}
+              isMobile={isMobile}
+            />
             <div className='cf-chart-wrapper'>
-              <ResponsiveContainer width='100%' height={400}>
-                {chartType === 'line' ? (
-                  <LineChart
-                    data={chartData}
-                    margin={{
-                      top: 20,
-                      right: 30,
-                      left: 20,
-                      bottom: 60
-                    }}
-                  >
+              <ResponsiveContainer width='100%' height={chartConfig.height}>
+                {state.chartType === CHART_TYPES.LINE ? (
+                  <LineChart data={chartData} margin={chartConfig.margin}>
                     <CartesianGrid
                       strokeDasharray='3 3'
-                      stroke={chartColors.grid}
+                      stroke={CHART_COLORS.grid}
                     />
-                    <XAxis
-                      dataKey='fecha'
-                      angle={-45}
-                      textAnchor='end'
-                      height={70}
-                      tick={{ fill: chartColors.axis, fontSize: 12 }}
-                      tickMargin={10}
-                    />
+                    <XAxis dataKey='fecha' {...chartConfig.xAxisProps} />
                     <YAxis
                       yAxisId='left'
                       orientation='left'
-                      stroke={chartColors.weight}
-                      domain={[0, maxWeight]}
-                      tickCount={6}
-                      tick={{ fill: chartColors.axis }}
+                      stroke={CHART_COLORS.weight}
+                      domain={[0, chartStats.maxWeight]}
+                      tickCount={isMobile ? 3 : 6}
+                      {...chartConfig.yAxisProps}
                     >
-                      <Label
-                        value='Peso (kg)'
-                        angle={-90}
-                        position='insideLeft'
-                        style={{ textAnchor: 'middle', fill: chartColors.axis }}
-                      />
+                      {!isMobile && (
+                        <Label
+                          value='Peso (kg)'
+                          angle={-90}
+                          position='insideLeft'
+                          style={{
+                            textAnchor: 'middle',
+                            fill: CHART_COLORS.axis
+                          }}
+                        />
+                      )}
                     </YAxis>
                     <YAxis
                       yAxisId='right'
                       orientation='right'
-                      stroke={chartColors.reps}
-                      domain={[0, maxReps]}
-                      tickCount={5}
-                      tick={{ fill: chartColors.axis }}
+                      stroke={CHART_COLORS.reps}
+                      domain={[0, chartStats.maxReps]}
+                      tickCount={isMobile ? 2 : 5}
+                      {...chartConfig.yAxisProps}
                     >
-                      <Label
-                        value='Repeticiones'
-                        angle={90}
-                        position='insideRight'
-                        style={{ textAnchor: 'middle', fill: chartColors.axis }}
-                      />
+                      {!isMobile && (
+                        <Label
+                          value='Repeticiones'
+                          angle={90}
+                          position='insideRight'
+                          style={{
+                            textAnchor: 'middle',
+                            fill: CHART_COLORS.axis
+                          }}
+                        />
+                      )}
                     </YAxis>
                     <Tooltip content={<CustomTooltip />} />
-                    <Legend verticalAlign='top' height={36} />
+                    <Legend {...chartConfig.legendProps} />
                     <ReferenceLine
-                      y={avgWeight}
+                      y={chartStats.avgWeight}
                       yAxisId='left'
-                      stroke={chartColors.avgLine}
+                      stroke={CHART_COLORS.avgLine}
                       strokeDasharray='3 3'
-                      strokeWidth={2}
+                      strokeWidth={isMobile ? 4 : 2}
                     >
                       <Label
-                        value={`Promedio: ${avgWeight} kg`}
-                        position='insideBottomRight'
-                        fill={chartColors.avgLine}
+                        value={`Promedio: ${chartStats.avgWeight} kg`}
+                        position={
+                          isMobile ? 'insideTopRight' : 'insideBottomRight'
+                        }
+                        fill={CHART_COLORS.avgLine}
+                        fontSize={isMobile ? 12 : 12}
+                        fontWeight={isMobile ? 600 : 600}
                       />
                     </ReferenceLine>
                     <Line
@@ -291,13 +246,13 @@ const PersonalRecordsChart = ({ records, uniqueExercises }) => {
                       type='monotone'
                       dataKey='peso'
                       name='Peso (kg)'
-                      stroke={chartColors.weight}
-                      activeDot={{ r: 8 }}
-                      strokeWidth={3}
+                      stroke={CHART_COLORS.weight}
+                      activeDot={{ r: isMobile ? 6 : 8 }}
+                      strokeWidth={isMobile ? 2 : 3}
                       dot={{
-                        stroke: chartColors.weight,
+                        stroke: CHART_COLORS.weight,
                         strokeWidth: 2,
-                        r: 4,
+                        r: isMobile ? 3 : 4,
                         fill: 'white'
                       }}
                     />
@@ -306,88 +261,87 @@ const PersonalRecordsChart = ({ records, uniqueExercises }) => {
                       type='monotone'
                       dataKey='repeticiones'
                       name='Repeticiones'
-                      stroke={chartColors.reps}
+                      stroke={CHART_COLORS.reps}
                       strokeWidth={2}
                       dot={{
-                        stroke: chartColors.reps,
+                        stroke: CHART_COLORS.reps,
                         strokeWidth: 2,
-                        r: 4,
+                        r: isMobile ? 3 : 4,
                         fill: 'white'
                       }}
                     />
                   </LineChart>
                 ) : (
-                  <BarChart
-                    data={chartData}
-                    margin={{
-                      top: 20,
-                      right: 30,
-                      left: 20,
-                      bottom: 60
-                    }}
-                  >
+                  <BarChart data={chartData} margin={chartConfig.margin}>
                     <CartesianGrid
                       strokeDasharray='3 3'
-                      stroke={chartColors.grid}
+                      stroke={CHART_COLORS.grid}
                     />
-                    <XAxis
-                      dataKey='fecha'
-                      angle={-45}
-                      textAnchor='end'
-                      height={70}
-                      tick={{ fill: chartColors.axis, fontSize: 12 }}
-                      tickMargin={10}
-                    />
+                    <XAxis dataKey='fecha' {...chartConfig.xAxisProps} />
                     <YAxis
                       yAxisId='left'
                       orientation='left'
-                      stroke={chartColors.weight}
-                      domain={[0, maxWeight]}
-                      tickCount={6}
-                      tick={{ fill: chartColors.axis }}
+                      stroke={CHART_COLORS.weight}
+                      domain={[0, chartStats.maxWeight]}
+                      tickCount={isMobile ? 3 : 6}
+                      {...chartConfig.yAxisProps}
                     >
-                      <Label
-                        value='Peso (kg)'
-                        angle={-90}
-                        position='insideLeft'
-                        style={{ textAnchor: 'middle', fill: chartColors.axis }}
-                      />
+                      {!isMobile && (
+                        <Label
+                          value='Peso (kg)'
+                          angle={-90}
+                          position='insideLeft'
+                          style={{
+                            textAnchor: 'middle',
+                            fill: CHART_COLORS.axis
+                          }}
+                        />
+                      )}
                     </YAxis>
                     <YAxis
                       yAxisId='right'
                       orientation='right'
-                      stroke={chartColors.reps}
-                      domain={[0, maxReps]}
-                      tickCount={5}
-                      tick={{ fill: chartColors.axis }}
+                      stroke={CHART_COLORS.reps}
+                      domain={[0, chartStats.maxReps]}
+                      tickCount={isMobile ? 2 : 5}
+                      {...chartConfig.yAxisProps}
                     >
-                      <Label
-                        value='Repeticiones'
-                        angle={90}
-                        position='insideRight'
-                        style={{ textAnchor: 'middle', fill: chartColors.axis }}
-                      />
+                      {!isMobile && (
+                        <Label
+                          value='Repeticiones'
+                          angle={90}
+                          position='insideRight'
+                          style={{
+                            textAnchor: 'middle',
+                            fill: CHART_COLORS.axis
+                          }}
+                        />
+                      )}
                     </YAxis>
                     <Tooltip content={<CustomTooltip />} />
-                    <Legend verticalAlign='top' height={36} />
+                    <Legend {...chartConfig.legendProps} />
                     <ReferenceLine
-                      y={avgWeight}
+                      y={chartStats.avgWeight}
                       yAxisId='left'
-                      stroke={chartColors.avgLine}
+                      stroke={CHART_COLORS.avgLine}
                       strokeDasharray='3 3'
-                      strokeWidth={2}
+                      strokeWidth={isMobile ? 4 : 2}
                     >
                       <Label
-                        value={`Promedio: ${avgWeight} kg`}
-                        position='insideBottomRight'
-                        fill={chartColors.avgLine}
+                        value={`Promedio: ${chartStats.avgWeight} kg`}
+                        position={
+                          isMobile ? 'insideTopRight' : 'insideBottomRight'
+                        }
+                        fill={CHART_COLORS.avgLine}
+                        fontSize={isMobile ? 12 : 12}
+                        fontWeight={isMobile ? 600 : 600}
                       />
                     </ReferenceLine>
                     <Bar
                       yAxisId='left'
                       dataKey='peso'
                       name='Peso (kg)'
-                      fill={chartColors.weight}
+                      fill={CHART_COLORS.weight}
                       radius={[4, 4, 0, 0]}
                       fillOpacity={0.8}
                     />
@@ -395,7 +349,7 @@ const PersonalRecordsChart = ({ records, uniqueExercises }) => {
                       yAxisId='right'
                       dataKey='repeticiones'
                       name='Repeticiones'
-                      fill={chartColors.reps}
+                      fill={CHART_COLORS.reps}
                       radius={[4, 4, 0, 0]}
                       fillOpacity={0.8}
                     />
@@ -408,7 +362,9 @@ const PersonalRecordsChart = ({ records, uniqueExercises }) => {
       </div>
     </div>
   )
-}
+})
+
+PersonalRecordsChart.displayName = 'PersonalRecordsChart'
 
 PersonalRecordsChart.propTypes = {
   records: PropTypes.array.isRequired,

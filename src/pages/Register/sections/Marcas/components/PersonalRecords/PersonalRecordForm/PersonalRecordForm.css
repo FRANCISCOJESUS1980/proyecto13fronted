@@ -412,22 +412,31 @@
   background-repeat: no-repeat;
 }
 
+.cf-pr-details-value {
+  padding: 10px 12px;
+  border: 1px solid rgba(100, 100, 100, 0.5);
+  border-radius: 6px;
+  background-color: rgba(40, 40, 40, 0.5);
+  color: white;
+  font-size: 0.875rem;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+}
+
 @media (max-width: 768px) {
   .cf-pr-container {
     width: 95%;
     max-height: 85vh;
   }
-
   .cf-pr-form-row {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-
   .cf-pr-form-actions {
     flex-direction: column-reverse;
     gap: 0.75rem;
   }
-
   .cf-pr-cancel-btn,
   .cf-pr-submit-btn {
     width: 100%;
