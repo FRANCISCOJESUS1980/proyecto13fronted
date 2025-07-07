@@ -2434,9 +2434,9 @@ Para nuevas funcionalidades:
 
 #### 📧 **Contacto Directo**
 
-- **Email**: [soporte@adercrossfit.com](mailto:soporte@adercrossfit.com)
-- **WhatsApp**: [+34 XXX XXX XXX](https://wa.me/34XXXXXXXXX)
-- **Teléfono**: +34 XXX XXX XXX
+- **Email**: [soporte@adercrossfit.com](adadevosgil@gmail.com)
+- **WhatsApp**: [+34 655 453 374](https://wa.me/34XXXXXXXXX)
+- **Teléfono**: +34 655 453 374
 
 </td>
 </tr>
@@ -2463,38 +2463,11 @@ Para nuevas funcionalidades:
   <sub>🏗️ Full Stack Developer</sub>
   <br />
   <a href="https://github.com/FRANCISCOJESUS1980">GitHub</a> •
-  <a href="mailto:francisco@adercrossfit.com">Email</a>
+  <a href="jesusgonzalezvergara@hotmail.com">Email</a>
 </td>
 <td align="center" width="25%">
   <img src="/placeholder.svg?height=100&width=100&text=Team" width="100px;" alt="Team Member"/>
-  <br />
-  <sub><b>Próximo Miembro</b></sub>
-  <br />
-  <sub>🎨 UI/UX Designer</sub>
-  <br />
-  <a href="#">Únete al equipo</a>
-</td>
-<td align="center" width="25%">
-  <img src="/placeholder.svg?height=100&width=100&text=Team" width="100px;" alt="Team Member"/>
-  <br />
-  <sub><b>Próximo Miembro</b></sub>
-  <br />
-  <sub>📱 Mobile Developer</sub>
-  <br />
-  <a href="#">Únete al equipo</a>
-</td>
-<td align="center" width="25%">
-  <img src="/placeholder.svg?height=100&width=100&text=Team" width="100px;" alt="Team Member"/>
-  <br />
-  <sub><b>Próximo Miembro</b></sub>
-  <br />
-  <sub>🔧 DevOps Engineer</sub>
-  <br />
-  <a href="#">Únete al equipo</a>
-</td>
-</tr>
-</table>
-
+ 
 ---
 
 ## 📄 Licencia
