@@ -10,9 +10,9 @@
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/FRANCISCOJESUS1980/proyecto13fronted/actions)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-[🚀 Demo en Vivo](https://adercrossfit.vercel.app) • [📖 Documentación](#documentación) • [🐛 Reportar Bug](https://github.com/FRANCISCOJESUS1980/proyecto13fronted/issues) • [💡 Solicitar Feature](https://github.com/FRANCISCOJESUS1980/proyecto13fronted/issues/new?template=feature_request.md)
+[🚀 Demo en Vivo](https://proyecto13fronted-git-main-francisco-jesus-projects.vercel.app/) • [📖 Documentación](#documentación) • [🐛 Reportar Bug](https://github.com/FRANCISCOJESUS1980/proyecto13fronted/issues) • [💡 Solicitar Feature](https://github.com/FRANCISCOJESUS1980/proyecto13fronted/issues/new?template=feature_request.md)
 
-![AderCrossFit Preview](https://via.placeholder.com/800x400/3b82f6/ffffff?text=AderCrossFit+Dashboard)
+![AderCrossFit Preview](https://proyecto13fronted-git-main-francisco-jesus-projects.vercel.app/)
 
 </div>
 
@@ -90,24 +90,24 @@
 
 ### 🌐 **Enlaces de Demo**
 
-| Entorno        | URL                                                        | Estado     |
-| -------------- | ---------------------------------------------------------- | ---------- |
-| **Producción** | [adercrossfit.vercel.app](https://adercrossfit.vercel.app) | 🟢 Online  |
-| **Staging**    | [staging-adercrossfit.vercel.app](#)                       | 🟡 Testing |
-| **API Docs**   | [api.adercrossfit.com/docs](#)                             | 🟢 Online  |
+| Entorno        | URL                                                                                                | Estado     |
+| -------------- | -------------------------------------------------------------------------------------------------- | ---------- |
+| **Producción** | [adercrossfit.vercel.app](https://proyecto13fronted-git-main-francisco-jesus-projects.vercel.app/) | 🟢 Online  |
+| **Staging**    | [staging-adercrossfit.vercel.app](#)                                                               | 🟡 Testing |
+| **API Docs**   | [api.adercrossfit.com/docs](#)                                                                     | 🟢 Online  |
 
 ### 📱 **Capturas de Pantalla**
 
 <details>
 <summary>🖼️ Ver capturas de pantalla</summary>
 
-| Dashboard Principal                                                            | Sistema de Clases                                                        | Chat en Tiempo Real                                                  |
-| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------ | -------------------------------------------------------------------- |
-| ![Dashboard](https://via.placeholder.com/300x200/3b82f6/ffffff?text=Dashboard) | ![Clases](https://via.placeholder.com/300x200/10b981/ffffff?text=Clases) | ![Chat](https://via.placeholder.com/300x200/f59e0b/ffffff?text=Chat) |
+| Dashboard Principal                                                                                        | Sistema de Clases                                                                                    | Chat en Tiempo Real                                                                              |
+| ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------- |
+| ![Dashboard](C:\Users\usuario\Desktop\proyecto13fronted\public\imagenes\Captura de pantalladashboard.jpeg) | ![Clases](C:\Users\usuario\Desktop\proyecto13fronted\public\imagenes\captura de pantallaclases.jpeg) | ![Chat](C:\Users\usuario\Desktop\proyecto13fronted\public\imagenes\Captura de pantallachat.jpeg) | c:\Users\usuario\Downloads\Captura de pantalla_7-7-2025_124150_localhost.jpeg |
 
-| E-commerce                                                           | Panel Admin                                                            | Perfil Usuario                                                             |
-| -------------------------------------------------------------------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| ![Shop](https://via.placeholder.com/300x200/ef4444/ffffff?text=Shop) | ![Admin](https://via.placeholder.com/300x200/8b5cf6/ffffff?text=Admin) | ![Profile](https://via.placeholder.com/300x200/06b6d4/ffffff?text=Profile) |
+| E-commerce                                                                                            | Panel Admin                                                                                                 | Perfil Usuario                                                                                              |
+| ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| ![Shop](C:\Users\usuario\Desktop\proyecto13fronted\public\imagenes\Captura de pantallaproductos.jpeg) | ![Admin](C:\Users\usuario\Desktop\proyecto13fronted\public\imagenes\Captura de pantallaadministracion.jpeg) | ![Profile](C:\Users\usuario\Desktop\proyecto13fronted\public\imagenes\Captura de pantallaeditarperfil.jpeg) |
 
 </details>
 
@@ -2536,8 +2536,8 @@ _"El fitness no es solo una actividad física, es una forma de vida"_
 ### 🔗 **Enlaces Rápidos**
 
 [🏠 inicio](#-adercrossfit---sistema-de-gestión-integral) •
-[🚀 Demo](https://adercrossfit.vercel.app) •
+[🚀 Demo](https://proyecto13fronted-git-main-francisco-jesus-projects.vercel.app/) •
 [📖 Docs](https://github.com/FRANCISCOJESUS1980/proyecto13fronted/wiki) •
 [🐛 Issues](https://github.com/FRANCISCOJESUS1980/proyecto13fronted/issues) •
 [💬 Discord](https://discord.gg/adercrossfit) •
-[📧 Contacto](mailto:soporte@adercrossfit.com)
+[📧 Contacto](adadevosgil@gamil.com)
