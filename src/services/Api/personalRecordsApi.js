@@ -16,8 +16,6 @@ export const fetchPersonalRecordsApi = async () => {
 
     const responseData = await checkResponse(response)
 
-    console.log('Datos recibidos de la API:', responseData)
-
     if (responseData && responseData.success && responseData.data) {
       return responseData.data
     } else if (Array.isArray(responseData)) {

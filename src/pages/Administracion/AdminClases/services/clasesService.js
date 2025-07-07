@@ -17,10 +17,6 @@ export const deleteClaseAPI = async (id) => {
 
 export const guardarClase = async (formData, editingId, modoCreacion) => {
   const token = localStorage.getItem('token')
-  console.log('Datos enviados desde clasesService:', {
-    formData,
-    editingId,
-    modoCreacion
-  })
+
   return await guardarClaseApiCentral(token, formData, editingId, modoCreacion)
 }

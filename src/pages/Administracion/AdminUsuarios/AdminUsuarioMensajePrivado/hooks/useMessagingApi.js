@@ -51,7 +51,6 @@ export function useMessagingApi() {
 
       try {
         const conversacionData = await obtenerConversacion(token, userId)
-        console.log('Respuesta de conversación:', conversacionData)
 
         if (conversacionData && conversacionData.success) {
           return {
@@ -80,12 +79,10 @@ export function useMessagingApi() {
       if (!token || !convId) return []
 
       try {
-        console.log('Cargando mensajes para conversación ID:', convId)
         const data = await obtenerMensajesConversacion(token, convId)
 
         if (data.success) {
           await marcarMensajesComoLeidos(token, convId)
-          console.log('Mensajes marcados como leídos')
           return data.data || []
         } else {
           console.error('Error en la respuesta al obtener mensajes:', data)
@@ -130,15 +127,11 @@ export function useMessagingApi() {
       if (!token) return false
 
       try {
-        console.log('Guardando edición para mensaje (admin):', messageId)
-        console.log('Nuevo texto:', newText)
-
         const resultado = await actualizarMensajePrivado(
           token,
           messageId,
           newText
         )
-        console.log('Resultado de la actualización:', resultado)
 
         if (resultado && resultado.success) {
           alertService.success('¡Éxito!', 'Mensaje actualizado correctamente')

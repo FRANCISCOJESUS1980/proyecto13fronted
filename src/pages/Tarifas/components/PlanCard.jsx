@@ -1,9 +1,7 @@
 import React from 'react'
 
 const PlanCard = React.memo(({ plan, showPeriodo = true }) => {
-  const handleSuscribir = React.useCallback(() => {
-    console.log('Suscribirse al plan:', plan.nombre)
-  }, [plan.nombre])
+  const handleSuscribir = React.useCallback(() => {}, [plan.nombre])
 
   return (
     <div className={`plan-card ${plan.popular ? 'popular' : ''}`}>

@@ -25,12 +25,9 @@ const BonoInfo = ({ userId }) => {
         return
       }
 
-      console.log('=== BONO INFO: Cargando información ===')
-
       try {
         const data = await obtenerBonoActivo()
         setBono(data)
-        console.log('=== BONO INFO: Bono cargado ===', data)
       } catch (err) {
         console.error('=== BONO INFO: Error al obtener bono ===', err)
         setBono(null)
@@ -39,10 +36,6 @@ const BonoInfo = ({ userId }) => {
       try {
         const sesionesData = await obtenerMisSesiones(token)
         setSesionesLibres(sesionesData.data.sesionesLibres || 0)
-        console.log(
-          '=== BONO INFO: Sesiones libres cargadas ===',
-          sesionesData.data.sesionesLibres
-        )
       } catch (err) {
         console.error('=== BONO INFO: Error al cargar sesiones libres ===', err)
         setSesionesLibres(0)
@@ -73,7 +66,6 @@ const BonoInfo = ({ userId }) => {
 
   useEffect(() => {
     window.updateBonoInfo = () => {
-      console.log('=== BONO INFO: Actualización solicitada externamente ===')
       fetchBonoInfo()
     }
     return () => {

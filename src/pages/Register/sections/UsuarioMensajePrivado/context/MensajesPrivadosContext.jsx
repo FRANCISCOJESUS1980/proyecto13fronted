@@ -211,15 +211,12 @@ export const MensajesPrivadosProvider = ({ children }) => {
       try {
         if (!convId) return
 
-        console.log('Cargando mensajes para conversación ID:', convId)
-
         const data = await obtenerMensajesConversacion(token, convId)
 
         if (data.success) {
           actions.setMensajes(data.data || [])
 
           await marcarMensajesComoLeidos(token, convId)
-          console.log('Mensajes marcados como leídos')
         } else {
           console.error('Error en la respuesta al obtener mensajes:', data)
           alertService.error('Error', 'No se pudieron cargar los mensajes.')
@@ -337,16 +334,11 @@ export const MensajesPrivadosProvider = ({ children }) => {
       try {
         const token = localStorage.getItem('token')
 
-        console.log('Guardando edición para mensaje:', state.editingMessageId)
-        console.log('Nuevo texto:', state.editText)
-
         const resultado = await actualizarMensajePrivado(
           token,
           state.editingMessageId,
           state.editText
         )
-
-        console.log('Resultado de la actualización:', resultado)
 
         if (resultado && resultado.success) {
           actions.updateMensaje(state.editingMessageId, state.editText)

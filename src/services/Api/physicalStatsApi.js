@@ -15,22 +15,13 @@ export const fetchLatestStatsApi = async () => {
 
     const responseData = await checkResponse(response)
 
-    console.log('Datos recibidos del backend:', responseData)
-
     if (responseData && responseData.success && responseData.data) {
       if (responseData.data.medidas) {
-        console.log('Devolviendo objeto con medidas:', {
-          medidas: responseData.data.medidas
-        })
         return { medidas: responseData.data.medidas }
       } else {
-        console.log('Devolviendo objeto con data como medidas:', {
-          medidas: responseData.data
-        })
         return { medidas: responseData.data }
       }
     } else {
-      console.log('No se encontraron datos válidos, devolviendo objeto vacío')
       return { medidas: {} }
     }
   } catch (error) {
@@ -51,15 +42,9 @@ export const fetchStatsHistoryApi = async () => {
 
     const responseData = await checkResponse(response)
 
-    console.log('Historial recibido del backend:', responseData)
-
     if (responseData && responseData.success && responseData.data) {
-      console.log('Devolviendo historial:', responseData.data)
       return Array.isArray(responseData.data) ? responseData.data : []
     } else {
-      console.log(
-        'No se encontraron datos de historial válidos, devolviendo array vacío'
-      )
       return []
     }
   } catch (error) {

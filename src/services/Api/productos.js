@@ -54,8 +54,6 @@ export const obtenerProductosAdmin = async (
       url += `&categoria=${categoria}`
     }
 
-    console.log('Llamando a URL:', url)
-
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -64,7 +62,6 @@ export const obtenerProductosAdmin = async (
       }
     })
 
-    console.log('Status:', response.status)
     if (!response.ok) {
       const errorText = await response.text()
       console.error('Error response:', errorText)
@@ -99,10 +96,6 @@ export const crearProducto = async (token, productData, imageFile) => {
     const formData = new FormData()
     const numericFields = ['precio', 'stock']
 
-    console.log('Product Data:', productData)
-    console.log('Image File:', imageFile)
-    console.log('Token:', token)
-
     Object.keys(productData).forEach((key) => {
       if (key === 'imagen') {
         return
@@ -120,7 +113,6 @@ export const crearProducto = async (token, productData, imageFile) => {
     }
 
     for (const pair of formData.entries()) {
-      console.log(pair[0] + ': ' + pair[1])
     }
 
     const response = await fetch(`${API_BASE_URL}/productos`, {
@@ -130,9 +122,6 @@ export const crearProducto = async (token, productData, imageFile) => {
       },
       body: formData
     })
-
-    console.log('Response status:', response.status)
-    console.log('Response headers:', response.headers)
 
     if (response.status === 500) {
       const errorText = await response.text()

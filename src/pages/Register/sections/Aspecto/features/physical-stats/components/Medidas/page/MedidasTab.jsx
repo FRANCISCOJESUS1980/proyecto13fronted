@@ -47,7 +47,6 @@ const MedidasTab = ({ onMessage }) => {
 
   useEffect(() => {
     if (stats && !isInitialized) {
-      console.log('Medidas cargadas:', stats)
       initializeForm(stats)
     }
   }, [stats, isInitialized, initializeForm])

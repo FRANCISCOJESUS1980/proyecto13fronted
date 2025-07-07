@@ -29,8 +29,6 @@ export const obtenerMensajesConversacion = async (token, conversacionId) => {
       }
     }
 
-    console.log('Obteniendo mensajes para conversación ID:', conversacionId)
-
     const response = await fetch(
       `${API_BASE_URL}/mensajes-privados/conversacion/${conversacionId}`,
       {
@@ -60,8 +58,6 @@ export const obtenerConversacion = async (token, userId) => {
       console.error('ID de usuario no proporcionado para obtener conversación')
       return { success: false, data: [], message: 'ID de usuario no válido' }
     }
-
-    console.log('Obteniendo conversación para usuario ID:', userId)
 
     const response = await fetch(
       `${API_BASE_URL}/mensajes-privados/usuario/${userId}`,
@@ -232,10 +228,6 @@ export const actualizarMensajePrivado = async (
       return { success: false, message: 'ID de mensaje no válido' }
     }
 
-    console.log('Enviando solicitud de actualización:')
-    console.log('- ID del mensaje:', mensajeId)
-    console.log('- Nuevo texto:', nuevoTexto)
-
     const response = await fetch(
       `${API_BASE_URL}/mensajes-privados/${mensajeId}`,
       {
@@ -249,14 +241,7 @@ export const actualizarMensajePrivado = async (
       }
     )
 
-    console.log(
-      'Respuesta de actualización:',
-      response.status,
-      response.statusText
-    )
-
     const responseData = await response.json()
-    console.log('Datos de respuesta:', responseData)
 
     if (!response.ok) {
       throw new Error(responseData.message || 'Error al actualizar el mensaje')

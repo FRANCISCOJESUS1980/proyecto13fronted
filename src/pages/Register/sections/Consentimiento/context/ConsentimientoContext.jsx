@@ -88,7 +88,6 @@ export const ConsentimientoProvider = ({ children, onConsentAccepted }) => {
       if (userString) {
         const user = JSON.parse(userString)
         if (user && user._id) {
-          console.log('UserId obtenido del localStorage (user):', user._id)
           actions.setUserId(user._id)
           return
         }
@@ -96,7 +95,6 @@ export const ConsentimientoProvider = ({ children, onConsentAccepted }) => {
 
       const storedUserId = localStorage.getItem('userId')
       if (storedUserId) {
-        console.log('UserId obtenido del localStorage (userId):', storedUserId)
         actions.setUserId(storedUserId)
         return
       }
@@ -140,8 +138,6 @@ export const ConsentimientoProvider = ({ children, onConsentAccepted }) => {
         )
       }
 
-      console.log('Enviando consentimiento con userId:', state.userId)
-
       const response = await guardarConsentimiento(
         {
           userId: state.userId,
@@ -151,8 +147,6 @@ export const ConsentimientoProvider = ({ children, onConsentAccepted }) => {
         },
         token
       )
-
-      console.log('Consentimiento guardado:', response)
 
       if (response && response.success) {
         actions.setAceptado(true)

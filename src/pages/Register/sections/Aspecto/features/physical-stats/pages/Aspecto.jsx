@@ -117,7 +117,6 @@ const Aspecto = () => {
   }
 
   const handleTabChange = (tabId) => {
-    console.log('Cambiando a pestaña:', tabId)
     if (activeTab === 'medidas' && window.medidasHasUnsavedChanges) {
       alertService
         .confirm(

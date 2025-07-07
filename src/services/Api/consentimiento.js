@@ -2,8 +2,6 @@ import { API_BASE_URL, checkResponse, handleApiError } from './config'
 
 export const guardarConsentimiento = async (consentimientoData, token) => {
   try {
-    console.log('Enviando datos de consentimiento:', consentimientoData)
-
     const response = await fetch(`${API_BASE_URL}/consentimientos`, {
       method: 'POST',
       headers: {
@@ -14,7 +12,6 @@ export const guardarConsentimiento = async (consentimientoData, token) => {
     })
 
     const data = await checkResponse(response)
-    console.log('Consentimiento guardado exitosamente:', data)
 
     return {
       success: true,
@@ -75,8 +72,6 @@ export const eliminarConsentimiento = async (id, token) => {
       throw new Error('El ID del consentimiento es requerido para eliminarlo')
     }
 
-    console.log(`Eliminando consentimiento con ID: ${id}`)
-
     const response = await fetch(`${API_BASE_URL}/consentimientos/${id}`, {
       method: 'DELETE',
       headers: {
@@ -91,8 +86,6 @@ export const eliminarConsentimiento = async (id, token) => {
 }
 export const verificarConsentimiento = async (userId, token) => {
   try {
-    console.log(`Verificando consentimiento para usuario ${userId}`)
-
     const response = await fetch(
       `${API_BASE_URL}/consentimientos/usuario/${userId}`,
       {
@@ -105,7 +98,6 @@ export const verificarConsentimiento = async (userId, token) => {
     )
 
     if (response.status === 404) {
-      console.log('No se encontró consentimiento para el usuario')
       return {
         success: true,
         consentimientoFirmado: false,

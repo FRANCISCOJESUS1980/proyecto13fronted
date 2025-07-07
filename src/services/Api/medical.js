@@ -2,12 +2,6 @@ import { API_BASE_URL, handleApiError, checkResponse } from './config'
 
 export const getAllMedicalInfo = async (token) => {
   try {
-    console.log(
-      'Obteniendo información médica con token:',
-      token ? 'Token presente' : 'Token ausente'
-    )
-    console.log('Rol del usuario:', localStorage.getItem('rol'))
-
     const response = await fetch(`${API_BASE_URL}/medical-info/admin/all`, {
       method: 'GET',
       headers: {
@@ -21,9 +15,6 @@ export const getAllMedicalInfo = async (token) => {
     if (data && data.data) {
       const firstUser = data.data[0]?.user
       if (firstUser) {
-        console.log('Primer usuario:', firstUser)
-        console.log('Campos del primer usuario:', Object.keys(firstUser))
-        console.log('Nombre del primer usuario:', firstUser.nombre)
       }
 
       const validData = data.data.filter(

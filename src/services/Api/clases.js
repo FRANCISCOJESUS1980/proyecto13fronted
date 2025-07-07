@@ -31,8 +31,6 @@ export const fetchClases = async (token) => {
 
 export const deleteClase = async (id, token) => {
   try {
-    console.log('Intentando eliminar clase con ID:', id)
-
     if (!id) {
       throw new Error('ID de clase no válido')
     }
@@ -85,12 +83,6 @@ export const guardarClaseAPI = async (
   modoCreacion
 ) => {
   try {
-    console.log('Datos recibidos en guardarClaseAPI:', {
-      formData,
-      editingId,
-      modoCreacion
-    })
-
     if (!formData || typeof formData !== 'object') {
       throw new Error(
         'Datos de formulario no válidos: formData no es un objeto'
@@ -105,10 +97,6 @@ export const guardarClaseAPI = async (
             duracion: formData.duracion
           }
         ]
-        console.log(
-          'Horarios creados a partir de hora y duración:',
-          formData.horarios
-        )
       } else {
         throw new Error(
           'Datos de formulario incompletos: horarios no es un array válido'
@@ -304,8 +292,6 @@ export const cancelarClase = async (claseId) => {
       throw new Error('ID de clase no válido')
     }
 
-    console.log('Enviando solicitud de cancelación para clase ID:', claseId)
-
     const response = await fetch(
       `${API_BASE_URL}/classes/${claseId}/cancelar`,
       {
@@ -316,7 +302,6 @@ export const cancelarClase = async (claseId) => {
     )
 
     const data = await response.json()
-    console.log('Respuesta de cancelación:', data)
 
     if (!response.ok) {
       throw new Error(data.message || 'Error al cancelar inscripción')

@@ -37,7 +37,6 @@ const ObjetivosTab = ({ onMessage }) => {
   }, [])
 
   useEffect(() => {
-    console.log('ObjetivosTab: Cargando objetivos...')
     fetchObjetivos()
   }, [fetchObjetivos])
 

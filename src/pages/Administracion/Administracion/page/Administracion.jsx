@@ -21,8 +21,6 @@ const Administracion = () => {
     const token = localStorage.getItem('token')
     const role = localStorage.getItem('rol')?.toLowerCase().trim()
 
-    console.log('Verificando autenticación:', { token: !!token, role })
-
     if (
       !token ||
       !(role === 'administrador' || role === 'admin' || role === 'creador')

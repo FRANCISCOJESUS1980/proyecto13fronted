@@ -51,11 +51,9 @@ export const CartProvider = ({ children }) => {
         setCurrentUserId(userId)
 
         if (authenticated && token) {
-          console.log('Usuario autenticado, cargando carrito desde MongoDB...')
           try {
             const response = await obtenerCarrito(token)
             const mongoItems = response.data?.items || []
-            console.log('Carrito cargado desde MongoDB:', mongoItems)
             setCartItems(mongoItems)
           } catch (error) {
             console.error('Error al cargar carrito desde MongoDB:', error)
@@ -67,11 +65,9 @@ export const CartProvider = ({ children }) => {
             }
           }
         } else {
-          console.log('Usuario no autenticado, usando localStorage...')
           const savedCart = localStorage.getItem('cart')
           if (savedCart) {
             const parsedCart = JSON.parse(savedCart)
-            console.log('Carrito cargado desde localStorage:', parsedCart)
             setCartItems(parsedCart)
           }
         }
@@ -92,9 +88,6 @@ export const CartProvider = ({ children }) => {
       const authenticated = checkAuthentication()
 
       if (userId !== currentUserId || authenticated !== isAuthenticated) {
-        console.log(`Cambio de usuario/autenticación detectado`)
-        console.log('Limpiando carrito por cambio de usuario')
-
         setCartItems([])
         localStorage.removeItem('cart')
         setCurrentUserId(userId)
@@ -105,7 +98,6 @@ export const CartProvider = ({ children }) => {
             const token = getAuthToken()
             const response = await obtenerCarrito(token)
             const mongoItems = response.data?.items || []
-            console.log('Carrito del nuevo usuario cargado:', mongoItems)
             setCartItems(mongoItems)
           } catch (error) {
             console.error('Error al cargar carrito del nuevo usuario:', error)
@@ -131,10 +123,6 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     if (isLoaded && !isAuthenticated) {
       try {
-        console.log(
-          'Guardando carrito en localStorage (usuario no autenticado):',
-          cartItems
-        )
         localStorage.setItem('cart', JSON.stringify(cartItems))
       } catch (error) {
         console.error('Error al guardar el carrito en localStorage:', error)
@@ -150,7 +138,6 @@ export const CartProvider = ({ children }) => {
         const token = getAuthToken()
         if (token) {
           await guardarCarrito(token, { items })
-          console.log('Carrito sincronizado con MongoDB')
         }
       } catch (error) {
         console.error('Error al sincronizar carrito con MongoDB:', error)
@@ -161,14 +148,11 @@ export const CartProvider = ({ children }) => {
 
   const addToCart = useCallback(
     async (product) => {
-      console.log('Agregando producto al carrito:', product)
-
       if (isAuthenticated) {
         try {
           const token = getAuthToken()
           const response = await agregarProductoCarrito(token, product._id, 1)
           setCartItems(response.data.items)
-          console.log('Producto agregado via MongoDB:', response.data.items)
         } catch (error) {
           console.error('Error al agregar producto via MongoDB:', error)
 
@@ -199,17 +183,10 @@ export const CartProvider = ({ children }) => {
               ...updatedItems[existingItemIndex],
               quantity: updatedItems[existingItemIndex].quantity + 1
             }
-            console.log(
-              'Producto existente, nueva cantidad:',
-              updatedItems[existingItemIndex].quantity
-            )
             return updatedItems
           } else {
             const newItems = [...prevItems, { ...product, quantity: 1 }]
-            console.log(
-              'Producto nuevo agregado, total items:',
-              newItems.length
-            )
+
             return newItems
           }
         })
@@ -220,14 +197,11 @@ export const CartProvider = ({ children }) => {
 
   const removeFromCart = useCallback(
     async (productId) => {
-      console.log('Eliminando producto del carrito:', productId)
-
       if (isAuthenticated) {
         try {
           const token = getAuthToken()
           const response = await eliminarProductoCarrito(token, productId)
           setCartItems(response.data.items)
-          console.log('Producto eliminado via MongoDB')
         } catch (error) {
           console.error('Error al eliminar producto via MongoDB:', error)
 
@@ -246,13 +220,6 @@ export const CartProvider = ({ children }) => {
 
   const updateQuantity = useCallback(
     async (productId, quantity) => {
-      console.log(
-        'Actualizando cantidad:',
-        productId,
-        'nueva cantidad:',
-        quantity
-      )
-
       if (quantity <= 0) {
         removeFromCart(productId)
         return
@@ -267,7 +234,6 @@ export const CartProvider = ({ children }) => {
             quantity
           )
           setCartItems(response.data.items)
-          console.log('Cantidad actualizada via MongoDB')
         } catch (error) {
           console.error('Error al actualizar cantidad via MongoDB:', error)
 
@@ -289,14 +255,11 @@ export const CartProvider = ({ children }) => {
   )
 
   const clearCart = useCallback(async () => {
-    console.log('Limpiando carrito completo')
-
     if (isAuthenticated) {
       try {
         const token = getAuthToken()
         await limpiarCarrito(token)
         setCartItems([])
-        console.log('Carrito limpiado via MongoDB')
       } catch (error) {
         console.error('Error al limpiar carrito via MongoDB:', error)
 

@@ -11,9 +11,6 @@ export const useAuth = () => {
         const token = localStorage.getItem('token')
         const role = localStorage.getItem('rol')?.toLowerCase().trim()
 
-        console.log('Token:', token ? 'Existe' : 'No existe')
-        console.log('Rol:', role)
-
         if (
           !token ||
           !(role === 'administrador' || role === 'admin' || role === 'creador')

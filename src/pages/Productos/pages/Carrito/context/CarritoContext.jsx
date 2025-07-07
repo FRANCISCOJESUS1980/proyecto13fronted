@@ -236,8 +236,6 @@ export const CarritoProvider = ({ children }) => {
           }
         }
 
-        console.log('Procesando pago con datos:', orderData)
-
         await new Promise((resolve) => setTimeout(resolve, 2000))
 
         actions.setSuccess(true)

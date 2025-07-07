@@ -76,16 +76,9 @@ const AdminFacturacion = () => {
         setLoading(true)
         const response = await obtenerBonos(token)
 
-        console.log('Respuesta completa de bonos:', response)
-
         const bonosData = response.data || response
-        console.log('Bonos extraídos:', bonosData)
-        console.log('Número de bonos:', bonosData.length)
 
-        bonosData.forEach((bono, index) => {
-          console.log(`Bono ${index}:`, bono)
-          console.log(`Usuario del bono ${index}:`, bono.usuario)
-        })
+        bonosData.forEach((bono, index) => {})
 
         const bonosOrdenados = bonosData.sort(
           (a, b) =>

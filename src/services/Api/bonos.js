@@ -118,10 +118,6 @@ export const reactivarBono = async (token, bonoId, reactivacionData) => {
 
 export const añadirSesiones = async (token, bonoId, sesionesData) => {
   try {
-    console.log('=== FRONTEND - añadirSesiones ===')
-    console.log('bonoId:', bonoId)
-    console.log('sesionesData:', sesionesData)
-
     if (!bonoId) {
       throw new Error('ID del bono es requerido')
     }
@@ -142,8 +138,6 @@ export const añadirSesiones = async (token, bonoId, sesionesData) => {
       }
     )
 
-    console.log('Response status:', response.status)
-
     if (!response.ok) {
       const errorData = await response.json()
       console.error('Error response:', errorData)
@@ -151,7 +145,7 @@ export const añadirSesiones = async (token, bonoId, sesionesData) => {
     }
 
     const result = await response.json()
-    console.log('Success response:', result)
+
     return result
   } catch (error) {
     console.error('=== FRONTEND ERROR - añadirSesiones ===')

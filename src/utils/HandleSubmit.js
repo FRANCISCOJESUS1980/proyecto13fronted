@@ -244,24 +244,16 @@ const handlers = {
     setIsLoading,
     setRegistroExitoso
   }) => {
-    console.log('Iniciando registro con formData:', formData)
-    console.log('Imagen seleccionada:', selectedImage ? 'Sí' : 'No')
-
     setIsLoading(true)
     try {
       const response = await registrarUsuario(formData, selectedImage)
-
-      console.log('Respuesta completa del servidor:', response)
 
       if (!response) {
         throw new Error('Respuesta inválida del servidor')
       }
 
       if (response.ok && response.data) {
-        console.log('Contenido del objeto data:', response.data)
-
         const userData = response.data.data || response.data
-        console.log('Contenido de userData:', userData)
 
         if (userData._id) {
           localStorage.setItem('user', JSON.stringify({ _id: userData._id }))
@@ -273,8 +265,6 @@ const handlers = {
           if (userData.avatar) {
             localStorage.setItem('avatar', userData.avatar)
           }
-
-          console.log('Token y userId guardados correctamente')
 
           alertService.success(
             '¡Registro exitoso!',
@@ -311,8 +301,6 @@ const handlers = {
   },
 
   aspecto: async (params) => {
-    console.log('Handling aspecto submission with params:', params)
-
     alertService.success(
       'Información guardada',
       'Tus datos físicos han sido guardados correctamente'
@@ -320,7 +308,6 @@ const handlers = {
   },
 
   marcas: async (params) => {
-    console.log('Handling marcas submission with params:', params)
     alertService.success(
       'Marcas guardadas',
       'Tus marcas personales han sido guardadas correctamente'

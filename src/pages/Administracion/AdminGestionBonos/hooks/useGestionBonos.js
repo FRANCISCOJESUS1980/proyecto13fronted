@@ -193,10 +193,6 @@ export const useGestionBonos = (userId) => {
           fechaPausa: new Date().toISOString()
         }
 
-        console.log('=== PAUSANDO BONO ===')
-        console.log('Bono ID:', bonoActivo._id)
-        console.log('Pausa data:', pausaData)
-
         await pausarBono(token, bonoActivo._id, pausaData)
 
         await cargarDatos()
@@ -223,12 +219,6 @@ export const useGestionBonos = (userId) => {
       const token = getToken()
 
       const diasExtension = calcularDiasPausa(bonoActivo.fechaPausa)
-
-      console.log('=== REACTIVANDO BONO ===')
-      console.log(`Bono ID: ${bonoActivo._id}`)
-      console.log(`Estado actual: ${bonoActivo.estado}`)
-      console.log(`Bono pausado desde: ${bonoActivo.fechaPausa}`)
-      console.log(`Días de extensión calculados: ${diasExtension}`)
 
       await reactivarBono(token, bonoActivo._id, {
         diasExtension,

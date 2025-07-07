@@ -217,7 +217,6 @@ export const useClasesUsuario = ({
     setClaseSeleccionada(claseId)
 
     try {
-      console.log('Inscribiendo a clase con ID:', claseId)
       const claseActualizada = await inscribirClase(claseId)
 
       setClases((prevClases) =>
@@ -311,10 +310,6 @@ export const useClasesUsuario = ({
     setClaseSeleccionada(claseId)
 
     try {
-      console.log('=== FRONTEND: Iniciando cancelación ===')
-      console.log('Clase ID:', claseId)
-      console.log('Usuario ID:', userId)
-
       const token = localStorage.getItem('token')
       if (!token) {
         throw new Error('No hay token de autenticación')
@@ -333,36 +328,24 @@ export const useClasesUsuario = ({
       )
 
       const data = await response.json()
-      console.log('=== FRONTEND: Respuesta completa del servidor ===', data)
 
       if (!response.ok) {
         throw new Error(data.message || 'Error al cancelar inscripción')
       }
 
       const claseActualizada = data.data
-      console.log('=== FRONTEND: Clase actualizada recibida ===')
-      console.log('Inscritos en respuesta:', claseActualizada.inscritos.length)
 
       setClases((prevClases) => {
-        console.log('=== FRONTEND: Actualizando estado de clases ===')
         const nuevasClases = prevClases.map((clase) => {
           if (clase._id === claseId) {
-            console.log('=== FRONTEND: Reemplazando clase ===')
-            console.log('Antes - Inscritos:', clase.inscritos.length)
-            console.log(
-              'Después - Inscritos:',
-              claseActualizada.inscritos.length
-            )
             return claseActualizada
           }
           return clase
         })
-        console.log('=== FRONTEND: Estado actualizado ===')
         return nuevasClases
       })
 
       if (window.updateBonoInfo) {
-        console.log('=== FRONTEND: Actualizando información del bono ===')
         setTimeout(() => {
           window.updateBonoInfo()
         }, 300)
@@ -374,8 +357,6 @@ export const useClasesUsuario = ({
       )
       setCancelacionExitosa('Has cancelado tu inscripción correctamente')
       setTimeout(() => setCancelacionExitosa(null), 3000)
-
-      console.log('=== FRONTEND: Cancelación completada exitosamente ===')
     } catch (err) {
       console.error('=== FRONTEND: Error al cancelar inscripción ===', err)
       if (err.message && err.message.includes('token')) {

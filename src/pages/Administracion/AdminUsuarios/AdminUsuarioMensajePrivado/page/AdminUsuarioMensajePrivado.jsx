@@ -39,8 +39,6 @@ const AdminUsuarioMensajes = () => {
           return
         }
 
-        console.log('Cargando datos para usuario:', userId)
-
         const userData = await api.fetchUserInfo(userId)
         if (userData) {
           dispatch({ type: 'SET_USER_INFO', payload: userData })

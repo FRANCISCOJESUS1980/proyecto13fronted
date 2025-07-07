@@ -6,8 +6,6 @@ export const procesarPago = async (token, orderData) => {
   }
 
   try {
-    console.log('Enviando datos de pago:', JSON.stringify(orderData, null, 2))
-
     const response = await fetch(`${API_BASE_URL}/pagos/procesar`, {
       method: 'POST',
       headers: {
