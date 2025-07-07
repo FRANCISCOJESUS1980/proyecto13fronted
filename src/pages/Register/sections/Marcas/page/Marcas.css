@@ -375,3 +375,8 @@
     margin-top: 50px;
   }
 }
+@media (max-width: 430px) {
+  .recharts-surface {
+    margin-top: 15px;
+  }
+}
