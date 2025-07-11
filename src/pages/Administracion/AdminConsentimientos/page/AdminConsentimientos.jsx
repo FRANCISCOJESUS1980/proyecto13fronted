@@ -22,7 +22,6 @@ const ITEMS_PER_PAGE = 10
 const AdminConsentimientos = () => {
   const navigate = useNavigate()
   const [currentPage, setCurrentPage] = useState(1)
-
   const { token } = useAuthGuard(['administrador', 'admin', 'creador'])
 
   const {
@@ -50,7 +49,7 @@ const AdminConsentimientos = () => {
     filteredItems: filteredConsentimientos
   } = useSearch(
     enrichedConsentimientos,
-    ['nombreUsuario', 'email'],
+    ['nombreCompleto', 'dni', 'email', 'nombreUsuario'],
     handleSearchChange
   )
 
@@ -109,6 +108,10 @@ const AdminConsentimientos = () => {
           <h1 className='cf-consentimientos-title'>
             Gestión de Consentimientos
           </h1>
+          <p className='cf-consentimientos-subtitle'>
+            Administra todos los consentimientos firmados digitalmente por los
+            usuarios
+          </p>
         </div>
 
         <ErrorMessage error={error} />

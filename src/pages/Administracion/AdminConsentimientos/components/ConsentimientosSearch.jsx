@@ -8,7 +8,7 @@ const ConsentimientosSearch = React.memo(({ searchTerm, onSearchChange }) => {
         <Search size={18} className='cf-consentimientos-search-icon' />
         <input
           type='text'
-          placeholder='Buscar por nombre o email...'
+          placeholder='Buscar por nombre, DNI o email...'
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
           className='cf-consentimientos-search-input'
@@ -22,10 +22,14 @@ const ConsentimientosSearch = React.memo(({ searchTerm, onSearchChange }) => {
           </button>
         )}
       </div>
+      <div className='cf-consentimientos-search-help'>
+        <small>
+          Puedes buscar por nombre completo, DNI o email del usuario
+        </small>
+      </div>
     </div>
   )
 })
 
 ConsentimientosSearch.displayName = 'ConsentimientosSearch'
-
 export default ConsentimientosSearch

@@ -1,7 +1,8 @@
-import React from 'react'
-import { Check, XCircle } from 'lucide-react'
+import React, { useState } from 'react'
+import { Check, XCircle, Eye, User, FileText } from 'lucide-react'
 import { formatDate } from '../utils/consentimientos-utils'
 import alertService from '../../../../components/sweealert2/sweealert2'
+import SignatureModal from './SignatureModal'
 
 const AuthorizationBadge = React.memo(({ autorizaImagen }) => (
   <span
@@ -27,14 +28,57 @@ const AuthorizationBadge = React.memo(({ autorizaImagen }) => (
 
 AuthorizationBadge.displayName = 'AuthorizationBadge'
 
+const UserInfoCell = React.memo(({ nombreCompleto, dni }) => (
+  <div className='cf-consentimientos-user-info'>
+    <div className='cf-consentimientos-user-name'>
+      <User size={14} />
+      <span>{nombreCompleto || 'No disponible'}</span>
+    </div>
+    <div className='cf-consentimientos-user-dni'>
+      <FileText size={12} />
+      <span>{dni || 'No disponible'}</span>
+    </div>
+  </div>
+))
+
+UserInfoCell.displayName = 'UserInfoCell'
+
+const SignatureCell = React.memo(({ firmaDigital, nombreCompleto }) => {
+  const [showModal, setShowModal] = useState(false)
+
+  if (!firmaDigital) {
+    return <span className='cf-consentimientos-no-signature'>Sin firma</span>
+  }
+
+  return (
+    <>
+      <button
+        className='cf-consentimientos-signature-btn'
+        onClick={() => setShowModal(true)}
+      >
+        <Eye size={14} />
+        <span>Ver firma</span>
+      </button>
+      {showModal && (
+        <SignatureModal
+          signature={firmaDigital}
+          userName={nombreCompleto}
+          onClose={() => setShowModal(false)}
+        />
+      )}
+    </>
+  )
+})
+
+SignatureCell.displayName = 'SignatureCell'
+
 const DeleteButton = React.memo(({ consentimiento, isLoading, onDelete }) => {
   const handleClick = () => {
     alertService.clearAlerts()
-
     alertService
       .confirm(
         '¿Estás seguro?',
-        `¿Deseas eliminar el consentimiento de ${consentimiento.nombreUsuario}?`,
+        `¿Deseas eliminar el consentimiento de ${consentimiento.nombreCompleto}?`,
         {
           icon: 'warning',
           showCancelButton: true,
@@ -95,45 +139,66 @@ const ConsentimientosTable = React.memo(
 
     return (
       <div className='cf-consentimientos-table-container'>
-        <table className='cf-consentimientos-table'>
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Email</th>
-              <th>Autoriza Imagen</th>
-              <th>Fecha de Aceptación</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {consentimientos.map((item) => (
-              <tr key={item._id}>
-                <td className='cf-consentimientos-nombre-cell'>
-                  {item.nombreUsuario}
-                </td>
-                <td className='cf-consentimientos-email-cell'>{item.email}</td>
-                <td className='cf-consentimientos-autoriza-cell'>
-                  <AuthorizationBadge autorizaImagen={item.autorizaImagen} />
-                </td>
-                <td className='cf-consentimientos-fecha-cell'>
-                  {formatDate(item.fechaAceptacion)}
-                </td>
-                <td className='cf-consentimientos-acciones-cell'>
-                  <DeleteButton
-                    consentimiento={item}
-                    isLoading={deleteLoading === item._id}
-                    onDelete={onDelete}
-                  />
-                </td>
+        <div className='cf-consentimientos-table-wrapper'>
+          <table className='cf-consentimientos-table'>
+            <thead>
+              <tr>
+                <th className='cf-consentimientos-th-user'>
+                  Datos del Usuario
+                </th>
+                <th className='cf-consentimientos-th-email'>Email de Cuenta</th>
+                <th className='cf-consentimientos-th-signature'>
+                  Firma Digital
+                </th>
+                <th className='cf-consentimientos-th-authorization'>
+                  Autoriza Imagen
+                </th>
+                <th className='cf-consentimientos-th-date'>Fecha</th>
+                <th className='cf-consentimientos-th-actions'>Acciones</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {consentimientos.map((item) => (
+                <tr key={item._id} className='cf-consentimientos-table-row'>
+                  <td className='cf-consentimientos-user-cell'>
+                    <UserInfoCell
+                      nombreCompleto={item.nombreCompleto}
+                      dni={item.dni}
+                    />
+                  </td>
+                  <td className='cf-consentimientos-email-cell'>
+                    <span className='cf-consentimientos-account-email'>
+                      {item.email}
+                    </span>
+                  </td>
+                  <td className='cf-consentimientos-signature-cell'>
+                    <SignatureCell
+                      firmaDigital={item.firmaDigital}
+                      nombreCompleto={item.nombreCompleto}
+                    />
+                  </td>
+                  <td className='cf-consentimientos-autoriza-cell'>
+                    <AuthorizationBadge autorizaImagen={item.autorizaImagen} />
+                  </td>
+                  <td className='cf-consentimientos-fecha-cell'>
+                    {formatDate(item.fechaAceptacion)}
+                  </td>
+                  <td className='cf-consentimientos-acciones-cell'>
+                    <DeleteButton
+                      consentimiento={item}
+                      isLoading={deleteLoading === item._id}
+                      onDelete={onDelete}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     )
   }
 )
 
 ConsentimientosTable.displayName = 'ConsentimientosTable'
-
 export default ConsentimientosTable

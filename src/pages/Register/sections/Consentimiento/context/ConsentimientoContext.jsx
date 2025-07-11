@@ -11,6 +11,9 @@ import { guardarConsentimiento } from '../../../../../services/Api/index'
 const initialState = {
   aceptado: false,
   autorizaImagen: null,
+  nombreCompleto: '',
+  dni: '',
+  firmaDigital: '',
   userId: null,
   loading: false,
   error: null
@@ -19,6 +22,9 @@ const initialState = {
 const ACTIONS = {
   SET_ACEPTADO: 'SET_ACEPTADO',
   SET_AUTORIZA_IMAGEN: 'SET_AUTORIZA_IMAGEN',
+  SET_NOMBRE_COMPLETO: 'SET_NOMBRE_COMPLETO',
+  SET_DNI: 'SET_DNI',
+  SET_FIRMA_DIGITAL: 'SET_FIRMA_DIGITAL',
   SET_USER_ID: 'SET_USER_ID',
   SET_LOADING: 'SET_LOADING',
   SET_ERROR: 'SET_ERROR',
@@ -29,22 +35,22 @@ function consentimientoReducer(state, action) {
   switch (action.type) {
     case ACTIONS.SET_ACEPTADO:
       return { ...state, aceptado: action.payload }
-
     case ACTIONS.SET_AUTORIZA_IMAGEN:
       return { ...state, autorizaImagen: action.payload, error: null }
-
+    case ACTIONS.SET_NOMBRE_COMPLETO:
+      return { ...state, nombreCompleto: action.payload, error: null }
+    case ACTIONS.SET_DNI:
+      return { ...state, dni: action.payload, error: null }
+    case ACTIONS.SET_FIRMA_DIGITAL:
+      return { ...state, firmaDigital: action.payload, error: null }
     case ACTIONS.SET_USER_ID:
       return { ...state, userId: action.payload }
-
     case ACTIONS.SET_LOADING:
       return { ...state, loading: action.payload }
-
     case ACTIONS.SET_ERROR:
       return { ...state, error: action.payload }
-
     case ACTIONS.RESET_ERROR:
       return { ...state, error: null }
-
     default:
       return state
   }
@@ -71,6 +77,11 @@ export const ConsentimientoProvider = ({ children, onConsentAccepted }) => {
         dispatch({ type: ACTIONS.SET_ACEPTADO, payload: aceptado }),
       setAutorizaImagen: (autoriza) =>
         dispatch({ type: ACTIONS.SET_AUTORIZA_IMAGEN, payload: autoriza }),
+      setNombreCompleto: (nombre) =>
+        dispatch({ type: ACTIONS.SET_NOMBRE_COMPLETO, payload: nombre }),
+      setDni: (dni) => dispatch({ type: ACTIONS.SET_DNI, payload: dni }),
+      setFirmaDigital: (firma) =>
+        dispatch({ type: ACTIONS.SET_FIRMA_DIGITAL, payload: firma }),
       setUserId: (userId) =>
         dispatch({ type: ACTIONS.SET_USER_ID, payload: userId }),
       setLoading: (loading) =>
@@ -92,13 +103,11 @@ export const ConsentimientoProvider = ({ children, onConsentAccepted }) => {
           return
         }
       }
-
       const storedUserId = localStorage.getItem('userId')
       if (storedUserId) {
         actions.setUserId(storedUserId)
         return
       }
-
       console.error('No se encontró userId en localStorage')
       actions.setError(
         'No se pudo identificar al usuario. Por favor, inicie sesión nuevamente.'
@@ -112,6 +121,29 @@ export const ConsentimientoProvider = ({ children, onConsentAccepted }) => {
   }, [actions])
 
   const handleAccept = useCallback(async () => {
+    if (!state.nombreCompleto || !state.nombreCompleto.trim()) {
+      actions.setError('El nombre completo es requerido')
+      return
+    }
+
+    if (!state.dni || !state.dni.trim()) {
+      actions.setError('El DNI es requerido')
+      return
+    }
+
+    const dniRegex = /^[0-9]{8}[A-Z]$/
+    if (!dniRegex.test(state.dni)) {
+      actions.setError(
+        'El formato del DNI no es válido (debe ser 8 números seguidos de una letra)'
+      )
+      return
+    }
+
+    if (!state.firmaDigital) {
+      actions.setError('La firma digital es requerida')
+      return
+    }
+
     if (state.autorizaImagen === null) {
       actions.setError(
         'Por favor, seleccione si autoriza o no el uso de su imagen'
@@ -141,6 +173,9 @@ export const ConsentimientoProvider = ({ children, onConsentAccepted }) => {
       const response = await guardarConsentimiento(
         {
           userId: state.userId,
+          nombreCompleto: state.nombreCompleto.trim(),
+          dni: state.dni.toUpperCase().trim(),
+          firmaDigital: state.firmaDigital,
           aceptado: true,
           autorizaImagen: state.autorizaImagen,
           fechaAceptacion: new Date()
@@ -165,7 +200,15 @@ export const ConsentimientoProvider = ({ children, onConsentAccepted }) => {
     } finally {
       actions.setLoading(false)
     }
-  }, [state.autorizaImagen, state.userId, actions, onConsentAccepted])
+  }, [
+    state.autorizaImagen,
+    state.userId,
+    state.nombreCompleto,
+    state.dni,
+    state.firmaDigital,
+    actions,
+    onConsentAccepted
+  ])
 
   const contextValue = useMemo(
     () => ({

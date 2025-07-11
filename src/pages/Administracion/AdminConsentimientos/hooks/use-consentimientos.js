@@ -1,8 +1,7 @@
 import { useReducer, useEffect, useCallback } from 'react'
 import {
   obtenerTodosConsentimientos,
-  eliminarConsentimiento,
-  obtenerTodosUsuarios
+  eliminarConsentimiento
 } from '../../../../services/Api/index'
 import alertService from '../../../../components/sweealert2/sweealert2'
 
@@ -25,7 +24,7 @@ const consentimientosReducer = (state, action) => {
       return {
         ...state,
         consentimientos: action.payload.consentimientos,
-        usuarios: action.payload.usuarios,
+        usuarios: action.payload.usuarios || [],
         loading: false,
         error: null
       }
@@ -53,20 +52,16 @@ export const useConsentimientos = (token) => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true })
 
-      const [consentimientosData, usuariosData] = await Promise.all([
-        obtenerTodosConsentimientos(token),
-        obtenerTodosUsuarios(token)
-      ])
+      const consentimientosData = await obtenerTodosConsentimientos(token)
 
       const consentimientosArray =
         consentimientosData.data || consentimientosData
-      const usuariosArray = usuariosData.data || usuariosData
 
       dispatch({
         type: 'SET_DATA',
         payload: {
           consentimientos: consentimientosArray || [],
-          usuarios: usuariosArray || []
+          usuarios: []
         }
       })
 

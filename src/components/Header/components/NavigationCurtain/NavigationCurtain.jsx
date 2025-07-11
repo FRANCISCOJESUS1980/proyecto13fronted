@@ -71,7 +71,7 @@ const NavigationCurtain = ({
 
             {!isAuthenticated && (
               <NavigationItem
-                to='/registro'
+                to='/iniciar-sesion'
                 text='Registro o inicio'
                 icon={
                   <svg

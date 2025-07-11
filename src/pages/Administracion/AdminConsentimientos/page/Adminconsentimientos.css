@@ -16,7 +16,7 @@
 .cf-consentimientos-content {
   flex: 1;
   max-width: 1200px;
-  width: 90%;
+  width: 95%;
   margin: 0 auto;
   padding: 1.5rem;
 }
@@ -407,7 +407,6 @@
   .cf-consentimientos-stats {
     flex-direction: column;
   }
-
   .cf-consentimientos-stat-card {
     width: 100%;
   }
@@ -420,13 +419,24 @@
   }
 
   .cf-consentimientos-table {
-    display: block;
+    display: table;
+    width: 100%;
+    min-width: unset;
+  }
+
+  .cf-consentimientos-table-container {
     overflow-x: auto;
+  }
+
+  .cf-consentimientos-table-wrapper {
+    overflow-x: visible;
+    border: none;
   }
 
   .cf-consentimientos-table th,
   .cf-consentimientos-table td {
     padding: 0.75rem;
+    white-space: nowrap;
   }
 }
 
@@ -434,7 +444,6 @@
   .cf-consentimientos-content {
     padding: 1rem;
   }
-
   .cf-consentimientos-title {
     font-size: 1.5rem;
   }
@@ -443,5 +452,254 @@
 @media (min-width: 1000px) {
   .cf-consentimientos-header {
     margin-top: 50px;
+  }
+}
+
+.cf-consentimientos-user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.cf-consentimientos-user-name {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: white;
+}
+
+.cf-consentimientos-user-dni {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: seashell;
+  font-family: monospace;
+}
+
+.cf-consentimientos-signature-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background-color: var(--color-blue);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background-color 0.2s;
+}
+
+.cf-consentimientos-signature-btn:hover {
+  background-color: var(--color-red);
+}
+
+.cf-consentimientos-no-signature {
+  color: #a0aec0;
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+.cf-signature-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.cf-signature-modal {
+  background: var(--color-border);
+  border-radius: 12px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.cf-signature-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.cf-signature-modal-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cf-signature-modal-title h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: white;
+}
+
+.cf-signature-modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  color: white;
+  transition: all 0.2s;
+}
+
+.cf-signature-modal-close:hover {
+  background-color: #f7fafc;
+  color: #2d3748;
+}
+
+.cf-signature-modal-content {
+  padding: 1.5rem;
+}
+
+.cf-signature-modal-info {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #434445;
+  border-radius: 8px;
+}
+
+.cf-signature-info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: white;
+  font-size: 0.9rem;
+}
+
+.cf-signature-display {
+  border-radius: 8px;
+  padding: 1rem;
+  background-color: #fff;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.cf-signature-image {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 4px;
+}
+
+.cf-signature-modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.cf-signature-download-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--color-blue);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.cf-signature-download-btn:hover {
+  background-color: var(--color-red);
+}
+
+.cf-signature-close-btn {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--color-blue);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.cf-signature-close-btn:hover {
+  background-color: var(--color-red);
+}
+
+.cf-consentimientos-stat-trend {
+  font-size: 0.75rem;
+  color: #48bb78;
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+.cf-consentimientos-stat-icon-firma {
+  background-color: #805ad5;
+  color: white;
+}
+
+.cf-consentimientos-search-help {
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+.cf-consentimientos-search-help small {
+  color: #718096;
+  font-size: 0.8rem;
+}
+
+.cf-consentimientos-table-wrapper {
+  border-radius: 8px;
+}
+
+.cf-consentimientos-table {
+  width: 100%;
+  min-width: 800px;
+}
+
+.cf-consentimientos-th-user {
+  min-width: 200px;
+}
+
+.cf-consentimientos-th-signature {
+  min-width: 120px;
+}
+
+.cf-consentimientos-account-email {
+  color: white;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .cf-signature-modal {
+    margin: 1rem;
+    max-width: calc(100vw - 2rem);
+  }
+
+  .cf-signature-modal-info {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .cf-signature-modal-actions {
+    flex-direction: column;
+  }
+
+  .cf-consentimientos-user-info {
+    min-width: 150px;
+  }
+
+  .cf-consentimientos-table {
+    min-width: 700px;
   }
 }
